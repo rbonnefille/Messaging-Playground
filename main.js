@@ -67,7 +67,7 @@ express()
             }
             res.end();
         })
-        .get("/", function(req, res) {   
+        .get("/web-messenger", function(req, res) {   
           res.render("webSdk.ejs", {integrationId: integrationId}); 
         })
         .listen(process.env.PORT || 7777);
