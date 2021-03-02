@@ -47,24 +47,27 @@ express()
             }
             //payloads[req.params.id].push(req.body);
             //console.log(req.body.events[0].payload.message.content.text);
-            var conversationId = req.body.events[0].payload.conversation.id;
+            //var conversationId = req.body.events[0].payload.conversation.id;
+            var conversationId = req.body.events;
+            console.log(conversationId);
             var appId = req.body.app.id;
-            var userMessage = req.body.events[0].payload.message.content.text.toLowerCase();
+            console.log(appId);
+            // var userMessage = req.body.events[0].payload.message.content.text.toLowerCase();
 
-            switch (userMessage) {
-              case 'hello':
-              case 'hi':
-              case 'hey':            
-                sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
-                break;
-              case 'agent':
-                passControl(appId, conversationId, "next");
-                sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.");
-                break;
-              case 'bot':
-                sendMessageUser(appId, conversationId, "Ok but I am a bot!")
-                break;
-            }
+            // switch (userMessage) {
+            //   case 'hello':
+            //   case 'hi':
+            //   case 'hey':            
+            //     sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
+            //     break;
+            //   case 'agent':
+            //     passControl(appId, conversationId, "next");
+            //     sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.");
+            //     break;
+            //   case 'bot':
+            //     sendMessageUser(appId, conversationId, "Ok but I am a bot!")
+            //     break;
+            //}
             res.end();
         })
         .get("/web-messenger", function(req, res) {   
