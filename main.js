@@ -47,37 +47,27 @@ express()
             }
             //payloads[req.params.id].push(req.body);
             //console.log(req.body.events[0].payload.message.content.text);
-            //var conversationId = req.body.events[0].payload.conversation.id;
-            var conversationId = req.body.events;
-            console.log(conversationId);
+            var conversationId = req.body.events[0].payload.conversation.id;
             var appId = req.body.app.id;
-            console.log(appId);
-            // var userMessage = req.body.events[0].payload.message.content.text.toLowerCase();
+            var userMessage = req.body.events[0].payload.message.content.text.toLowerCase();
 
-            // switch (userMessage) {
-            //   case 'hello':
-            //   case 'hi':
-            //   case 'hey':            
-            //     sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
-            //     break;
-            //   case 'agent':
-            //     passControl(appId, conversationId, "next");
-            //     sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.");
-            //     break;
-            //   case 'bot':
-            //     sendMessageUser(appId, conversationId, "Ok but I am a bot!")
-            //     break;
-            //}
+            switch (userMessage) {
+              case 'hello':
+              case 'hi':
+              case 'hey':            
+                sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
+                break;
+              case 'agent':
+                passControl(appId, conversationId, "next");
+                sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.");
+                break;
+              case 'bot':
+                sendMessageUser(appId, conversationId, "Ok but I am a bot!")
+                break;
+            }
             res.end();
         })
-        // .get("/web-messenger", function(req, res) {   
-        //   res.render("webSdk.ejs", {integrationId: integrationId}); 
-        // })
-        .get('/:id', (req, res) => {
-          if (payloads[req.params.id]) {
-              res.send(payloads[req.params.id].reverse());
-              return;
-          }
-          res.send('No events sent recently to POST https://sunco-switchboard.herokuapp.com/' + req.params.id);
-      })
+        .get("/web-messenger", function(req, res) {   
+          res.render("webSdk.ejs", {integrationId: integrationId}); 
+        })
         .listen(process.env.PORT || 7777);
