@@ -70,9 +70,9 @@ express()
             //}
             res.end();
         })
-        .get("/web-messenger", function(req, res) {   
-          res.render("webSdk.ejs", {integrationId: integrationId}); 
-        })
+        // .get("/web-messenger", function(req, res) {   
+        //   res.render("webSdk.ejs", {integrationId: integrationId}); 
+        // })
         .get('/:id', (req, res) => {
           if (payloads[req.params.id]) {
               res.send(payloads[req.params.id].reverse());
