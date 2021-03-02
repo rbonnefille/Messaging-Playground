@@ -44,8 +44,7 @@ app.post('/:id', (req, res) => {
             var userMessage = req.body.messages[0].text.toLowerCase();
             console.log(conversationId);
             console.log(userMessage);
-            console.log(appId);
-            console.log(req.body);
+            console.log(appId);            
             // switch (userMessage) {
             //   case 'hello':
             //   case 'hi':
