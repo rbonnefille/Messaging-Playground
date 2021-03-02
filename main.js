@@ -60,7 +60,7 @@ app.post('/:id', (req, res) => {
                 break;
             }
             res.end();
-            res.sendStatus( 200 );
+            //res.sendStatus( 200 );
         })
 app.get("/web-messenger", function(req, res) {   
           res.render("webSdk.ejs", {integrationId: integrationId}); 
