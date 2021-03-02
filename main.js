@@ -45,21 +45,21 @@ app.post('/:id', (req, res) => {
             console.log(conversationId);
             console.log(userMessage);
             console.log(appId);            
-            // switch (userMessage) {
-            //   case 'hello':
-            //   case 'hi':
-            //   case 'hey':            
-            //     sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
-            //     break;
-            //   case 'agent':
-            //     passControl(appId, conversationId, "next");
-            //     sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.");
-            //     break;
-            //   case 'bot':
-            //     sendMessageUser(appId, conversationId, "Ok but I am a bot!")
-            //     break;
-            // }
-            //res.end();
+            switch (userMessage) {
+              case 'hello':
+              case 'hi':
+              case 'hey':            
+                sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
+                break;
+              case 'agent':
+                passControl(appId, conversationId, "next");
+                sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.");
+                break;
+              case 'bot':
+                sendMessageUser(appId, conversationId, "Ok but I am a bot!")
+                break;
+            }
+            res.end();
             res.sendStatus( 200 );
         })
 app.get("/web-messenger", function(req, res) {   
