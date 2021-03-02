@@ -43,10 +43,10 @@ express()
             //payloads[req.params.id].push(req.body);
             //console.log(req.body.events[0].payload.message.content.text);
             //var conversationId = req.body.events[0].payload.conversation.id;
-            var conversationId = req.body.conversation["_id"];
-            var appId = req.body.app["_id"];
-            var userMessage = req.body.messages[0].text.toLowerCase();
-
+            // var conversationId = req.body.conversation["_id"];
+            // var appId = req.body.app["_id"];
+            // var userMessage = req.body.messages[0].text.toLowerCase();
+            console.log(req.body);
             // switch (userMessage) {
             //   case 'hello':
             //   case 'hi':
