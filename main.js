@@ -38,33 +38,45 @@ function passControl(appId, conversationId, body) {
   return;
 }
 
-express()
-        .post('/:id', (req, res) => {
-            //payloads[req.params.id].push(req.body);
-            //console.log(req.body.events[0].payload.message.content.text);
-            //var conversationId = req.body.events[0].payload.conversation.id;
-            // var conversationId = req.body.conversation["_id"];
-            // var appId = req.body.app["_id"];
-            // var userMessage = req.body.messages[0].text.toLowerCase();
-            console.log(req.body);
-            // switch (userMessage) {
-            //   case 'hello':
-            //   case 'hi':
-            //   case 'hey':            
-            //     sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
-            //     break;
-            //   case 'agent':
-            //     passControl(appId, conversationId, "next");
-            //     sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.");
-            //     break;
-            //   case 'bot':
-            //     sendMessageUser(appId, conversationId, "Ok but I am a bot!")
-            //     break;
-            // }
-            //res.end();
-            res.sendStatus( 200 );
-        })
-        .get("/web-messenger", function(req, res) {   
-          res.render("webSdk.ejs", {integrationId: integrationId}); 
-        })
-        .listen(process.env.PORT || 7777);
+app.post( '/:id', ( req, res ) => {
+  //console.log( 'received webhook', req.body );
+  //console.log(req.body.messages.text)
+  //console.log(req.body);
+  console.log(typeof(req.body.messages));
+  //console.log(req.body);
+  console.log(req.body.app["_id"]);
+  console.log(req.body.conversation["_id"]);
+  res.sendStatus( 200 );
+} );
+
+
+// express()
+//         .post('/:id', (req, res) => {
+//             //payloads[req.params.id].push(req.body);
+//             //console.log(req.body.events[0].payload.message.content.text);
+//             //var conversationId = req.body.events[0].payload.conversation.id;
+//             // var conversationId = req.body.conversation["_id"];
+//             // var appId = req.body.app["_id"];
+//             // var userMessage = req.body.messages[0].text.toLowerCase();
+//             console.log(req.body);
+//             // switch (userMessage) {
+//             //   case 'hello':
+//             //   case 'hi':
+//             //   case 'hey':            
+//             //     sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
+//             //     break;
+//             //   case 'agent':
+//             //     passControl(appId, conversationId, "next");
+//             //     sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.");
+//             //     break;
+//             //   case 'bot':
+//             //     sendMessageUser(appId, conversationId, "Ok but I am a bot!")
+//             //     break;
+//             // }
+//             //res.end();
+//             res.sendStatus( 200 );
+//         })
+//         .get("/web-messenger", function(req, res) {   
+//           res.render("webSdk.ejs", {integrationId: integrationId}); 
+//         })
+        app.listen(process.env.PORT || 7777);
