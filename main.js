@@ -70,4 +70,11 @@ express()
         .get("/web-messenger", function(req, res) {   
           res.render("webSdk.ejs", {integrationId: integrationId}); 
         })
+        .get('/:id', (req, res) => {
+          if (payloads[req.params.id]) {
+              res.send(payloads[req.params.id].reverse());
+              return;
+          }
+          res.send('No events sent recently to POST https://sunco-switchboard.herokuapp.com/' + req.params.id);
+      })
         .listen(process.env.PORT || 7777);
