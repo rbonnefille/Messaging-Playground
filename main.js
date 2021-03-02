@@ -38,8 +38,6 @@ function passControl(appId, conversationId, body) {
   return;
 }
 
-req.body.messages[0].text
-
 express()
         .post('/:id', (req, res) => {
             //payloads[req.params.id].push(req.body);
