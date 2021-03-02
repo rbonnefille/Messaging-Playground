@@ -1,10 +1,9 @@
 const express = require('express')
-const bodyParser = require('body-parser');
 var SunshineConversationsClient = require('sunshine-conversations-client');
 const app = express()
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');  
-const payloads = {};
+app.use( express.json());
 
 var defaultClient = SunshineConversationsClient.ApiClient.instance;
 var basicAuth = defaultClient.authentications['basicAuth'];
@@ -39,17 +38,16 @@ function passControl(appId, conversationId, body) {
   return;
 }
 
+req.body.messages[0].text
+
 express()
-        .use(bodyParser.json())
         .post('/:id', (req, res) => {
-            if (!payloads[req.params.id]) {
-                payloads[req.params.id] = [];
-            }
             //payloads[req.params.id].push(req.body);
             //console.log(req.body.events[0].payload.message.content.text);
-            var conversationId = req.body.events[0].payload.conversation.id;
-            var appId = req.body.app.id;
-            var userMessage = req.body.events[0].payload.message.content.text.toLowerCase();
+            //var conversationId = req.body.events[0].payload.conversation.id;
+            var conversationId = req.body.conversation["_id"];
+            var appId = req.body.app["_id"];
+            var userMessage = req.body.messages[0].text.toLowerCase();
 
             switch (userMessage) {
               case 'hello':
