@@ -39,7 +39,10 @@ function passControl(appId, conversationId, body) {
 }
 
 app.post('/:id', (req, res) => {
-            if (events[0].type === "conversation:message") {
+            var webhookEventType = req.body.events[0].type;
+            var webhookPartyType = req.body.events[0].payload.message.author.type;
+            
+            if ( webhookEventType === "conversation:message" && webhookPartyType === "user") {
               var conversationId = req.body.events[0].payload.conversation.id;
               var appId = req.body.app.id;
               var userMessage = req.body.events[0].payload.message.content.text.toLowerCase();
