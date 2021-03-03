@@ -39,13 +39,13 @@ function passControl(appId, conversationId, body) {
 }
 
 app.post('/:id', (req, res) => {
-            var conversationId = req.body.conversation["_id"];
-            var appId = req.body.app["_id"];
-            var userMessage = req.body.messages[0].text.toLowerCase();
-            console.log(conversationId);
-            console.log(userMessage);
-            console.log(appId);
-            
+            // var conversationId = req.body.conversation["_id"];
+            // var appId = req.body.app["_id"];
+            // var userMessage = req.body.messages[0].text.toLowerCase();
+            // console.log(conversationId);
+            // console.log(userMessage);
+            // console.log(appId);
+            console.log(req.body);
             var v2Payload = req.body.events[0].payload.message.content.text;
             console.log(v2Payload);
             // switch (userMessage) {
