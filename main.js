@@ -39,31 +39,34 @@ function passControl(appId, conversationId, body) {
 }
 
 app.post('/:id', (req, res) => {
-            // var conversationId = req.body.conversation["_id"];
-            // var appId = req.body.app["_id"];
-            // var userMessage = req.body.messages[0].text.toLowerCase();
-            // console.log(conversationId);
-            // console.log(userMessage);
-            // console.log(appId);
-            console.log(req.body);
-            var v2Payload = req.body.events[0].payload.message.content.text;
-            console.log(v2Payload);
-            // switch (userMessage) {
-            //   case 'hello':
-            //   case 'hi':
-            //   case 'hey':            
-            //     sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
-            //     break;
-            //   case 'agent':
-            //     passControl(appId, conversationId, "next");
-            //     sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.");
-            //     break;
-            //   case 'bot':
-            //     sendMessageUser(appId, conversationId, "Ok but I am a bot!")
-            //     break;
-            // }
-            // res.end();
-            res.sendStatus( 200 );
+            if (events[0].type === "conversation:message") {
+              var conversationId = req.body.events[0].payload.conversation.id;
+              var appId = req.body.app.id;
+              var userMessage = req.body.events[0].payload.message.content.text.toLowerCase();
+              
+              console.log(conversationId);
+              console.log(userMessage);
+              console.log(appId);
+  
+              switch (userMessage) {
+                case 'hello':
+                case 'hi':
+                case 'hey':            
+                  sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
+                  break;
+                case 'agent':
+                  passControl(appId, conversationId, "next");
+                  sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.");
+                  break;
+                case 'bot':
+                  sendMessageUser(appId, conversationId, "Ok but I am a bot!")
+                  break;
+              }
+              res.end();
+            } else {
+              console.log(req.body);
+              res.sendStatus( 200 );
+            }
         })
 app.get("/web-messenger", function(req, res) {   
           res.render("webSdk.ejs", {integrationId: integrationId}); 
