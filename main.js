@@ -53,4 +53,7 @@ app.post('/:id', (req, res) => {
 app.get("/web-messenger", function(req, res) {   
           res.render("webSdk.ejs", {integrationId: integrationId}); 
 });
+app.use(function (req, res, next) {
+  res.status(404).send("Sorry can't find that!")
+})
 app.listen(process.env.PORT || 7777);
