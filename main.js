@@ -18,9 +18,10 @@ app.post('/:id', (req, res) => {
                 var appId = req.body.app.id;
                 var userMessage = req.body.events[0].payload.message.content.text.toLowerCase();
                 
-                console.log(conversationId);
-                console.log(userMessage);
-                console.log(appId);
+                // Debugging with the console
+                // console.log(conversationId);
+                // console.log(userMessage);
+                // console.log(appId);
     
                 switch (userMessage) {
                   case 'hello':
@@ -38,7 +39,8 @@ app.post('/:id', (req, res) => {
                 }
                 res.end();
               } else {
-                console.log(req.body);
+                // Debugging with the console
+                //console.log(req.body);
                 res.sendStatus( 200 );
               }
             } else {
@@ -49,6 +51,6 @@ app.get("/web-messenger", function(req, res) {
           res.render("webSdk.ejs", {integrationId: integrationId}); 
 });
 app.use(function (req, res, next) {
-  res.status(404).send("Sorry can't find that!")
+  res.status(404).render("404.ejs");
 })
 app.listen(process.env.PORT || 7777);
