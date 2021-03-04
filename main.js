@@ -17,6 +17,8 @@ app.post('/:id', (req, res) => {
             var webhookEventType = req.body.events[0].type;
             var webhookPartyType = req.body.events[0].payload.message.author.type;
             var webhookEventApiKey = req.headers['x-api-key'];
+            console.log(webhookEventApiKey);
+            console.log(webhookSecret);
             if (webhookEventApiKey === webhookSecret) {
               if ( webhookEventType === "conversation:message" && webhookPartyType === "user") {
                 var conversationId = req.body.events[0].payload.conversation.id;
