@@ -1,15 +1,10 @@
 const express = require('express')
 let messagingAction = require('./messaging');
-var SunshineConversationsClient = require('sunshine-conversations-client');
 const app = express()
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');  
 app.use( express.json());
 
-var defaultClient = SunshineConversationsClient.ApiClient.instance;
-var basicAuth = defaultClient.authentications['basicAuth'];
-basicAuth.username = process.env.USERNAME;
-basicAuth.password = process.env.PASSWORD;
 const integrationId = process.env.INTEGRATION_ID;
 const webhookSecret = process.env.WEBHOOK_SECRET;
 
@@ -17,8 +12,6 @@ app.post('/:id', (req, res) => {
             var webhookEventType = req.body.events[0].type;
             var webhookPartyType = req.body.events[0].payload.message.author.type;
             var webhookEventApiKey = req.headers['x-api-key'];
-            console.log(webhookEventApiKey);
-            console.log(webhookSecret);
             if (webhookEventApiKey === webhookSecret) {
               if ( webhookEventType === "conversation:message" && webhookPartyType === "user") {
                 var conversationId = req.body.events[0].payload.conversation.id;
@@ -49,7 +42,6 @@ app.post('/:id', (req, res) => {
                 res.sendStatus( 200 );
               }
             } else {
-              console.log(req.headers['x-api-key']);
               res.sendStatus( 401 );
             }
         })

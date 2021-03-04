@@ -1,3 +1,10 @@
+var SunshineConversationsClient = require('sunshine-conversations-client');
+
+var defaultClient = SunshineConversationsClient.ApiClient.instance;
+var basicAuth = defaultClient.authentications['basicAuth'];
+basicAuth.username = process.env.USERNAME;
+basicAuth.password = process.env.PASSWORD;
+
 function sendMessageUser(appId,conversationId, message){
     var apiInstance = new SunshineConversationsClient.MessagesApi();
     var messagePost = new SunshineConversationsClient.MessagePost();
