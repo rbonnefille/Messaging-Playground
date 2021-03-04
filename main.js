@@ -47,6 +47,7 @@ app.post('/:id', (req, res) => {
                 res.sendStatus( 200 );
               }
             } else {
+              console.log(req.headers['x-api-key']);
               res.sendStatus( 401 );
             }
         })
