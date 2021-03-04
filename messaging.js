@@ -25,7 +25,6 @@ function sendMessageUser(appId,conversationId, message){
     return;
   }
 
-
 // exports the variables and functions above so that other modules can use them
 module.exports.sendMessageUser = sendMessageUser;
 module.exports.passControl = passControl;
