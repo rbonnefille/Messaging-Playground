@@ -23,7 +23,25 @@ app.post('/:id', (req, res) => {
                 // console.log(conversationId);
                 // console.log(userMessage);
                 // console.log(appId);
-                messagingAction.readUserMessage(userMessage);
+                function readUserMessage(userMessage) {
+                  switch (userMessage) {
+                    case 'hello':
+                    case 'hi':
+                    case 'hey':            
+                      messagingAction.sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
+                      break;
+                    case 'agent':
+                      messagingAction.passControl(appId, conversationId, "next");
+                      messagingAction.sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.");
+                      break;
+                    case 'bot':
+                      messagingAction.sendMessageUser(appId, conversationId, "Ok but I am a bot!")
+                      break;
+                    default:
+                      messagingAction.sendMessageUser(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?");
+                    }
+                  }
+                readUserMessage(userMessage);
                 res.end();
               } else {
                 // Debugging with the console
