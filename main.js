@@ -49,7 +49,7 @@ app.post("/webhook", (req, res) => {
         if (webhookEventType.includes("switchboard")) {
             console.log(req.body.events[0].payload);
             res.sendStatus(200);
-            //TO DO//
+            //in progress//
             // be able to read each event like passControl and determine what to do.
         } else if (webhookEventType === 'switchboard:passControl' && activeSwitchboardIntegration === zdSwitchboardIntegration) {
           conversationWithAgent += conversationId;
