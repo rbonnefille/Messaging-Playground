@@ -10,18 +10,13 @@ const webhookSecret = process.env.WEBHOOK_SECRET;
 
 app.post("/:id", (req, res) => {
     var webhookEventType = req.body.events[0].type;
-    console.log(webhookEventType);
-    console.log(webhookPartyType);
-    var webhookPartyType = req.body.events[0].payload.message.author.type;
-    console.log(webhookPartyType);
     var webhookEventApiKey = req.headers["x-api-key"];
-    console.log(webhookEventApiKey);
 
     if (webhookEventApiKey === webhookSecret) {
-        if (webhookEventType.includes("switchboard") && !webhookPartyType) {
+        if (webhookEventType.includes("switchboard")) {
             console.log(req.body);
             res.sendStatus(200);
-        } else if (webhookEventType === "conversation:message" && (!webhookPartyType || webhookPartyType === "user")) {
+        } else if (webhookEventType === "conversation:message" && req.body.events[0].payload.message.author.type === "user") {
             var conversationId = req.body.events[0].payload.conversation.id;
             var appId = req.body.app.id;
             var userMessage = req.body.events[0].payload.message.content.text.toLowerCase();
