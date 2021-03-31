@@ -8,36 +8,17 @@ app.use( express.json());
 const integrationId = process.env.INTEGRATION_ID;
 const webhookSecret = process.env.WEBHOOK_SECRET;
 
-function readUserMessage(userMessage, appId, conversationId) {
-  switch (userMessage) {
-    case 'hello':
-    case 'hi':
-    case 'hey':            
-      messagingAction.sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
-      break;
-    case 'agent':
-      messagingAction.passControl(appId, conversationId, "next");
-      messagingAction.sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.");
-      break;
-    case 'bot':
-      messagingAction.sendMessageUser(appId, conversationId, "Ok but I am a bot!")
-      break;
-    default:
-      messagingAction.sendMessageUser(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?");
-    }
-  }
 
 app.post("/:id", (req, res) => {
     var webhookEventType = req.body.events[0].type;
     var webhookPartyType = req.body.events[0].payload.message.author.type;
     var webhookEventApiKey = req.headers["x-api-key"];
     if (webhookEventApiKey === webhookSecret) {
-        if (webhookEventType === "conversation:message" && webhookPartyType === "user") {
+        if (webhookEventType === 'conversation:message' && webhookPartyType === 'user') {
             var conversationId = req.body.events[0].payload.conversation.id;
             var appId = req.body.app.id;
             var userMessage = req.body.events[0].payload.message.content.text.toLowerCase();
-
-            readUserMessage(userMessage, appId, conversationId);
+            messagingAction.readUserMessage(userMessage, appId, conversationId);
             res.end();
         } else {
             // Debugging with the console
