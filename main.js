@@ -8,7 +8,7 @@ app.use( express.json());
 const integrationId = process.env.INTEGRATION_ID;
 const webhookSecret = process.env.WEBHOOK_SECRET;
 
-function readUserMessage(userMessage) {
+function readUserMessage(userMessage, appId, conversationId) {
   switch (userMessage) {
     case 'hello':
     case 'hi':
