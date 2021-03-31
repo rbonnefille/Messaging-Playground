@@ -31,6 +31,26 @@ function sendMessageUser(appId,conversationId, message){
     return;
   }
 
+  function readUserMessage(userMessage, appId, conversationId) {
+    switch (userMessage) {
+      case 'hello':
+      case 'hi':
+      case 'hey':            
+        sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
+        break;
+      case 'agent':
+        passControl(appId, conversationId, "next");
+        sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.");
+        break;
+      case 'bot':
+        sendMessageUser(appId, conversationId, "Ok but I am a bot!")
+        break;
+      default:
+        sendMessageUser(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?");
+      }
+    }
+
 // exports the variables and functions above so that other modules can use them
 module.exports.sendMessageUser = sendMessageUser;
 module.exports.passControl = passControl;
+module.exports.readUserMessage = readUserMessage;

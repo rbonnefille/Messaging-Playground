@@ -11,6 +11,7 @@ const webhookSecret = process.env.WEBHOOK_SECRET;
 
 app.post("/:id", (req, res) => {
     var webhookEventType = req.body.events[0].type;
+    console.log(webhookEventType);
     var webhookPartyType = req.body.events[0].payload.message.author.type;
     var webhookEventApiKey = req.headers["x-api-key"];
     if (webhookEventApiKey === webhookSecret) {
@@ -36,3 +37,6 @@ app.use(function (req, res, next) {
     res.status(404).render("404.ejs");
 });
 app.listen(process.env.PORT || 7777);
+
+
+//body.events[0].payload.message.content.type
