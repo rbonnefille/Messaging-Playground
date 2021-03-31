@@ -9,15 +9,19 @@ const integrationId = process.env.INTEGRATION_ID;
 const webhookIdSecret = process.env.WEBHOOK_ID_SECRET;
 const webhookConversationsSecret = process.env.WEBHOOK_CONVERSATIONS_SECRET;
 
+var conversationWithAgent;
+
 app.post("/conversations", (req, res) => {
     var webhookEventType = req.body.events[0].type;
     var webhookEventApiKey = req.headers["x-api-key"];
     var webhookEventAuthor = req.body.events[0].payload.message.author.type;
+    var conversationId = req.body.events[0].payload.conversation.id;
+    var activeSwitchboardIntegration = req.body.events[0].payload.conversation.activeSwitchboardIntegration.id;
+    var appId = req.body.app.id;
+    var botSwitchboardIntegration = '606446d171143a00d242af2f';
 
     if (webhookEventApiKey === webhookConversationsSecret) {
-        if (webhookEventType === "conversation:message" && webhookEventAuthor === "user") {
-            var conversationId = req.body.events[0].payload.conversation.id;
-            var appId = req.body.app.id;
+        if (webhookEventType === "conversation:message" && webhookEventAuthor === "user" && conversationId != conversationWithAgent && activeSwitchboardIntegration === botSwitchboardIntegration) {
             var userMessage = req.body.events[0].payload.message.content.text.toLowerCase();
             messagingAction.readUserMessage(userMessage, appId, conversationId);
             res.end();
@@ -35,14 +39,21 @@ app.post("/conversations", (req, res) => {
   });
 
 app.post("/webhook", (req, res) => {
-  var webhookEventType = req.body.events[0].type;
+    var webhookEventType = req.body.events[0].type;
     var webhookEventApiKey = req.headers["x-api-key"];
+    var activeSwitchboardIntegration = req.body.events[0].payload.conversation.activeSwitchboardIntegration.id;
+    var zdSwitchboardIntegration = '6062e4fe226d8e00d2247d81';
+    var conversationId = req.body.events[0].payload.conversation.id;
+
     if (webhookEventApiKey === webhookIdSecret) {
         if (webhookEventType.includes("switchboard")) {
             console.log(req.body.events[0].payload);
             res.sendStatus(200);
             //TO DO//
             // be able to read each event like passControl and determine what to do.
+        } else if (webhookEventType === 'switchboard:passControl' && activeSwitchboardIntegration === zdSwitchboardIntegration) {
+          conversationWithAgent += conversationId;
+          console.log(`The conversation ` + conversationId+ ` is now handled by Zendesk`);
         }
         else{
           console.log(`Webhook Event type is: ` + webhookEventType);
