@@ -23,10 +23,10 @@ app.post("/conversations", (req, res) => {
             res.end();
         }
         else {
-          console.log('passing in the else condition:')
-          console.log(req.body);
-          console.log(webhookEventType);
-          console.log(webhookEventAuthor);
+          console.log(`Webhook Event type is:` + webhookEventType);
+          console.log(`The message's Author is:` + webhookEventAuthor);
+          console.log(`Message coming from source:` + req.body.events[0].payload.message.source.type)
+          console.log(`The message sent was` +req.body.events[0].payload.message.content.text);
           res.sendStatus(200);
         }
     } else {
@@ -39,13 +39,15 @@ app.post("/webhook", (req, res) => {
     var webhookEventApiKey = req.headers["x-api-key"];
     if (webhookEventApiKey === webhookIdSecret) {
         if (webhookEventType.includes("switchboard")) {
-            console.log(req.body);
+            console.log(req.body.events[0].payload);
             res.sendStatus(200);
             //TO DO//
             // be able to read each event like passControl and determine what to do.
         }
         else{
-          console.log(req.body);
+          console.log(`Webhook Event type is:` + webhookEventType);
+          console.log(`Active Switchboard Integration id is:` + req.body.events[0].payload.conversation.activeSwitchboardIntegration.id);
+          console.log(`ConversationId is: ` + req.body.events[0].payload.conversation.id);
           res.sendStatus(200);
         }
     } else {
