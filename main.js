@@ -13,7 +13,7 @@ app.post("/conversations", (req, res) => {
     var webhookEventType = req.body.events[0].type;
     var webhookEventApiKey = req.headers["x-api-key"];
     var webhookEventAuthor = req.body.events[0].payload.message.author.type;
-    
+
     if (webhookEventApiKey === webhookConversationsSecret) {
         if (webhookEventType === "conversation:message" && webhookEventAuthor === "user") {
             var conversationId = req.body.events[0].payload.conversation.id;
@@ -23,7 +23,10 @@ app.post("/conversations", (req, res) => {
             res.end();
         }
         else {
+          console.log('passing in the else condition:')
           console.log(req.body);
+          console.log(webhookEventType);
+          console.log(webhookEventAuthor);
           res.sendStatus(200);
         }
     } else {
