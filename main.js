@@ -18,7 +18,7 @@ app.post("/:id", (req, res) => {
     console.log(webhookEventApiKey);
 
     if (webhookEventApiKey === webhookSecret) {
-        if (webhookEventType.includes("switchboard")) {
+        if (webhookEventType.includes("switchboard") && !webhookPartyType) {
             console.log(req.body);
             res.sendStatus(200);
         } else if (webhookEventType === "conversation:message" && (!webhookPartyType || webhookPartyType === "user")) {
