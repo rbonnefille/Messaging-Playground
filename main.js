@@ -37,12 +37,7 @@ app.post("/:id", (req, res) => {
             var appId = req.body.app.id;
             var userMessage = req.body.events[0].payload.message.content.text.toLowerCase();
 
-            // Debugging with the console
-            // console.log(conversationId);
-            // console.log(userMessage);
-            // console.log(appId);
-
-            readUserMessage(userMessage);
+            readUserMessage(userMessage, appId, conversationId);
             res.end();
         } else {
             // Debugging with the console
