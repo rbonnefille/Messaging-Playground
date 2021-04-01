@@ -6,7 +6,7 @@ app.set("view engine", "ejs");
 app.use(express.json());
 
 const integrationId = process.env.INTEGRATION_ID;
-const webhookIdSecret = process.env.WEBHOOK_SWITCHBOARD_SECRET;
+const webhookSwitchtboardSecret = process.env.WEBHOOK_SWITCHBOARD_SECRET;
 const webhookConversationsSecret = process.env.WEBHOOK_CONVERSATIONS_SECRET;
 var zdSwitchboardIntegration = process.env.ZD_SWITCHBOARD_ID;
 var botSwitchboardIntegration = process.env.BOT_SWITCHBOARD_ID;
@@ -44,7 +44,7 @@ app.post("/switchboard", (req, res) => {
   var activeSwitchboardIntegration = req.body.events[0].payload.conversation.activeSwitchboardIntegration.id;
   var conversationId = req.body.events[0].payload.conversation.id;
 
-  if (webhookEventApiKey === webhookIdSecret) {
+  if (webhookEventApiKey === webhookSwitchtboardSecret) {
     if (webhookEventType === 'switchboard:passControl' && activeSwitchboardIntegration === zdSwitchboardIntegration) {
       conversationWithAgent += conversationId;
       console.log(`The conversation ` + conversationId + ` is now handled by Zendesk`);
