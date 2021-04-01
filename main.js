@@ -48,6 +48,7 @@ app.post("/switchboard", (req, res) => {
     if (webhookEventType === 'switchboard:passControl' && activeSwitchboardIntegration === zdSwitchboardIntegration) {
       conversationWithAgent += conversationId;
       console.log(`The conversation ` + conversationId + ` is now handled by Zendesk`);
+      res.sendStatus(200);
       //in progress//
       // be able to read each event like passControl and determine what to do.
     } else if (webhookEventType.includes("failure")) {
