@@ -45,7 +45,6 @@ app.post("/switchboard", (req, res) => {
   var webhookEventApiKey = req.headers["x-api-key"];
   var activeSwitchboardIntegration = req.body.events[0].payload.conversation.activeSwitchboardIntegration.id;
   var conversationId = req.body.events[0].payload.conversation.id;
-  var appId = req.body.app.id;
 
   if (webhookEventApiKey === webhookSwitchtboardSecret) {
     if (webhookEventType === 'switchboard:passControl' && activeSwitchboardIntegration === zdSwitchboardIntegration) {
@@ -55,12 +54,9 @@ app.post("/switchboard", (req, res) => {
       res.end();
       //in progress//
       // be able to read each event like passControl and determine what to do.
-    // } else if (webhookEventType.includes("failure")) {
-    //   console.log(req.body.events[0].payload);
-    //   res.sendStatus(200);
-    //   res.end();
-    } else if (webhookEventType === 'switchboard:passControl' && activeSwitchboardIntegration === botSwitchboardIntegration) {
-      messagingAction.acceptControl(appId, conversationId);
+    } else if (webhookEventType.includes("failure")) {
+      console.log(req.body.events[0].payload);
+      res.sendStatus(200);
       res.end();
     }
   } else {
