@@ -45,6 +45,7 @@ app.post("/switchboard", (req, res) => {
   var webhookEventApiKey = req.headers["x-api-key"];
   var activeSwitchboardIntegration = req.body.events[0].payload.conversation.activeSwitchboardIntegration.id;
   var conversationId = req.body.events[0].payload.conversation.id;
+  var appId = req.body.app.id;
 
   if (webhookEventApiKey === webhookSwitchtboardSecret) {
     if (webhookEventType === 'switchboard:passControl' && activeSwitchboardIntegration === zdSwitchboardIntegration) {
