@@ -4,7 +4,7 @@ var basicAuth = defaultClient.authentications['basicAuth'];
 basicAuth.username = process.env.USERNAME;
 basicAuth.password = process.env.PASSWORD;
 
-function sendMessageUser(appId, conversationId, message) {
+async function sendMessageUser(appId, conversationId, message) {
   var apiInstance = new SunshineConversationsClient.MessagesApi();
   var messagePost = new SunshineConversationsClient.MessagePost();
   messagePost['author'] = { "type": "business", "avatarUrl": "https://www.gravatar.com/avatar/00000000000000000000000000000000.png?d=robohash&f=y", "displayName": "CrazyBot" };
@@ -16,10 +16,9 @@ function sendMessageUser(appId, conversationId, message) {
   }, function (error) {
     console.error(error);
   });
-  return;
 }
 
-function passControl(appId, conversationId, body) {
+async function passControl(appId, conversationId, body) {
   var apiInstance = new SunshineConversationsClient.SwitchboardActionsApi();
   var passControlBody = new SunshineConversationsClient.PassControlBody(); // PassControlBody | 
   passControlBody['switchboardIntegration'] = body;
@@ -28,10 +27,9 @@ function passControl(appId, conversationId, body) {
   }, function (error) {
     console.error(error);
   });
-  return;
 }
 
-function readUserMessage(userMessage, appId, conversationId) {
+async function readUserMessage(userMessage, appId, conversationId) {
   switch (userMessage) {
     case 'hello':
     case 'hi':
