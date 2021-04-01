@@ -29,6 +29,16 @@ async function passControl(appId, conversationId, body) {
   });
 }
 
+async function acceptControl(appId, conversationId) {
+  var apiInstance = new SunshineConversationsClient.SwitchboardActionsApi();
+  var acceptControlBody = new SunshineConversationsClient.AcceptControlBody(); // AcceptControlBody | 
+  apiInstance.acceptControl(appId, conversationId, acceptControlBody).then(function(data) {
+    console.log('API called successfully. Returned data: ' + data);
+  }, function(error) {
+    console.error(error);
+  });
+}
+
 async function readUserMessage(userMessage, appId, conversationId) {
   switch (userMessage) {
     case 'hello':
@@ -51,4 +61,5 @@ async function readUserMessage(userMessage, appId, conversationId) {
 // exports the variables and functions above so that other modules can use them
 module.exports.sendMessageUser = sendMessageUser;
 module.exports.passControl = passControl;
+module.exports.passControl = acceptControl;
 module.exports.readUserMessage = readUserMessage;

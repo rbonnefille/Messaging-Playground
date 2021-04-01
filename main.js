@@ -54,9 +54,12 @@ app.post("/switchboard", (req, res) => {
       res.end();
       //in progress//
       // be able to read each event like passControl and determine what to do.
-    } else if (webhookEventType.includes("failure")) {
-      console.log(req.body.events[0].payload);
-      res.sendStatus(200);
+    // } else if (webhookEventType.includes("failure")) {
+    //   console.log(req.body.events[0].payload);
+    //   res.sendStatus(200);
+    //   res.end();
+    } else if (webhookEventType === 'switchboard:passControl' && activeSwitchboardIntegration === botSwitchboardIntegration) {
+      messagingAction.acceptControl(appId, conversationId);
       res.end();
     }
   } else {
