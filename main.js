@@ -66,7 +66,7 @@ async function switchboardWebhookHandler(req, res) {
   const conversationId = webhookEvent.payload.conversation.id;
 
   if (webhookEventApiKey === webhookSwitchtboardSecret) {
-    if (webhookEventType === 'switchboard:passControl' && activeSwitchboardIntegration === zdSwitchboardIntegration) {
+    if (activeSwitchboardIntegration === zdSwitchboardIntegration) {
       try {
         conversationWithAgent += conversationId;
         console.log(`The conversation ` + conversationId + ` is now handled by Zendesk`);
@@ -77,9 +77,6 @@ async function switchboardWebhookHandler(req, res) {
         console.log("Error in message handler", err);
         res.status(500).send(err.message);
       } 
-    } else if (webhookEventType.includes("failure")) {
-      console.log(webhookEvent.payload);
-      res.end();
     }
   } else {
     res.sendStatus(401);
