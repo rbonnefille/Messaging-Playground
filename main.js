@@ -32,9 +32,11 @@ app.post("/conversations", (req, res) => {
       console.log(`Message coming from source: ` + req.body.events[0].payload.message.source.type)
       console.log(`The message sent was ` + req.body.events[0].payload.message.content.text);
       res.sendStatus(200);
+      res.end();
     }
   } else {
     res.sendStatus(401);
+    res.end();
   }
 });
 
@@ -49,14 +51,17 @@ app.post("/switchboard", (req, res) => {
       conversationWithAgent += conversationId;
       console.log(`The conversation ` + conversationId + ` is now handled by Zendesk`);
       res.sendStatus(200);
+      res.end();
       //in progress//
       // be able to read each event like passControl and determine what to do.
     } else if (webhookEventType.includes("failure")) {
       console.log(req.body.events[0].payload);
       res.sendStatus(200);
+      res.end();
     }
   } else {
     res.sendStatus(401);
+    res.end();
   }
 });
 app.get("/web-messenger", function (req, res) {
