@@ -37,7 +37,7 @@ async function userMessageHandler(req, res) {
       try {
         const userMessage = message.content.text.toLowerCase();
         messagingAction.readUserMessage(userMessage, appId, conversationId);
-      } catch (error) {
+      } catch (err) {
         console.log("Error in message handler", err);
         res.status(500).send(err.message);
       }
@@ -73,7 +73,7 @@ async function switchboardWebhookHandler(req, res) {
         res.end();
         //in progress//
         // be able to read each event like passControl and determine what to do.
-      } catch (error) {
+      } catch (err) {
         console.log("Error in webhook handler", err);
         res.status(500).send(err.message);
       } 
@@ -82,7 +82,7 @@ async function switchboardWebhookHandler(req, res) {
         messagingAction.sendMessageUser(appId, conversationId, "The conversation is now back with the Bot");
         console.log(`The conversation ` + conversationId + ` is now handled by the Bot`);
         res.end();
-      } catch (error) {
+      } catch (err) {
         console.log("Error in webhook handler", err);
         res.status(500).send(err.message);
       } 
