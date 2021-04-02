@@ -43,7 +43,7 @@ async function sendMessageUser(appId, conversationId, message, actions) {
   }
     //alternative way to send the messagePost
   //messagePost = {"author":{"type": "business" }, "content": { "type": "text", "text": "Hello again!" }};
-  apiInstance.postMessage(appId, conversationId, messagePost).then(function (data) {
+  await apiInstance.postMessage(appId, conversationId, messagePost).then(function (data) {
     //console.log('API called successfully. Returned data: ' + data);
   }, function (error) {
     console.error(error);
