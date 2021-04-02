@@ -13,7 +13,7 @@ async function sendMessageUser(appId, conversationId, message, actions) {
   } else {
     messagePost.setContent({
       type: "text",
-      text: "Hey there! You can ask me the following and might reply 😆",
+      text: message,
       actions: [
         {
             text: "Agent",
@@ -78,17 +78,17 @@ async function readUserMessage(userMessage, appId, conversationId) {
     case 'hey':
     case 'help':
       //sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
-      sendMessageUser(appId, conversationId, );
+      sendMessageUser(appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "actionsNeeded" );
       break;
     case 'agent':
       passControl(appId, conversationId, "next");
-      sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.");
+      sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.", null);
       break;
     case 'bot':
-      sendMessageUser(appId, conversationId, "Yes it's me, I'm only a bot!")
+      sendMessageUser(appId, conversationId, "Yes it's me, I'm only a bot!", null)
       break;
     default:
-      sendMessageUser(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?");
+      sendMessageUser(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?", null);
   }
 }
 // exports the variables and functions above so that other modules can use them
