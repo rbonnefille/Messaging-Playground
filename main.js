@@ -64,6 +64,7 @@ async function switchboardWebhookHandler(req, res) {
   const webhookEventApiKey = req.headers["x-api-key"];
   const activeSwitchboardIntegration = webhookEvent.payload.conversation.activeSwitchboardIntegration.id;
   const conversationId = webhookEvent.payload.conversation.id;
+  const appId = req.body.app.id;
 
   if (webhookEventApiKey === webhookSwitchtboardSecret) {
     if (activeSwitchboardIntegration === zdSwitchboardIntegration) {
