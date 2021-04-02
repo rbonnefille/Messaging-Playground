@@ -74,9 +74,19 @@ async function switchboardWebhookHandler(req, res) {
         //in progress//
         // be able to read each event like passControl and determine what to do.
       } catch (error) {
-        console.log("Error in message handler", err);
+        console.log("Error in webhook handler", err);
         res.status(500).send(err.message);
       } 
+    } else {
+      try {
+        messagingAction.sendMessageUser(appId, conversationId, "The conversation is now back with the Bot");
+        console.log(`The conversation ` + conversationId + ` is now handled by the Bot`);
+        res.end();
+      } catch (error) {
+        console.log("Error in webhook handler", err);
+        res.status(500).send(err.message);
+      } 
+      
     }
   } else {
     res.sendStatus(401);
