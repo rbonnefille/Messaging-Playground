@@ -78,7 +78,7 @@ async function switchboardWebhookHandler(req, res) {
         console.log("Error in webhook handler", err);
         res.status(500).send(err.message);
       } 
-    } else {
+    } else if (webhookEventType === "switchboard:passControl" && activeSwitchboardIntegration === botSwitchboardIntegration) {
       try {
         messagingAction.sendMessageUser(appId, conversationId, "The conversation is now back with the Bot");
         console.log(`The conversation ` + conversationId + ` is now handled by the Bot`);
@@ -88,7 +88,7 @@ async function switchboardWebhookHandler(req, res) {
         res.status(500).send(err.message);
       } 
       
-    }
+    } 
   } else {
     res.sendStatus(401);
     res.end();
