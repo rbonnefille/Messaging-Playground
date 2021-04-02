@@ -4,12 +4,44 @@ var basicAuth = defaultClient.authentications['basicAuth'];
 basicAuth.username = process.env.USERNAME;
 basicAuth.password = process.env.PASSWORD;
 
-async function sendMessageUser(appId, conversationId, message) {
+async function sendMessageUser(appId, conversationId, message, actions) {
   var apiInstance = new SunshineConversationsClient.MessagesApi();
   var messagePost = new SunshineConversationsClient.MessagePost();
-  messagePost['author'] = { "type": "business", "avatarUrl": "https://www.gravatar.com/avatar/00000000000000000000000000000000.png?d=robohash&f=y", "displayName": "CrazyBot" };
-  messagePost['content'] = { "type": "text", "text": message };
-  //alternative way to send the messagePost
+  messagePost.setAuthor({ type: "business" ,"avatarUrl": "https://www.gravatar.com/avatar/00000000000000000000000000000000.png?d=robohash&f=y", "displayName": "CrazyBot"});
+  if (!actions) {
+    messagePost.setContent({ "type": "text", "text": message });
+  } else {
+    messagePost.setContent({
+      type: "text",
+      text: "Hey there! You can ask me the following and might reply 😆",
+      actions: [
+        {
+            text: "Agent",
+            type: "reply",
+            payload: "agent"
+        },
+        {
+            text: "Bot",
+            type: "reply",
+            payload: "bot"
+  
+        },
+        {
+            text: "Hi",
+            type: "reply",
+            payload: "hi"
+  
+        },
+        {
+            text: "Help",
+            type: "reply",
+            payload: "help"
+  
+        }
+      ]
+    });
+  }
+    //alternative way to send the messagePost
   //messagePost = {"author":{"type": "business" }, "content": { "type": "text", "text": "Hello again!" }};
   apiInstance.postMessage(appId, conversationId, messagePost).then(function (data) {
     //console.log('API called successfully. Returned data: ' + data);
@@ -45,7 +77,8 @@ async function readUserMessage(userMessage, appId, conversationId) {
     case 'hi':
     case 'hey':
     case 'help':
-      sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
+      //sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
+      sendMessageUser(appId, conversationId, );
       break;
     case 'agent':
       passControl(appId, conversationId, "next");
