@@ -6,6 +6,7 @@ app.set("view engine", "ejs");
 app.use(express.json());
 
 const integrationId = process.env.INTEGRATION_ID;
+const sdkVersion = process.env.SDK_VERSION;
 const webhookSwitchtboardSecret = process.env.WEBHOOK_SWITCHBOARD_SECRET;
 const webhookConversationsSecret = process.env.WEBHOOK_CONVERSATIONS_SECRET;
 const zdSwitchboardIntegration = process.env.ZD_SWITCHBOARD_ID;
@@ -15,7 +16,7 @@ var conversationWithAgent;
 app.post("/conversations", userMessageHandler);
 app.post("/switchboard", switchboardWebhookHandler);
 app.get("/web-messenger", function (req, res) {
-  res.render("webSdk.ejs", { integrationId: integrationId });
+  res.render("webSdk.ejs", { integrationId: integrationId , sdkVersion: sdkVersion });
 });
 app.use(function (req, res, next) {
   res.status(404).render("404.ejs");
