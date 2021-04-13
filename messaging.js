@@ -81,7 +81,7 @@ async function readUserMessage(userMessage, appId, conversationId) {
       sendMessageUser(appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "actionsNeeded" );
       break;
     case 'agent':
-      passControl(appId, conversationId, "next");
+      passControl(appId, conversationId, "zd-agentWorkspace");
       sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.", null);
       break;
     case 'bot':
