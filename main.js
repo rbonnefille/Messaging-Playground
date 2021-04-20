@@ -11,7 +11,7 @@ const webhookConversationsSecret = process.env.WEBHOOK_CONVERSATIONS_SECRET;
 const botSwitchboardIntegration = process.env.BOT_SWITCHBOARD_ID;
 //var conversationWithAgent;
 
-app.post("/conversations", userMessageHandler);
+app.post("/switchboard", userMessageHandler);
 app.get("/web-messenger", function (req, res) {
   res.render("webSdk.ejs", { integrationId: integrationId , sdkVersion: sdkVersion });
 });
