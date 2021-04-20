@@ -31,7 +31,8 @@ async function userMessageHandler(req, res) {
   const appId = req.body.app.id;
 
   if (webhookEventApiKey === webhookConversationsSecret) {
-    if (webhookEventType === "conversation:message" && webhookEventAuthor === "user" && activeSwitchboardIntegration === botSwitchboardIntegration) {
+    //if (webhookEventType === "conversation:message" && webhookEventAuthor === "user" && activeSwitchboardIntegration === botSwitchboardIntegration) {
+    if (webhookEventType === "conversation:message" && webhookEventAuthor === "user") {
       try {
         const userMessage = message.content.text.toLowerCase();
         messagingAction.readUserMessage(userMessage, appId, conversationId);

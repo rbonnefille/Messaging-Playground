@@ -13,17 +13,6 @@ You will need to name that var as:
 
 - `WEBHOOK_CONVERSATIONS_SECRET` and provide you webhook secret which is receiving conversation via the trigger `conversation:message`
 
-- `WEBHOOK_SWITCHBOARD_SECRET` and provide you webhook secret which is receiving conversation via the Switchboard action triggers: 
-
-    `switchboard:passControl:failure`,
-    `switchboard:acceptControl`,
-    `switchboard:acceptControl:failure`,
-    `switchboard:offerControl`,
-    `switchboard:offerControl:failure`,
-    `switchboard:passControl`
-
-- `ZD_SWITCHBOARD_ID` and provide your the Switchboard integration id for Zendesk
-
 - `BOT_SWITCHBOARD_ID` and provide your the Switchboard integration id for your Bot
 
 - `SDK_VERSION` and provide the SunCo Web SDK version you want to target
