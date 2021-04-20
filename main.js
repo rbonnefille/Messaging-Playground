@@ -11,7 +11,7 @@ const webhookSwitchtboardSecret = process.env.WEBHOOK_SWITCHBOARD_SECRET;
 const webhookConversationsSecret = process.env.WEBHOOK_CONVERSATIONS_SECRET;
 const zdSwitchboardIntegration = process.env.ZD_SWITCHBOARD_ID;
 const botSwitchboardIntegration = process.env.BOT_SWITCHBOARD_ID;
-var conversationWithAgent;
+//var conversationWithAgent;
 
 app.post("/conversations", userMessageHandler);
 app.post("/switchboard", switchboardWebhookHandler);
@@ -34,7 +34,7 @@ async function userMessageHandler(req, res) {
   const appId = req.body.app.id;
 
   if (webhookEventApiKey === webhookConversationsSecret) {
-    if (webhookEventType === "conversation:message" && webhookEventAuthor === "user" && conversationId != conversationWithAgent && activeSwitchboardIntegration === botSwitchboardIntegration) {
+    if (webhookEventType === "conversation:message" && webhookEventAuthor === "user" && activeSwitchboardIntegration === botSwitchboardIntegration) {
       try {
         const userMessage = message.content.text.toLowerCase();
         messagingAction.readUserMessage(userMessage, appId, conversationId);
@@ -59,42 +59,42 @@ async function userMessageHandler(req, res) {
   res.end();
 }
 
-async function switchboardWebhookHandler(req, res) {
-  const webhookEvent = req.body.events[0];
-  const webhookEventType = webhookEvent.type;
-  const webhookEventApiKey = req.headers["x-api-key"];
-  const activeSwitchboardIntegration = webhookEvent.payload.conversation.activeSwitchboardIntegration.id;
-  const conversationId = webhookEvent.payload.conversation.id;
-  const appId = req.body.app.id;
+// async function switchboardWebhookHandler(req, res) {
+//   const webhookEvent = req.body.events[0];
+//   const webhookEventType = webhookEvent.type;
+//   const webhookEventApiKey = req.headers["x-api-key"];
+//   const activeSwitchboardIntegration = webhookEvent.payload.conversation.activeSwitchboardIntegration.id;
+//   const conversationId = webhookEvent.payload.conversation.id;
+//   const appId = req.body.app.id;
 
-  if (webhookEventApiKey === webhookSwitchtboardSecret) {
-    if (activeSwitchboardIntegration === zdSwitchboardIntegration) {
-      try {
-        conversationWithAgent += conversationId;
-        console.log(`The conversation ` + conversationId + ` is now handled by Zendesk`);
-        res.end();
-        //in progress//
-        // be able to read each event like passControl and determine what to do.
-      } catch (err) {
-        console.log("Error in webhook handler", err);
-        res.status(500).send(err.message);
-      } 
-    } else if (webhookEventType === "switchboard:passControl" && activeSwitchboardIntegration === botSwitchboardIntegration) {
-      try {
-        //messagingAction.sendMessageUser(appId, conversationId, "The conversation is now back with the Bot");
-        console.log(`The conversation ` + conversationId + ` is now handled by the Bot`);
-        res.end();
-      } catch (err) {
-        console.log("Error in webhook handler", err);
-        res.status(500).send(err.message);
-      } 
+//   if (webhookEventApiKey === webhookSwitchtboardSecret) {
+//     if (activeSwitchboardIntegration === zdSwitchboardIntegration) {
+//       try {
+//         conversationWithAgent += conversationId;
+//         console.log(`The conversation ` + conversationId + ` is now handled by Zendesk`);
+//         res.end();
+//         //in progress//
+//         // be able to read each event like passControl and determine what to do.
+//       } catch (err) {
+//         console.log("Error in webhook handler", err);
+//         res.status(500).send(err.message);
+//       } 
+//     } else if (webhookEventType === "switchboard:passControl" && activeSwitchboardIntegration === botSwitchboardIntegration) {
+//       try {
+//         //messagingAction.sendMessageUser(appId, conversationId, "The conversation is now back with the Bot");
+//         console.log(`The conversation ` + conversationId + ` is now handled by the Bot`);
+//         res.end();
+//       } catch (err) {
+//         console.log("Error in webhook handler", err);
+//         res.status(500).send(err.message);
+//       } 
       
-    } 
-  } else {
-    res.sendStatus(401);
-    res.end();
-  }
-  res.end();
-}
+//     } 
+//   } else {
+//     res.sendStatus(401);
+//     res.end();
+//   }
+//   res.end();
+// }
 
 
