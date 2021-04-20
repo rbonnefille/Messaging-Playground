@@ -7,14 +7,11 @@ app.use(express.json());
 
 const integrationId = process.env.INTEGRATION_ID;
 const sdkVersion = process.env.SDK_VERSION;
-const webhookSwitchtboardSecret = process.env.WEBHOOK_SWITCHBOARD_SECRET;
 const webhookConversationsSecret = process.env.WEBHOOK_CONVERSATIONS_SECRET;
-const zdSwitchboardIntegration = process.env.ZD_SWITCHBOARD_ID;
 const botSwitchboardIntegration = process.env.BOT_SWITCHBOARD_ID;
 //var conversationWithAgent;
 
 app.post("/conversations", userMessageHandler);
-//app.post("/switchboard", switchboardWebhookHandler);
 app.get("/web-messenger", function (req, res) {
   res.render("webSdk.ejs", { integrationId: integrationId , sdkVersion: sdkVersion });
 });
@@ -58,43 +55,5 @@ async function userMessageHandler(req, res) {
   }
   res.end();
 }
-
-// async function switchboardWebhookHandler(req, res) {
-//   const webhookEvent = req.body.events[0];
-//   const webhookEventType = webhookEvent.type;
-//   const webhookEventApiKey = req.headers["x-api-key"];
-//   const activeSwitchboardIntegration = webhookEvent.payload.conversation.activeSwitchboardIntegration.id;
-//   const conversationId = webhookEvent.payload.conversation.id;
-//   const appId = req.body.app.id;
-
-//   if (webhookEventApiKey === webhookSwitchtboardSecret) {
-//     if (activeSwitchboardIntegration === zdSwitchboardIntegration) {
-//       try {
-//         conversationWithAgent += conversationId;
-//         console.log(`The conversation ` + conversationId + ` is now handled by Zendesk`);
-//         res.end();
-//         //in progress//
-//         // be able to read each event like passControl and determine what to do.
-//       } catch (err) {
-//         console.log("Error in webhook handler", err);
-//         res.status(500).send(err.message);
-//       } 
-//     } else if (webhookEventType === "switchboard:passControl" && activeSwitchboardIntegration === botSwitchboardIntegration) {
-//       try {
-//         //messagingAction.sendMessageUser(appId, conversationId, "The conversation is now back with the Bot");
-//         console.log(`The conversation ` + conversationId + ` is now handled by the Bot`);
-//         res.end();
-//       } catch (err) {
-//         console.log("Error in webhook handler", err);
-//         res.status(500).send(err.message);
-//       } 
-      
-//     } 
-//   } else {
-//     res.sendStatus(401);
-//     res.end();
-//   }
-//   res.end();
-// }
 
 
