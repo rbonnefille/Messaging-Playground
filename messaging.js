@@ -71,14 +71,19 @@ async function readUserMessage(userMessage, appId, conversationId) {
       sendMessageUser(appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "actionsNeeded" );
       break;
     case 'agent':
-      passControl(appId, conversationId, "zd-agentWorkspace");
       sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.", null);
+      passControl(appId, conversationId, "zd-agentWorkspace");
       break;
     case 'bot':
-      sendMessageUser(appId, conversationId, "Yes it's me, I'm only a bot!", null)
+      sendMessageUser(appId, conversationId, "Yes it's me, I'm only a bot!", null);
+      break;
+    case 'order 123':
+      sendMessageUser(appId, conversationId, "Sorry I cannot find this order, let me transfer you to an agent", null);
+      passControl(appId, conversationId, "zd:answerBot");
       break;
     default:
       sendMessageUser(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?", null);
+      break;
   }
 }
 //exports the variables and functions above so that other modules can use them
