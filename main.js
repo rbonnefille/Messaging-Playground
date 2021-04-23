@@ -39,7 +39,7 @@ async function userMessageHandler(req, res) {
   const message = webhookEvent.payload.message;
   const appId = req.body.app.id;
 
-  console.log(validateWebhookSecret(req));
+  console.log(validateWebhookSecret(webhookEvent));
 
   if (webhookEventApiKey === webhookConversationsSecret) {
     if (webhookEventType === "conversation:message" && webhookEventAuthor === "user" && activeSwitchboardIntegration === botSwitchboardIntegration) {
