@@ -33,15 +33,6 @@ async function userMessageHandler(req, res) {
   const message = webhookEvent.payload.message;
   const appId = req.body.app.id;
 
-  function validateWebhookSecret(req) {
-    const webhookEventApiKey = req.headers["x-api-key"];
-    if (webhookEventApiKey !== webhookConversationsSecret) {
-        //throw new Error("Invalid secret.");
-        console.log("not valid token");
-    }
-  }
-  console.log(validateWebhookSecret(req));
-
   if (webhookEventApiKey === webhookConversationsSecret) {
     if (webhookEventType === "conversation:message" && webhookEventAuthor === "user" && activeSwitchboardIntegration === botSwitchboardIntegration) {
       try {
