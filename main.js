@@ -20,6 +20,15 @@ app.use(function (req, res, next) {
 });
 app.listen(process.env.PORT || 7777);
 
+
+function validateWebhookSecret(req) {
+  const webhookConversationsSecret = process.env.WEBHOOK_CONVERSATIONS_SECRET;
+  const webhookEventApiKey = req.headers["x-api-key"];
+  if (webhookEventApiKey !== webhookConversationsSecret) {
+      throw new Error("Invalid secret.");
+  }
+}
+
 async function userMessageHandler(req, res) {
   const webhookEvent = req.body.events[0];
   const webhookEventType = webhookEvent.type;
@@ -29,6 +38,8 @@ async function userMessageHandler(req, res) {
   const activeSwitchboardIntegration = webhookEvent.payload.conversation.activeSwitchboardIntegration.id;
   const message = webhookEvent.payload.message;
   const appId = req.body.app.id;
+
+  console.log(validateWebhookSecret(req));
 
   if (webhookEventApiKey === webhookConversationsSecret) {
     if (webhookEventType === "conversation:message" && webhookEventAuthor === "user" && activeSwitchboardIntegration === botSwitchboardIntegration) {
