@@ -21,12 +21,7 @@ app.use(function (req, res, next) {
 app.listen(process.env.PORT || 7777);
 
 
-function validateWebhookSecret(req) {
-  const webhookEventApiKey = req.headers["x-api-key"];
-  if (webhookEventApiKey !== webhookConversationsSecret) {
-      throw new Error("Invalid secret.");
-  }
-}
+
 
 async function userMessageHandler(req, res) {
   const webhookEvent = req.body.events[0];
@@ -38,6 +33,12 @@ async function userMessageHandler(req, res) {
   const message = webhookEvent.payload.message;
   const appId = req.body.app.id;
 
+  function validateWebhookSecret(req) {
+    const webhookEventApiKey = req.headers["x-api-key"];
+    if (webhookEventApiKey !== webhookConversationsSecret) {
+        throw new Error("Invalid secret.");
+    }
+  }
   console.log(validateWebhookSecret(req));
 
   if (webhookEventApiKey === webhookConversationsSecret) {
