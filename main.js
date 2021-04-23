@@ -20,9 +20,6 @@ app.use(function (req, res, next) {
 });
 app.listen(process.env.PORT || 7777);
 
-
-
-
 async function userMessageHandler(req, res) {
   const webhookEvent = req.body.events[0];
   const webhookEventType = webhookEvent.type;
