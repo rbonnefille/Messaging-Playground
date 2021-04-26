@@ -13,18 +13,16 @@ const botSwitchboardIntegration = process.env.BOT_SWITCHBOARD_ID;
 const keyId = process.env.USERNAME;
 const keySecret = process.env.PASSWORD;
 
-//var conversationWithAgent;
 
-
-async function appUserJwt(req, res) {
+app.get("/jwt/:userId", function (req, res){
   console.log(req.params);
   var userId = req.params;
   var token = jwt.sign({ scope: 'appUser', userId: '' }, keySecret, { header: { kid: keyId } });
   console.log(token);
   res.send(token);
-}
+  res.end();
+});
 
-app.get("/jwt/:userId", appUserJwt());
 app.post("/switchboard", userMessageHandler);
 app.get("/web-messenger", function (req, res) {
   res.render("webSdk.ejs", { integrationId: integrationId , sdkVersion: sdkVersion });
