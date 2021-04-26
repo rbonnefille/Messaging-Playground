@@ -16,7 +16,7 @@ const keySecret = process.env.PASSWORD;
 //var conversationWithAgent;
 
 
-function appUserJwt(req) {
+async function appUserJwt(req, res) {
   console.log(req.params);
   var userId = req.params;
   var token = jwt.sign({ scope: 'appUser', userId: '' }, keySecret, { header: { kid: keyId } });
