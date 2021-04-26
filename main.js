@@ -17,7 +17,7 @@ const keySecret = process.env.PASSWORD;
 app.get("/jwt/:userId", function (req, res){
   console.log(req.params);
   var userId = req.params;
-  var token = jwt.sign({ scope: 'appUser', userId: '' }, keySecret, { header: { kid: keyId } });
+  var token = jwt.sign({ scope: 'appUser', userId: userId }, keySecret, { header: { kid: keyId } });
   console.log(token);
   res.send(token);
   res.end();
