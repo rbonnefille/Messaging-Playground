@@ -1,5 +1,4 @@
 const express = require("express");
-var jwt = require('jsonwebtoken');
 let messagingAction = require("./messaging");
 const app = express();
 app.engine("html", require("ejs").renderFile);
@@ -10,18 +9,6 @@ const integrationId = process.env.INTEGRATION_ID;
 const sdkVersion = process.env.SDK_VERSION;
 const webhookConversationsSecret = process.env.WEBHOOK_CONVERSATIONS_SECRET;
 const botSwitchboardIntegration = process.env.BOT_SWITCHBOARD_ID;
-const keyId = process.env.USERNAME;
-const keySecret = process.env.PASSWORD;
-
-
-app.get("/jwt/:userId", function (req, res){
-  console.log(req.params);
-  var userId = req.params;
-  var token = jwt.sign({ scope: 'appUser', userId: userId }, keySecret, { header: { kid: keyId } });
-  console.log(token);
-  res.send(token);
-  res.end();
-});
 
 app.post("/switchboard", userMessageHandler);
 app.get("/web-messenger", function (req, res) {

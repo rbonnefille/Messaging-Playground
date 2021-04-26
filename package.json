@@ -13,7 +13,6 @@
     "express": "^4.17.1",
     "node": "15.x",
     "package.json": "^2.0.1",
-    "sunshine-conversations-client": "^9.4.2",
-    "jsonwebtoken": "8.5.1"
+    "sunshine-conversations-client": "^9.4.2"
   }
 }
