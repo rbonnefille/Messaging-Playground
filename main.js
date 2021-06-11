@@ -1,5 +1,5 @@
 const express = require("express");
-let switchboard = require("./switchboard");
+let switchboard = require("./switchboard.js");
 const app = express();
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "ejs");

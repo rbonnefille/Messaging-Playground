@@ -1,6 +1,6 @@
-const express = require("express");
-const router = express.Router();
-let messagingAction = require("./messaging");
+var express = require('express');
+var router = express.Router();
+let messagingAction = require("./messaging.js");
 
 router.post("/switchboard", function (req, res) {
     const webhookEvent = req.body.events[0];
