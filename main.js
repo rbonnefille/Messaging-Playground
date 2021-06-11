@@ -46,7 +46,7 @@ async function userMessageHandler(req, res) {
       console.log(`Webhook Event type is: ` + webhookEventType);
       console.log(`The message's Author is: ` + webhookEventAuthor);
       console.log(`Message coming from source: ` + webhookEvent.payload.message.source.type)
-      console.log(`The message sent was ` + webhookEvent.payload.message.content.text);
+      console.log(`The message sent was ` + webhookEvent.payload.message.content.type);
       res.sendStatus(200);
     }
   } else {
