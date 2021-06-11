@@ -23,7 +23,7 @@ app.listen(process.env.PORT || 7777);
 async function userMessageHandler(req, res) {
   const webhookEvent = req.body.events[0];
   const webhookEventType = webhookEvent.type;
-  const webhookEventPayload = webhookEventPayload;
+  const webhookEventPayload = webhookEvent.payload;
   const webhookEventApiKey = req.headers["x-api-key"];
   const webhookEventPayloadMessage = webhookEventPayloadMessage;
   const webhookEventAuthor = webhookEventPayloadMessage.author.type;
