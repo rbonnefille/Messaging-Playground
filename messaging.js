@@ -77,10 +77,6 @@ async function readUserMessage(userMessage, appId, conversationId) {
     case 'bot':
       sendMessageUser(appId, conversationId, "Yes it's me, I'm only a bot!", null);
       break;
-    case 'order 123':
-      sendMessageUser(appId, conversationId, "Sorry I cannot find this order, let me transfer you to an agent", null);
-      passControl(appId, conversationId, "zd-agentWorkspace");
-      break;
     default:
       sendMessageUser(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?", null);
       break;
