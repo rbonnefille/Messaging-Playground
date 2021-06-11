@@ -3,6 +3,7 @@ let messagingAction = require("./messaging");
 const app = express();
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "ejs");
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const integrationId = process.env.INTEGRATION_ID;
@@ -22,15 +23,18 @@ app.listen(process.env.PORT || 7777);
 async function userMessageHandler(req, res) {
   const webhookEvent = req.body.events[0];
   const webhookEventType = webhookEvent.type;
+  const webhookEventPayload = webhookEventPayload;
   const webhookEventApiKey = req.headers["x-api-key"];
-  const webhookEventAuthor = webhookEvent.payload.message.author.type;
-  const conversationId = webhookEvent.payload.conversation.id;
-  const activeSwitchboardIntegration = webhookEvent.payload.conversation.activeSwitchboardIntegration.id;
-  const message = webhookEvent.payload.message;
+  const webhookEventPayloadMessage = webhookEventPayloadMessage;
+  const webhookEventAuthor = webhookEventPayloadMessage.author.type;
+  const webhookEventContentType = webhookEventPayloadMessage.content.type;
+  const conversationId = webhookEventPayload.conversation.id;
+  const activeSwitchboardIntegration = webhookEventPayload.conversation.activeSwitchboardIntegration.id;
+  const message = webhookEventPayloadMessage;
   const appId = req.body.app.id;
 
   if (webhookEventApiKey === webhookConversationsSecret) {
-    if (webhookEventType === "conversation:message" && webhookEventAuthor === "user" && activeSwitchboardIntegration === botSwitchboardIntegration) {
+    if (webhookEventType === "conversation:message" && webhookEventAuthor === "user" && activeSwitchboardIntegration === botSwitchboardIntegration && webhookEventContentType === "text") {
       try {
         const userMessage = message.content.text.toLowerCase();
         messagingAction.readUserMessage(userMessage, appId, conversationId);
@@ -41,16 +45,10 @@ async function userMessageHandler(req, res) {
       res.end();
     }
     else {
-      console.log(`Webhook Event type is: ` + webhookEventType);
-      console.log(`The message's Author is: ` + webhookEventAuthor);
-      console.log(`Message coming from source: ` + webhookEvent.payload.message.source.type)
-      console.log(`The message sent was ` + webhookEvent.payload.message.content.text);
       res.sendStatus(200);
-      res.end();
     }
   } else {
     res.sendStatus(401);
-    res.end();
   }
   res.end();
 }
