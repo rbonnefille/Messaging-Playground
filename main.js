@@ -1,7 +1,7 @@
 const express = require("express");
 let messagingAction = require("./messaging");
 const app = express();
-app.engine("html", require("ejs").renderFile);
+const ejs = require("ejs");
 app.set("view engine", "ejs");
 app.use(express.json());
 
