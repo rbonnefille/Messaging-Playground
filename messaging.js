@@ -1,5 +1,5 @@
 const SunshineConversationsClient = require('sunshine-conversations-client');
-const defaultClient = ApiClient.instance;
+const defaultClient = SunshineConversationsClient.ApiClient.instance;
 const basicAuth = defaultClient.authentications['basicAuth'];
 const avatarUrl = "https://www.gravatar.com/avatar/00000000000000000000000000000000.png?d=robohash&f=y";
 const botName = "CrazyBot";
