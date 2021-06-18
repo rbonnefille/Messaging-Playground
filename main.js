@@ -1,5 +1,5 @@
 import express, { json } from "express";
-import { readUserMessage } from "./messaging";
+import { readUserMessage } from "./messaging.js";
 const app = express();
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "ejs");
