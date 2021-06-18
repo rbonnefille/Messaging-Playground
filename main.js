@@ -1,9 +1,9 @@
-const express = require("express");
-let messagingAction = require("./messaging");
+import express, { json } from "express";
+import { readUserMessage } from "./messaging";
 const app = express();
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "ejs");
-app.use(express.json());
+app.use(json());
 
 const integrationId = process.env.INTEGRATION_ID;
 const sdkVersion = process.env.SDK_VERSION;
@@ -35,7 +35,7 @@ async function userMessageHandler(req, res) {
     if (webhookEventType === "conversation:message" && webhookEventAuthor === "user" && activeSwitchboardIntegration === botSwitchboardIntegration && webhookEventContentType === "text") {
       try {
         const userMessage = message.content.text.toLowerCase();
-        messagingAction.readUserMessage(userMessage, appId, conversationId);
+        readUserMessage(userMessage, appId, conversationId);
       } catch (err) {
         console.log("Error in message handler", err);
         res.status(500).send(err.message);
