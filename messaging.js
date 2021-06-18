@@ -133,9 +133,6 @@ async function readUserMessage(userMessage, appId, conversationId) {
   }
 }
 //exports the variables and functions above so that other modules can use them
-const _sendMessageUser = sendMessageUser;
-export { _sendMessageUser as sendMessageUser };
-const _passControl = passControl;
-export { _passControl as passControl };
-const _readUserMessage = readUserMessage;
-export { _readUserMessage as readUserMessage };
+module.exports.sendMessageUser = sendMessageUser;
+module.exports.passControl = passControl;
+module.exports.readUserMessage = readUserMessage;
