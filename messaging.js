@@ -66,8 +66,8 @@ const carouselPayload = {
 };
 
 async function sendMessageUser(appId, conversationId, message, actions) {
-  const apiInstance = new MessagesApi();
-  const messagePost = new MessagePost();
+  const apiInstance = new SunshineConversationsClient.MessagesApi();
+  const messagePost = new SunshineConversationsClient.MessagePost();
   messagePost.setAuthor({ type: "business" ,"avatarUrl": avatarUrl, "displayName": botName});
   switch (actions) {
     case "carousel":
@@ -96,8 +96,8 @@ async function sendMessageUser(appId, conversationId, message, actions) {
 }
 
 async function passControl(appId, conversationId, body) {
-  const apiInstance = new SwitchboardActionsApi();
-  const passControlBody = new PassControlBody(); // PassControlBody | 
+  const apiInstance = new  SunshineConversationsClient.SwitchboardActionsApi();
+  const passControlBody = new SunshineConversationsClient.PassControlBody(); // PassControlBody | 
   passControlBody['switchboardIntegration'] = body;
   apiInstance.passControl(appId, conversationId, passControlBody).then(function (data) {
   }, function (error) {
