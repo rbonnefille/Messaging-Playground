@@ -1,4 +1,4 @@
-import { ApiClient, MessagesApi, MessagePost, SwitchboardActionsApi, PassControlBody } from 'sunshine-conversations-client';
+const SunshineConversationsClient = require('sunshine-conversations-client');
 const defaultClient = ApiClient.instance;
 const basicAuth = defaultClient.authentications['basicAuth'];
 const avatarUrl = "https://www.gravatar.com/avatar/00000000000000000000000000000000.png?d=robohash&f=y";
