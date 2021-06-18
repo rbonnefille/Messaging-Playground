@@ -64,35 +64,6 @@ const carouselPayload = {
         }
     ]
 };
-const flowPayload = {
-  type: "text",
-  text: message,
-  actions: [
-    {
-        text: "Agent",
-        type: "reply",
-        payload: "agent"
-    },
-    {
-        text: "Bot",
-        type: "reply",
-        payload: "bot"
-
-    },
-    {
-        text: "Hi",
-        type: "reply",
-        payload: "hi"
-
-    },
-    {
-        text: "Help",
-        type: "reply",
-        payload: "help"
-
-    }
-  ]
-};
 
 async function sendMessageUser(appId, conversationId, message, actions) {
   const apiInstance = new MessagesApi();
@@ -106,7 +77,7 @@ async function sendMessageUser(appId, conversationId, message, actions) {
       messagePost.setContent(replyPayload);
       break;
     case "flow":
-      messagePost.setContent(flowPayload);
+      messagePost.setContent({ type: "text", text: message, actions: [ { text: "Agent", type: "reply", payload: "agent" }, { text: "Bot", type: "reply", payload: "bot" }, { text: "Hi", type: "reply", payload: "hi" }, { text: "Help", type: "reply", payload: "help" } ] });
       break;
     case null:
       messagePost.setContent({ "type": "text", "text": message });
