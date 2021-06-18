@@ -3,16 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Romain Bonnefille",
   "license": "ISC",
   "dependencies": {
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "node": "15.x",
     "package.json": "^2.0.1",
-    "sunshine-conversations-client": "^9.4.2"
+    "sunshine-conversations-client": "^9.4.4"
   }
 }
