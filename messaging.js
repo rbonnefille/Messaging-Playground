@@ -14,13 +14,13 @@ const replyPayload = {
         {
             type: 'reply',
             text: 'Tacos',
-            iconUrl: 'http://imgur.com/taco.png',
+            iconUrl: 'https://hips.hearstapps.com/del.h-cdn.co/assets/18/11/1520956952-chicken-tacos-horizontal.jpg',
             payload: 'TACOS'
         },
         {
             type: 'reply',
             text: 'Burritos',
-            iconUrl: 'http://imgur.com/burrito.png',
+            iconUrl: 'https://www.oldelpaso.co.uk/-/media/oep/uk/articles/how-to-make-a-burrito/what-is-a-burrito-featured-collection-one.png',
             payload: 'BURRITOS'
         }
     ]
@@ -31,7 +31,7 @@ const carouselPayload = {
         {
             title: 'Tacos',
             description: 'Description',
-            mediaUrl: 'http://example.org/image.jpg',
+            mediaUrl: 'https://hips.hearstapps.com/del.h-cdn.co/assets/18/11/1520956952-chicken-tacos-horizontal.jpg',
             actions: [
                 {
                     text: 'Select',
@@ -41,14 +41,14 @@ const carouselPayload = {
                 {
                     text: 'More info',
                     type: 'link',
-                    uri: 'http://example.org'
+                    uri: 'https://en.wikipedia.org/wiki/Taco'
                 }
             ]
         },
         {
             title: 'Ramen',
             description: 'Description',
-            mediaUrl: 'http://example.org/image.jpg',
+            mediaUrl: 'https://www.kikkoman.eu/fileadmin/user_upload/03-recipes/WEB_Traditional_Fukuoka_Ramen.jpg',
             actions: [
                 {
                     text: 'Select',
@@ -58,7 +58,7 @@ const carouselPayload = {
                 {
                     text: 'More info',
                     type: 'link',
-                    uri: 'http://example.org'
+                    uri: 'https://en.wikipedia.org/wiki/Ramen'
                 }
             ]
         }
@@ -78,6 +78,12 @@ async function sendMessageUser(appId, conversationId, message, actions) {
       break;
     case "flow":
       messagePost.setContent({ type: "text", text: message, actions: [ { text: "Agent", type: "reply", payload: "agent" }, { text: "Bot", type: "reply", payload: "bot" }, { text: "Hi", type: "reply", payload: "hi" }, { text: "Help", type: "reply", payload: "help" } ] });
+      break;
+    case "tacos":
+      messagePost.setContent({type: "text", text: message});
+      break;
+    case "burritos":
+      messagePost.setContent(carouselPayload);
       break;
     case null:
       messagePost.setContent({ "type": "text", "text": message });
@@ -126,6 +132,12 @@ async function readUserMessage(userMessage, appId, conversationId) {
       break;
     case 'reply':
       sendMessageUser(appId, conversationId, null , "quickReply");
+      break;
+    case 'tacos':
+      sendMessageUser(appId, conversationId, "🌮 are so yummy!!!" , "tacos");
+      break;
+    case 'burrito':
+      sendMessageUser(appId, conversationId, "🌯 are so yummy too!!!" , "burritos");
       break;
     default:
       sendMessageUser(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?", "flow");
