@@ -136,7 +136,7 @@ async function readUserMessage(userMessage, appId, conversationId) {
     case 'tacos':
       sendMessageUser(appId, conversationId, "🌮 are so yummy!!!" , "tacos");
       break;
-    case 'burrito':
+    case 'burritos':
       sendMessageUser(appId, conversationId, "🌯 are so yummy too!!!" , "burritos");
       break;
     default:
