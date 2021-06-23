@@ -20,34 +20,6 @@ app.post("/switchboard", userMessageHandler);
 
 app.post("/postbacks", postbackHandler);
 
-async function postbackHandler(req, res) {
-    webhookEventApiKey === webhookConversationsSecret;
-    const webhookEvent = req.body.events[0];
-    const webhookEventType = webhookEvent.type;
-    const userPostback = webhookEvent.payload.postback.payload;
-    const conversationId = webhookEvent.payload.conversation.id;
-
-    if (webhookEventApiKey === webhookConversationsSecret) {
-        if (webhookEventType === "conversation:postback") {
-            try {
-                const userMessage = userPostback.toLowerCase();
-                messagingAction.readUserMessage(
-                    userMessage,
-                    appId,
-                    conversationId
-                );
-            } catch (err) {
-                console.log("Error in message handler", err);
-                res.status(500).send(err.message);
-            }
-            res.end();
-        }
-    } else {
-        res.sendStatus(401);
-    }
-    res.end();
-}
-
 app.get("/web-messenger", function (req, res) {
     res.render("webSdk.ejs", {
         integrationId: integrationId,
@@ -105,4 +77,32 @@ async function userMessageHandler(req, res) {
         res.sendStatus(401);
     }
     res.end();
+}
+
+async function postbackHandler(req, res) {
+  webhookEventApiKey === webhookConversationsSecret;
+  const webhookEvent = req.body.events[0];
+  const webhookEventType = webhookEvent.type;
+  const userPostback = webhookEvent.payload.postback.payload;
+  const conversationId = webhookEvent.payload.conversation.id;
+
+  if (webhookEventApiKey === webhookConversationsSecret) {
+      if (webhookEventType === "conversation:postback") {
+          try {
+              const userMessage = userPostback.toLowerCase();
+              messagingAction.readUserMessage(
+                  userMessage,
+                  appId,
+                  conversationId
+              );
+          } catch (err) {
+              console.log("Error in message handler", err);
+              res.status(500).send(err.message);
+          }
+          res.end();
+      }
+  } else {
+      res.sendStatus(401);
+  }
+  res.end();
 }
