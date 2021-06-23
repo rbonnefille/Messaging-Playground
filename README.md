@@ -11,7 +11,7 @@ You will need to name that var as:
 
 - `PASSWORD` and provide your SunCo password API KEY as VALUE
 
-- `WEBHOOK_CONVERSATIONS_SECRET` and provide you webhook secret which is receiving conversation via the trigger `conversation:message`
+- `WEBHOOK_CONVERSATIONS_SECRET` and provide you webhook secret which is receiving conversation via the trigger `conversation:message` or `conversation:postback`
 
 - `BOT_SWITCHBOARD_ID` and provide your the Switchboard integration id for your Bot
 
