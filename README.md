@@ -7,11 +7,17 @@ In order to add the integration ID, you can setup a config var by using the dash
 You will need to name that var as:
 - `INTEGRATION_ID` and provide your SunCo integration id as VALUE
 
+- `APP_ID` and provide your SunCo appId as VALUE
+
+- `PORT` and provide your port as VALUE
+
 - `USERNAME` and provide your SunCo username API KEY as VALUE
 
 - `PASSWORD` and provide your SunCo password API KEY as VALUE
 
-- `WEBHOOK_CONVERSATIONS_SECRET` and provide you webhook secret which is receiving conversation via the trigger `conversation:message` or `conversation:postback`
+- `WEBHOOK_CONVERSATIONS_SECRET` and provide you webhook secret which is receiving conversation via the trigger `conversation:message` 
+
+- `WEBHOOK_POSTBACKS_SECRET` and provide you webhook secret which is receiving conversation via the trigger `conversation:postback`
 
 - `BOT_SWITCHBOARD_ID` and provide your the Switchboard integration id for your Bot
 
