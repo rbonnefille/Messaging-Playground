@@ -78,7 +78,6 @@ async function userMessageHandler(req, res) {
     }
     res.end();
 }
-
 async function postbackHandler(req, res) {
   webhookEventApiKey === webhookConversationsSecret;
   const webhookEvent = req.body.events[0];
