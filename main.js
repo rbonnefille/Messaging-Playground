@@ -15,7 +15,7 @@ app.post("/switchboard", userMessageHandler);
 app.get("/web-messenger", function (req, res) {
   res.render("webSdk.ejs", { integrationId: integrationId , sdkVersion: sdkVersion });
 });
-app.use(function (req, res, next) {
+app.use(function (req, res) {
   res.status(404).render("404.ejs");
 });
 app.listen(process.env.PORT || 7777);
@@ -23,6 +23,7 @@ app.listen(process.env.PORT || 7777);
 async function userMessageHandler(req, res) {
   const webhookEvent = req.body.events[0];
   const webhookEventType = webhookEvent.type;
+  const webhookPostback = webhookEvent.type.payload.postback.payload;
   const webhookEventApiKey = req.headers["x-api-key"];
   const message = webhookEvent.payload.message;
   const webhookEventContentType = message.content.type;
@@ -32,10 +33,15 @@ async function userMessageHandler(req, res) {
   const appId = req.body.app.id;
   
   if (webhookEventApiKey === webhookConversationsSecret) {
-    if (webhookEventType === "conversation:message" && webhookEventAuthor === "user" && activeSwitchboardIntegration === botSwitchboardIntegration && webhookEventContentType === "text") {
+    if (webhookEventType === "conversation:message" || webhookEventType === "conversation:postback" && webhookEventAuthor == "user" && activeSwitchboardIntegration === botSwitchboardIntegration && webhookEventContentType === "text") {
       try {
-        const userMessage = message.content.text.toLowerCase();
-        messagingAction.readUserMessage(userMessage, appId, conversationId);
+        if (webhookEventType === "conversation:message") {
+          const userMessage = message.content.text.toLowerCase();
+          messagingAction.readUserMessage(userMessage, appId, conversationId);
+        } else {
+          const userPostbackMessage = webhookPostback.toLowerCase();
+          messagingAction.readUserMessage(userPostbackMessage, appId, conversationId);
+        }
       } catch (err) {
         console.log("Error in message handler", err);
         res.status(500).send(err.message);
@@ -54,5 +60,3 @@ async function userMessageHandler(req, res) {
   }
   res.end();
 }
-
-
