@@ -40,7 +40,7 @@ async function userMessageHandler(req, res) {
     const activeSwitchboardIntegration =
         webhookEvent.payload.conversation.activeSwitchboardIntegration.id;
 
-    if (webhookEventApiKey === webhookPostbacksSecret) {
+    if (webhookEventApiKey === webhookConversationsSecret) {
         if (
             webhookEventType === "conversation:message" &&
             webhookEventAuthor === "user" &&
@@ -85,7 +85,7 @@ async function postbackHandler(req, res) {
     const userPostback = webhookEvent.payload.postback.payload;
     const conversationId = webhookEvent.payload.conversation.id;
 
-    if (webhookEventApiKey === webhookConversationsSecret) {
+    if (webhookEventApiKey === webhookPostbacksSecret) {
         if (webhookEventType === "conversation:postback") {
             try {
                 const userMessage = userPostback.toLowerCase();
