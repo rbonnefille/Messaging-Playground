@@ -46,19 +46,19 @@ const carouselPayload = {
             ]
         },
         {
-            title: 'Ramen',
+            title: 'Burrito',
             description: 'Description',
-            mediaUrl: 'https://www.kikkoman.eu/fileadmin/user_upload/03-recipes/WEB_Traditional_Fukuoka_Ramen.jpg',
+            mediaUrl: 'https://www.oldelpaso.co.uk/-/media/oep/uk/articles/how-to-make-a-burrito/what-is-a-burrito-featured-collection-one.png',
             actions: [
                 {
                     text: 'Select',
                     type: 'postback',
-                    payload: 'RAMEN'
+                    payload: 'BURRITOS'
                 },
                 {
                     text: 'More info',
                     type: 'link',
-                    uri: 'https://en.wikipedia.org/wiki/Ramen'
+                    uri: 'https://en.wikipedia.org/wiki/Burrito'
                 }
             ]
         }
@@ -83,7 +83,7 @@ async function sendMessageUser(appId, conversationId, message, actions) {
       messagePost.setContent({type: "text", text: message});
       break;
     case "burritos":
-      messagePost.setContent(carouselPayload);
+      messagePost.setContent({type: "text", text: message});
       break;
     case null:
       messagePost.setContent({ "type": "text", "text": message });
