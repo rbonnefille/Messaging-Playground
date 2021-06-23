@@ -8,10 +8,10 @@ app.use(express.json());
 const {
     APP_ID: appId,
     INTEGRATION_ID: integrationId,
-    sdkVersion: SDK_VERSION,
-    webhookConversationsSecret: WEBHOOK_CONVERSATIONS_SECRET,
-    botSwitchboardIntegration: BOT_SWITCHBOARD_ID,
-    webhookPostbacksSecret: WEBHOOK_POSTBACKS_SECRET,
+    SDK_VERSION: sdkVersion,
+    WEBHOOK_CONVERSATIONS_SECRET: webhookConversationsSecret,
+    BOT_SWITCHBOARD_ID: botSwitchboardIntegration,
+    WEBHOOK_POSTBACKS_SECRET: webhookPostbacksSecret
 } = process.env;
 
 app.post("/switchboard", userMessageHandler);
@@ -40,7 +40,7 @@ async function userMessageHandler(req, res) {
     const activeSwitchboardIntegration =
         webhookEvent.payload.conversation.activeSwitchboardIntegration.id;
 
-    if (webhookEventApiKey === webhookConversationsSecret) {
+    if (webhookEventApiKey === webhookPostbacksSecret) {
         if (
             webhookEventType === "conversation:message" &&
             webhookEventAuthor === "user" &&
