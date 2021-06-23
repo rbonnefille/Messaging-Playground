@@ -5,7 +5,6 @@ const ejs = require("ejs");
 app.set("view engine", "ejs");
 app.use(express.json());
 
-
 const {
     APP_ID: appId,
     INTEGRATION_ID: integrationId,
@@ -14,8 +13,6 @@ const {
     botSwitchboardIntegration: BOT_SWITCHBOARD_ID,
     webhookPostbacksSecret: WEBHOOK_POSTBACKS_SECRET,
 } = process.env;
-
-const webhookEventApiKey = req.headers["x-api-key"];
 
 app.post("/switchboard", userMessageHandler);
 
@@ -33,6 +30,7 @@ app.use(function (req, res, next) {
 app.listen(process.env.PORT || 7777);
 
 async function userMessageHandler(req, res) {
+    const webhookEventApiKey = req.headers["x-api-key"];
     const webhookEvent = req.body.events[0];
     const webhookEventType = webhookEvent.type;
     const message = webhookEvent.payload.message;
@@ -81,29 +79,29 @@ async function userMessageHandler(req, res) {
 }
 
 async function postbackHandler(req, res) {
-  webhookEventApiKey === webhookConversationsSecret;
-  const webhookEvent = req.body.events[0];
-  const webhookEventType = webhookEvent.type;
-  const userPostback = webhookEvent.payload.postback.payload;
-  const conversationId = webhookEvent.payload.conversation.id;
+    const webhookEventApiKey = req.headers["x-api-key"];
+    const webhookEvent = req.body.events[0];
+    const webhookEventType = webhookEvent.type;
+    const userPostback = webhookEvent.payload.postback.payload;
+    const conversationId = webhookEvent.payload.conversation.id;
 
-  if (webhookEventApiKey === webhookConversationsSecret) {
-      if (webhookEventType === "conversation:postback") {
-          try {
-              const userMessage = userPostback.toLowerCase();
-              messagingAction.readUserMessage(
-                  userMessage,
-                  appId,
-                  conversationId
-              );
-          } catch (err) {
-              console.log("Error in message handler", err);
-              res.status(500).send(err.message);
-          }
-          res.end();
-      }
-  } else {
-      res.sendStatus(401);
-  }
-  res.end();
+    if (webhookEventApiKey === webhookConversationsSecret) {
+        if (webhookEventType === "conversation:postback") {
+            try {
+                const userMessage = userPostback.toLowerCase();
+                messagingAction.readUserMessage(
+                    userMessage,
+                    appId,
+                    conversationId
+                );
+            } catch (err) {
+                console.log("Error in message handler", err);
+                res.status(500).send(err.message);
+            }
+            res.end();
+        }
+    } else {
+        res.sendStatus(401);
+    }
+    res.end();
 }
