@@ -15,3 +15,5 @@ Thumbs.db
 .env.test
 npm-debug.log*
 package-lock.json
+.git
+.eslintrc.js
