@@ -14,5 +14,8 @@
     "node": "15.x",
     "package.json": "^2.0.1",
     "sunshine-conversations-client": "^9.4.4"
+  },
+  "devDependencies": {
+    "eslint": "^7.29.0"
   }
 }
