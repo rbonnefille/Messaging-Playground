@@ -1,6 +1,7 @@
 const express = require("express");
 let messagingAction = require("./messaging");
 const app = express();
+// eslint-disable-next-line no-unused-vars
 const ejs = require("ejs");
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -12,6 +13,7 @@ const {
     WEBHOOK_CONVERSATIONS_SECRET: webhookConversationsSecret,
     BOT_SWITCHBOARD_ID: botSwitchboardIntegration,
     WEBHOOK_POSTBACKS_SECRET: webhookPostbacksSecret
+// eslint-disable-next-line no-undef
 } = process.env;
 
 app.post("/switchboard", userMessageHandler);
@@ -24,9 +26,10 @@ app.get("/web-messenger", function (req, res) {
         sdkVersion: sdkVersion,
     });
 });
-app.use(function (req, res, next) {
+app.use(function (req, res) {
     res.status(404).render("404.ejs");
 });
+// eslint-disable-next-line no-undef
 app.listen(process.env.PORT || 7777);
 
 async function userMessageHandler(req, res) {
