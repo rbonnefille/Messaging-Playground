@@ -12,8 +12,8 @@ const {
     SDK_VERSION: sdkVersion,
     WEBHOOK_CONVERSATIONS_SECRET: webhookConversationsSecret,
     BOT_SWITCHBOARD_ID: botSwitchboardIntegration,
-    WEBHOOK_POSTBACKS_SECRET: webhookPostbacksSecret
-// eslint-disable-next-line no-undef
+    WEBHOOK_POSTBACKS_SECRET: webhookPostbacksSecret,
+    // eslint-disable-next-line no-undef
 } = process.env;
 
 app.post("/switchboard", userMessageHandler);
@@ -34,15 +34,25 @@ app.listen(process.env.PORT || 7777);
 
 async function userMessageHandler(req, res) {
     const webhookEventApiKey = req.headers["x-api-key"];
-    const { app , webhookId , events: [ messageEvent ]} = req.body;
-    const {payload: {conversation,message: { author , content, source } }} = messageEvent;
+    const {
+        app,
+        webhookId,
+        events: [ messageEvent ],
+    } = req.body;
+    const {
+        payload: {
+            conversation,
+            message: { author, content, source },
+        },
+    } = messageEvent;
     const conversationId = conversation.id;
-    const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
+    const activeSwitchboardIntegration =
+        conversation.activeSwitchboardIntegration.id;
 
     if (webhookEventApiKey === webhookConversationsSecret) {
         if (
             messageEvent.type === "conversation:message" &&
-            author === "user" &&
+            author.type === "user" &&
             activeSwitchboardIntegration === botSwitchboardIntegration &&
             content.type === "text"
         ) {
@@ -61,13 +71,8 @@ async function userMessageHandler(req, res) {
         } else {
             console.log(`Webhook Event type is: ` + messageEvent.type);
             console.log(`The message's Author is: ` + author);
-            console.log(
-                `Message coming from source: ` +
-                    source.type
-            );
-            console.log(
-                `The message sent was ` + content.type
-            );
+            console.log(`Message coming from source: ` + source.type);
+            console.log(`The message sent was ` + content.type);
             res.sendStatus(200);
         }
     } else {
@@ -78,8 +83,14 @@ async function userMessageHandler(req, res) {
 
 async function postbackHandler(req, res) {
     const webhookEventApiKey = req.headers["x-api-key"];
-    const { app , webhookId , events: [ messageEvent ]} = req.body;
-    const {payload: {conversation,postback,user,source }} = messageEvent;
+    const {
+        app,
+        webhookId,
+        events: [ messageEvent ],
+    } = req.body;
+    const {
+        payload: { conversation, postback, user, source },
+    } = messageEvent;
     const userPostback = postback.payload;
     const conversationId = conversation.id;
 
