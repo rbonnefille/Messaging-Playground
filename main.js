@@ -34,24 +34,21 @@ app.listen(process.env.PORT || 7777);
 
 async function userMessageHandler(req, res) {
     const webhookEventApiKey = req.headers["x-api-key"];
-    const webhookEvent = req.body.events[0];
-    const webhookEventType = webhookEvent.type;
-    const message = webhookEvent.payload.message;
-    const webhookEventContentType = message.content.type;
-    const webhookEventAuthor = message.author.type;
-    const conversationId = webhookEvent.payload.conversation.id;
-    const activeSwitchboardIntegration =
-        webhookEvent.payload.conversation.activeSwitchboardIntegration.id;
+    const [ incomingWebhook ] = req.body;
+    const { app , webhookId , events: [ messageEvent ]} = incomingWebhook;
+    const {payload: {conversation,message: { author , content, source } }} = messageEvent;
+    const conversationId = conversation.id;
+    const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
 
     if (webhookEventApiKey === webhookConversationsSecret) {
         if (
-            webhookEventType === "conversation:message" &&
-            webhookEventAuthor === "user" &&
+            messageEvent.type === "conversation:message" &&
+            author === "user" &&
             activeSwitchboardIntegration === botSwitchboardIntegration &&
-            webhookEventContentType === "text"
+            content.type === "text"
         ) {
             try {
-                const userMessage = message.content.text.toLowerCase();
+                const userMessage = content.text.toLowerCase();
                 messagingAction.readUserMessage(
                     userMessage,
                     appId,
@@ -63,15 +60,14 @@ async function userMessageHandler(req, res) {
             }
             res.end();
         } else {
-            console.log(`Webhook Event type is: ` + webhookEventType);
-            console.log(`The message's Author is: ` + webhookEventAuthor);
+            console.log(`Webhook Event type is: ` + messageEvent.type);
+            console.log(`The message's Author is: ` + author);
             console.log(
                 `Message coming from source: ` +
-                    webhookEvent.payload.message.source.type
+                    source.type
             );
             console.log(
-                `The message sent was ` +
-                    webhookEvent.payload.message.content.type
+                `The message sent was ` + content.type
             );
             res.sendStatus(200);
         }
@@ -83,13 +79,14 @@ async function userMessageHandler(req, res) {
 
 async function postbackHandler(req, res) {
     const webhookEventApiKey = req.headers["x-api-key"];
-    const webhookEvent = req.body.events[0];
-    const webhookEventType = webhookEvent.type;
-    const userPostback = webhookEvent.payload.postback.payload;
-    const conversationId = webhookEvent.payload.conversation.id;
+    const [ incomingWebhook ] = req.body;
+    const {app , webhookId , events: [ messageEvent ]} = incomingWebhook;
+    const {payload: {conversation,postback,user,source }} = messageEvent;
+    const userPostback = postback.payload;
+    const conversationId = conversation.id;
 
     if (webhookEventApiKey === webhookPostbacksSecret) {
-        if (webhookEventType === "conversation:postback") {
+        if (messageEvent.type === "conversation:postback") {
             try {
                 const userMessage = userPostback.toLowerCase();
                 messagingAction.readUserMessage(
