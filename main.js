@@ -34,8 +34,7 @@ app.listen(process.env.PORT || 7777);
 
 async function userMessageHandler(req, res) {
     const webhookEventApiKey = req.headers["x-api-key"];
-    const [ incomingWebhook ] = req.body;
-    const { app , webhookId , events: [ messageEvent ]} = incomingWebhook;
+    const { app , webhookId , events: [ messageEvent ]} = req.body;
     const {payload: {conversation,message: { author , content, source } }} = messageEvent;
     const conversationId = conversation.id;
     const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
@@ -79,8 +78,7 @@ async function userMessageHandler(req, res) {
 
 async function postbackHandler(req, res) {
     const webhookEventApiKey = req.headers["x-api-key"];
-    const [ incomingWebhook ] = req.body;
-    const {app , webhookId , events: [ messageEvent ]} = incomingWebhook;
+    const { app , webhookId , events: [ messageEvent ]} = req.body;
     const {payload: {conversation,postback,user,source }} = messageEvent;
     const userPostback = postback.payload;
     const conversationId = conversation.id;
