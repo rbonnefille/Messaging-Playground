@@ -15,13 +15,13 @@ const {
 
 app.post("/switchboard", webhookHandler);
 
-app.get("/web-messenger", function (res) {
+app.get("/web-messenger", (req, res) => {
     res.render("webSdk.ejs", {
         integrationId: integrationId,
         sdkVersion: sdkVersion,
     });
 });
-app.use(function (res) {
+app.use((req, res) => {
     res.status(404).render("404.ejs");
 });
 app.listen(process.env.PORT || 7777);
