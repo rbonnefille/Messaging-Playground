@@ -2,7 +2,6 @@ const express = require("express");
 let messagingAction = require("./messaging");
 const app = express();
 // eslint-disable-next-line no-unused-vars
-const ejs = require("ejs");
 app.set("view engine", "ejs");
 app.use(express.json());
 
@@ -11,106 +10,95 @@ const {
     INTEGRATION_ID: integrationId,
     SDK_VERSION: sdkVersion,
     WEBHOOK_CONVERSATIONS_SECRET: webhookConversationsSecret,
-    BOT_SWITCHBOARD_ID: botSwitchboardIntegration,
-    WEBHOOK_POSTBACKS_SECRET: webhookPostbacksSecret,
-    // eslint-disable-next-line no-undef
+    BOT_SWITCHBOARD_ID: botSwitchboardIntegration
 } = process.env;
 
-app.post("/switchboard", userMessageHandler);
+app.post("/switchboard", webhookHandler);
 
-app.post("/postbacks", postbackHandler);
-
-app.get("/web-messenger", function (req, res) {
+app.get("/web-messenger", function (res) {
     res.render("webSdk.ejs", {
         integrationId: integrationId,
         sdkVersion: sdkVersion,
     });
 });
-app.use(function (req, res) {
+app.use(function (res) {
     res.status(404).render("404.ejs");
 });
-// eslint-disable-next-line no-undef
 app.listen(process.env.PORT || 7777);
 
-async function userMessageHandler(req, res) {
+function isAuthenticatedRequest(webhookEventApiKey) {
+    return webhookEventApiKey === webhookConversationsSecret;
+}
+
+function isCurrentSwitchboardIntegration(activeSwitchboardIntegration) {
+    return activeSwitchboardIntegration === botSwitchboardIntegration;
+}
+
+// eslint-disable-next-line consistent-return
+function getEventType(messageEvent) {
+    switch (messageEvent.type) {
+        case "conversation:message": {
+            const {
+                payload: {
+                    message: { content },
+                },
+            } = messageEvent;
+            const userMessage = content.text.toLowerCase();
+            return userMessage;
+        }
+        case "conversation:postback": {
+            const {payload: { postback }} = messageEvent;
+            const userPostback = postback.payload;
+            return userPostback;
+        }
+        default:
+            console.log(messageEvent);
+    }
+}
+
+function isUserMessage(author) {
+    return author === "user";
+}
+
+function isTextMessage(content) {
+    return content === "text";
+}
+
+// eslint-disable-next-line max-lines-per-function
+async function webhookHandler(req, res) {
+
     const webhookEventApiKey = req.headers["x-api-key"];
-    const {
-        app,
-        webhookId,
-        events: [ messageEvent ],
-    } = req.body;
+
+    if (isAuthenticatedRequest(webhookEventApiKey)) {
+        res.sendStatus(401);
+    }
+
+    const { events: [ messageEvent ] } = req.body;
     const {
         payload: {
             conversation,
-            message: { author, content, source },
+            message: { author, content },
         },
-    } = messageEvent;
-    const conversationId = conversation.id;
-    const activeSwitchboardIntegration =
-        conversation.activeSwitchboardIntegration.id;
+    } = messageEvent || {};
 
-    if (webhookEventApiKey === webhookConversationsSecret) {
-        if (
-            messageEvent.type === "conversation:message" &&
-            author.type === "user" &&
-            activeSwitchboardIntegration === botSwitchboardIntegration &&
-            content.type === "text"
-        ) {
-            try {
-                const userMessage = content.text.toLowerCase();
-                messagingAction.readUserMessage(
-                    userMessage,
-                    appId,
-                    conversationId
-                );
-            } catch (err) {
-                console.log("Error in message handler", err);
-                res.status(500).send(err.message);
-            }
-            res.end();
-        } else {
-            console.log(`Webhook Event type is: ` + messageEvent.type);
-            console.log(`The message's Author is: ` + author);
-            console.log(`Message coming from source: ` + source.type);
-            console.log(`The message sent was ` + content.type);
-            res.sendStatus(200);
-        }
-    } else {
-        res.sendStatus(401);
+    const conversationId = conversation.id;
+    const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
+    
+    if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
+        res.sendStatus(200);
     }
-    res.end();
-}
 
-async function postbackHandler(req, res) {
-    const webhookEventApiKey = req.headers["x-api-key"];
-    const {
-        app,
-        webhookId,
-        events: [ messageEvent ],
-    } = req.body;
-    const {
-        payload: { conversation, postback, user, source },
-    } = messageEvent;
-    const userPostback = postback.payload;
-    const conversationId = conversation.id;
-
-    if (webhookEventApiKey === webhookPostbacksSecret) {
-        if (messageEvent.type === "conversation:postback") {
-            try {
-                const userMessage = userPostback.toLowerCase();
-                messagingAction.readUserMessage(
-                    userMessage,
-                    appId,
-                    conversationId
-                );
-            } catch (err) {
-                console.log("Error in message handler", err);
-                res.status(500).send(err.message);
-            }
-            res.end();
+    if (isUserMessage(author.type) && isTextMessage(content.type)) {
+        try {
+            messagingAction.readUserMessage(
+                getEventType(messageEvent),
+                appId,
+                conversationId
+            );
+        } catch (err) {
+            console.log("Error in message handler", err);
+            res.status(500).send(err.message);
         }
-    } else {
-        res.sendStatus(401);
     }
     res.end();
 }
