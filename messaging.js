@@ -135,32 +135,32 @@ async function replyToUser(userMessage, appId, conversationId) {
       break;
     case 'agent':
       sendActivity(appId, conversationId, "typing:start");
-      sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.", null);
+      setTimeout(sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.", null), 2000);
       passControl(appId, conversationId, "zd-agentWorkspace");
       break;
     case 'bot':
       sendActivity(appId, conversationId, "typing:start");
-      sendMessageUser(appId, conversationId, "Yes it's me, I'm only a bot!", "flow");
+      setTimeout(sendMessageUser(appId, conversationId, "Yes it's me, I'm only a bot!", "flow"), 2000);
       break;
     case 'carousel':
       sendActivity(appId, conversationId, "typing:start");
-      sendMessageUser(appId, conversationId, null , "carousel");
+      setTimeout(sendMessageUser(appId, conversationId, null , "carousel"), 2000);
       break;
     case 'reply':
       sendActivity(appId, conversationId, "typing:start");
-      sendMessageUser(appId, conversationId, null , "quickReply");
+      setTimeout(sendMessageUser(appId, conversationId, null , "quickReply"), 2000);
       break;
     case 'tacos':
       sendActivity(appId, conversationId, "typing:start");
-      sendMessageUser(appId, conversationId, "🌮 are so yummy!!!" , "tacos");
+      setTimeout(sendMessageUser(appId, conversationId, "🌮 are so yummy!!!" , "tacos"), 2000);
       break;
     case 'burritos':
       sendActivity(appId, conversationId, "typing:start");
-      sendMessageUser(appId, conversationId, "🌯 are so yummy too!!!" , "burritos");
+      setTimeout(sendMessageUser(appId, conversationId, "🌯 are so yummy too!!!" , "burritos"), 2000);
       break;
     default:
       sendActivity(appId, conversationId, "typing:start");
-      sendMessageUser(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?", "flow");
+      setTimeout(sendMessageUser(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?", "flow"), 2000);
       break;
   }
 }
