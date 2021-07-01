@@ -90,7 +90,7 @@ async function webhookHandler(req, res) {
 
     if (isUserMessage(author.type) && isTextMessage(content.type)) {
         try {
-            messagingAction.readUserMessage(
+            messagingAction.replyToUser(
                 getEventType(messageEvent),
                 appId,
                 conversationId

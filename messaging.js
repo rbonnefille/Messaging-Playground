@@ -65,6 +65,16 @@ const carouselPayload = {
     ]
 };
 
+async function sendActivity(appId, conversationId, activityType) {
+  const apiInstance = new SunshineConversationsClient.ActivitiesApi();
+  const activityPost = { "author": { "type": "business", "displayName": botName, "avatarUrl": avatarUrl }, "type": activityType };
+  apiInstance.postActivity(appId, conversationId, activityPost).then(function(data) {
+    console.log('API called successfully. Returned data: ' + data);
+  }, function(error) {
+    console.error(error);
+  });
+}
+
 async function sendMessageUser(appId, conversationId, message, actions) {
   const apiInstance = new SunshineConversationsClient.MessagesApi();
   const messagePost = new SunshineConversationsClient.MessagePost();
@@ -96,6 +106,7 @@ async function sendMessageUser(appId, conversationId, message, actions) {
   //messagePost = {"author":{"type": "business" }, "content": { "type": "text", "text": "Hello again!" }};
   // or data.author = { type: 'business' }; data.content = { type: 'form', fields: [
   await apiInstance.postMessage(appId, conversationId, messagePost).then(function (data) {
+    console.log('API called successfully. Returned data: ' + data);
   }, function (error) {
     console.error(error);
   });
@@ -106,40 +117,49 @@ async function passControl(appId, conversationId, body) {
   const passControlBody = new SunshineConversationsClient.PassControlBody(); // PassControlBody | 
   passControlBody['switchboardIntegration'] = body;
   apiInstance.passControl(appId, conversationId, passControlBody).then(function (data) {
+    console.log('API called successfully. Returned data: ' + data);
   }, function (error) {
     console.error(error);
   });
 }
 
-async function readUserMessage(userMessage, appId, conversationId) {
+async function replyToUser(userMessage, appId, conversationId) {
   switch (userMessage) {
     case 'hello':
     case 'hi':
     case 'hey':
     case 'help':
       //sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
+      sendActivity(appId, conversationId, "typing:start");
       sendMessageUser(appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "flow" );
       break;
     case 'agent':
+      sendActivity(appId, conversationId, "typing:start");
       sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.", null);
       passControl(appId, conversationId, "zd-agentWorkspace");
       break;
     case 'bot':
+      sendActivity(appId, conversationId, "typing:start");
       sendMessageUser(appId, conversationId, "Yes it's me, I'm only a bot!", "flow");
       break;
     case 'carousel':
+      sendActivity(appId, conversationId, "typing:start");
       sendMessageUser(appId, conversationId, null , "carousel");
       break;
     case 'reply':
+      sendActivity(appId, conversationId, "typing:start");
       sendMessageUser(appId, conversationId, null , "quickReply");
       break;
     case 'tacos':
+      sendActivity(appId, conversationId, "typing:start");
       sendMessageUser(appId, conversationId, "🌮 are so yummy!!!" , "tacos");
       break;
     case 'burritos':
+      sendActivity(appId, conversationId, "typing:start");
       sendMessageUser(appId, conversationId, "🌯 are so yummy too!!!" , "burritos");
       break;
     default:
+      sendActivity(appId, conversationId, "typing:start");
       sendMessageUser(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?", "flow");
       break;
   }
@@ -147,4 +167,4 @@ async function readUserMessage(userMessage, appId, conversationId) {
 //exports the variables and functions above so that other modules can use them
 module.exports.sendMessageUser = sendMessageUser;
 module.exports.passControl = passControl;
-module.exports.readUserMessage = readUserMessage;
+module.exports.replyToUser = replyToUser;
