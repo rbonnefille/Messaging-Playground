@@ -130,37 +130,29 @@ async function replyToUser(userMessage, appId, conversationId) {
     case 'hey':
     case 'help':
       //sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
-      sendActivity(appId, conversationId, "typing:start");
       sendMessageUser(appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "flow" );
       break;
     case 'agent':
-      sendActivity(appId, conversationId, "typing:start");
-      setTimeout(sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.", null), 4000);
+      sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.", null);
       passControl(appId, conversationId, "zd-agentWorkspace");
       break;
     case 'bot':
-      sendActivity(appId, conversationId, "typing:start");
-      setTimeout(sendMessageUser(appId, conversationId, "Yes it's me, I'm only a bot!", "flow"), 4000);
+      sendMessageUser(appId, conversationId, "Yes it's me, I'm only a bot!", "flow");
       break;
     case 'carousel':
-      sendActivity(appId, conversationId, "typing:start");
-      setTimeout(sendMessageUser(appId, conversationId, null , "carousel"), 4000);
+      sendMessageUser(appId, conversationId, null , "carousel");
       break;
     case 'reply':
-      sendActivity(appId, conversationId, "typing:start");
-      setTimeout(sendMessageUser(appId, conversationId, null , "quickReply"), 4000);
+      sendMessageUser(appId, conversationId, null , "quickReply");
       break;
     case 'tacos':
-      sendActivity(appId, conversationId, "typing:start");
-      setTimeout(sendMessageUser(appId, conversationId, "🌮 are so yummy!!!" , "tacos"), 4000);
+      sendMessageUser(appId, conversationId, "🌮 are so yummy!!!" , "tacos");
       break;
     case 'burritos':
-      sendActivity(appId, conversationId, "typing:start");
-      setTimeout(sendMessageUser(appId, conversationId, "🌯 are so yummy too!!!" , "burritos"), 4000);
+      sendMessageUser(appId, conversationId, "🌯 are so yummy too!!!" , "burritos");
       break;
     default:
-      sendActivity(appId, conversationId, "typing:start");
-      setTimeout(sendMessageUser(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?", "flow"), 4000);
+      sendMessageUser(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?", "flow");
       break;
   }
 }
