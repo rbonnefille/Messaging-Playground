@@ -130,6 +130,7 @@ async function replyToUser(userMessage, appId, conversationId) {
     case 'hey':
     case 'help':
       // sendMessage(appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "flow" );
+      sendActivity(appId, conversationId, "typing:start");
       setTimeout(sendMessage, 2000, appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "flow");
       break;
     case 'agent':
