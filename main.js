@@ -67,11 +67,11 @@ function isTextMessage(content) {
 // eslint-disable-next-line max-lines-per-function
 async function webhookHandler(req, res) {
 
-    const webhookEventApiKey = req.headers["x-api-key"];
+    // const webhookEventApiKey = req.headers["x-api-key"];
 
-    if (!isAuthenticatedRequest(webhookEventApiKey)) {
-        res.sendStatus(401);
-    }
+    // if (!isAuthenticatedRequest(webhookEventApiKey)) {
+    //     res.sendStatus(401);
+    // }
 
     const { events: [ messageEvent ] } = req.body;
     const {
