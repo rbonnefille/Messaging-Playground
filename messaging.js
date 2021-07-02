@@ -75,7 +75,7 @@ async function sendActivity(appId, conversationId, activityType) {
   });
 }
 
-async function sendMessageUser(appId, conversationId, message, actions) {
+async function sendMessage(appId, conversationId, message, actions) {
   const apiInstance = new SunshineConversationsClient.MessagesApi();
   const messagePost = new SunshineConversationsClient.MessagePost();
   messagePost.setAuthor({ type: "business" ,"avatarUrl": avatarUrl, "displayName": botName});
@@ -129,34 +129,34 @@ async function replyToUser(userMessage, appId, conversationId) {
     case 'hi':
     case 'hey':
     case 'help':
-      //sendMessageUser(appId, conversationId, "Hey there! You can send me 'agent','bot' .. and might reply to you 😆");
-      sendMessageUser(appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "flow" );
+      // sendMessage(appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "flow" );
+      setTimeout(sendMessage, 2000, appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "flow");
       break;
     case 'agent':
-      sendMessageUser(appId, conversationId, "Ok let me transfer you to a Zendesk agent.", null);
+      sendMessage(appId, conversationId, "Ok let me transfer you to a Zendesk agent.", null);
       passControl(appId, conversationId, "zd-agentWorkspace");
       break;
     case 'bot':
-      sendMessageUser(appId, conversationId, "Yes it's me, I'm only a bot!", "flow");
+      sendMessage(appId, conversationId, "Yes it's me, I'm only a bot!", "flow");
       break;
     case 'carousel':
-      sendMessageUser(appId, conversationId, null , "carousel");
+      sendMessage(appId, conversationId, null , "carousel");
       break;
     case 'reply':
-      sendMessageUser(appId, conversationId, null , "quickReply");
+      sendMessage(appId, conversationId, null , "quickReply");
       break;
     case 'tacos':
-      sendMessageUser(appId, conversationId, "🌮 are so yummy!!!" , "tacos");
+      sendMessage(appId, conversationId, "🌮 are so yummy!!!" , "tacos");
       break;
     case 'burritos':
-      sendMessageUser(appId, conversationId, "🌯 are so yummy too!!!" , "burritos");
+      sendMessage(appId, conversationId, "🌯 are so yummy too!!!" , "burritos");
       break;
     default:
-      sendMessageUser(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?", "flow");
+      sendMessage(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?", "flow");
       break;
   }
 }
 //exports the variables and functions above so that other modules can use them
-module.exports.sendMessageUser = sendMessageUser;
+module.exports.sendMessage = sendMessage;
 module.exports.passControl = passControl;
 module.exports.replyToUser = replyToUser;
