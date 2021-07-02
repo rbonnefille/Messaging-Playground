@@ -129,31 +129,38 @@ async function replyToUser(userMessage, appId, conversationId) {
     case 'hi':
     case 'hey':
     case 'help':
-      // sendMessage(appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "flow" );
+      // setTimeout(sendMessage, 2000, appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "flow" );
       sendActivity(appId, conversationId, "typing:start");
       setTimeout(sendMessage, 2000, appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "flow");
       break;
     case 'agent':
-      sendMessage(appId, conversationId, "Ok let me transfer you to a Zendesk agent.", null);
+      sendActivity(appId, conversationId, "typing:start");
+      setTimeout(sendMessage, 2000, appId, conversationId, "Ok let me transfer you to a Zendesk agent.", null);
       passControl(appId, conversationId, "zd-agentWorkspace");
       break;
     case 'bot':
-      sendMessage(appId, conversationId, "Yes it's me, I'm only a bot!", "flow");
+      sendActivity(appId, conversationId, "typing:start");
+      setTimeout(sendMessage, 2000, appId, conversationId, "Yes it's me, I'm only a bot!", "flow");
       break;
     case 'carousel':
-      sendMessage(appId, conversationId, null , "carousel");
+      sendActivity(appId, conversationId, "typing:start");
+      setTimeout(sendMessage, 2000, appId, conversationId, null , "carousel");
       break;
     case 'reply':
-      sendMessage(appId, conversationId, null , "quickReply");
+      sendActivity(appId, conversationId, "typing:start");
+      setTimeout(sendMessage, 2000, appId, conversationId, null , "quickReply");
       break;
     case 'tacos':
-      sendMessage(appId, conversationId, "🌮 are so yummy!!!" , "tacos");
+      sendActivity(appId, conversationId, "typing:start");
+      setTimeout(sendMessage, 2000, appId, conversationId, "🌮 are so yummy!!!" , "tacos");
       break;
     case 'burritos':
-      sendMessage(appId, conversationId, "🌯 are so yummy too!!!" , "burritos");
+      sendActivity(appId, conversationId, "typing:start");
+      setTimeout(sendMessage, 2000, appId, conversationId, "🌯 are so yummy too!!!" , "burritos");
       break;
     default:
-      sendMessage(appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?", "flow");
+      sendActivity(appId, conversationId, "typing:start");
+      setTimeout(sendMessage, 2000, appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?", "flow");
       break;
   }
 }
