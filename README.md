@@ -17,8 +17,6 @@ You will need to name that var as:
 
 - `WEBHOOK_CONVERSATIONS_SECRET` and provide you webhook secret which is receiving conversation via the trigger `conversation:message` 
 
-- `WEBHOOK_POSTBACKS_SECRET` and provide you webhook secret which is receiving conversation via the trigger `conversation:postback`
-
 - `BOT_SWITCHBOARD_ID` and provide your the Switchboard integration id for your Bot
 
 - `SDK_VERSION` and provide the SunCo Web SDK version you want to target
