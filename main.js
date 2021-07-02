@@ -69,7 +69,7 @@ async function webhookHandler(req, res) {
 
     const webhookEventApiKey = req.headers["x-api-key"];
 
-    if (isAuthenticatedRequest(webhookEventApiKey)) {
+    if (!isAuthenticatedRequest(webhookEventApiKey)) {
         res.sendStatus(401);
     }
 
