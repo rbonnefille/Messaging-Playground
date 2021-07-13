@@ -83,6 +83,7 @@ async function webhookHandler(req, res) {
 
     const conversationId = conversation.id;
     const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
+    const externalId = author.user.externalId;
     
     if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
         res.sendStatus(200);
@@ -93,7 +94,8 @@ async function webhookHandler(req, res) {
             messagingAction.replyToUser(
                 getEventType(messageEvent),
                 appId,
-                conversationId
+                conversationId,
+                externalId
             );
         } catch (err) {
             console.log("Error in message handler", err);

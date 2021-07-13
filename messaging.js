@@ -112,10 +112,14 @@ async function sendMessage(appId, conversationId, message, actions) {
   });
 }
 
-async function passControl(appId, conversationId, body) {
+async function passControl(appId, conversationId, body, externalId) {
   const apiInstance = new  SunshineConversationsClient.SwitchboardActionsApi();
   const passControlBody = new SunshineConversationsClient.PassControlBody(); // PassControlBody | 
-  passControlBody['switchboardIntegration'] = body;
+  passControlBody[`switchboardIntegration`] = body;
+  passControlBody.metadata = {
+    "dataCapture.systemField.requester.email": externalId
+  };
+
   apiInstance.passControl(appId, conversationId, passControlBody).then(function (data) {
     console.log('API called successfully. Returned data: ' + data);
   }, function (error) {
@@ -123,7 +127,7 @@ async function passControl(appId, conversationId, body) {
   });
 }
 
-async function replyToUser(userMessage, appId, conversationId) {
+async function replyToUser(userMessage, appId, conversationId, externalId) {
   switch (userMessage) {
     case 'hello':
     case 'hi':
@@ -136,7 +140,7 @@ async function replyToUser(userMessage, appId, conversationId) {
     case 'agent':
       sendActivity(appId, conversationId, "typing:start");
       setTimeout(sendMessage, 2000, appId, conversationId, "Ok let me transfer you to a Zendesk agent.", null);
-      passControl(appId, conversationId, "zd-agentWorkspace");
+      passControl(appId, conversationId, "zd-agentWorkspace", externalId);
       break;
     case 'bot':
       sendActivity(appId, conversationId, "typing:start");
