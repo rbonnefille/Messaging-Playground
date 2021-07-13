@@ -26,9 +26,9 @@ app.use((req, res) => {
 });
 app.listen(process.env.PORT || 7777);
 
-function isAuthenticatedRequest(webhookEventApiKey) {
-    return webhookEventApiKey === webhookConversationsSecret;
-}
+// function isAuthenticatedRequest(webhookEventApiKey) {
+//     return webhookEventApiKey === webhookConversationsSecret;
+// }
 
 function isCurrentSwitchboardIntegration(activeSwitchboardIntegration) {
     return activeSwitchboardIntegration === botSwitchboardIntegration;
