@@ -83,7 +83,7 @@ async function webhookHandler(req, res) {
 
     const conversationId = conversation.id;
     const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
-    const externalId = author.user.externalId;
+    const externalId = author.user?.externalId;
     
     if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
         res.sendStatus(200);
