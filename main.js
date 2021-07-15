@@ -61,10 +61,11 @@ async function webhookHandler(req, res) {
     const {
         payload: {
             conversation,
-            message: { author, content, source },
+            message: { content, source },
         },
     } = messageEvent || {};
 
+    const author = messageEvent.conversation.message?.author;
     const conversationId = conversation.id;
     const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
     const SwitchBoardMetadata = {
