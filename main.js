@@ -2,8 +2,7 @@ const express = require("express");
 const app = express();
 // eslint-disable-next-line no-unused-vars
 app.set("view engine", "ejs");
-const webhookHandler = require('./webhookHandler');
-
+const webhookHandler = require('./routes/webhookHandler');
 
 const {
     INTEGRATION_ID: integrationId,
