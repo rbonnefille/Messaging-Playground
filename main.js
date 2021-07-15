@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 const express = require("express");
 let messagingAction = require("./messaging");
 const app = express();
@@ -35,15 +34,36 @@ function isCurrentSwitchboardIntegration(activeSwitchboardIntegration) {
     return activeSwitchboardIntegration === botSwitchboardIntegration;
 }
 
+// eslint-disable-next-line consistent-return
+function getEventType(messageEvent) {
+    switch (messageEvent.type) {
+        case "conversation:message": {
+            const {
+                payload: {
+                    message: { content },
+                },
+            } = messageEvent;
+            const userMessage = content.text.toLowerCase();
+            return userMessage;
+        }
+        case "conversation:postback": {
+            const {payload: { postback }} = messageEvent;
+            const userPostback = postback.payload;
+            return userPostback;
+        }
+        default:
+            console.log(messageEvent);
+    }
+}
+
 function isUserMessage(author) {
     return author === "user";
 }
 
-function isTextMessage(contentType) {
-    return contentType === "text";
+function isTextMessage(content) {
+    return content === "text";
 }
 
-// eslint-disable-next-line max-lines-per-function
 async function webhookHandler(req, res) {
 
     const webhookEventApiKey = req.headers["x-api-key"];
@@ -52,67 +72,40 @@ async function webhookHandler(req, res) {
         res.sendStatus(401);
     }
 
-    // const { events: [ messageEvent ] } = req.body;
-    // const {
-    //     payload: {
-    //         conversation,
-    //         message: { author, content, source },
-    //     },
-    // } = messageEvent || {};
+    const { events: [ messageEvent ] } = req.body;
+    const {
+        payload: {
+            conversation,
+            message: { author, content, source },
+        },
+    } = messageEvent || {};
 
-    const event = req.body.events[0];
-    const eventType = event.type;
-    const payload = event.payload;
-
-    const message = payload.message || {};
-    const postback = payload.postback?.payload;
-    const source = payload.source?.type;
-    const messageContent = message?.content?.text?.toLowerCase() || {};
-    const contentType = messageContent.type || {};
-    const author = message?.author?.type;
-    const conversationId = payload.conversation.id;
-    const activeSwitchboardIntegration = payload.conversation.activeSwitchboardIntegration.id;
-
-    // const conversationId = conversation.id;
-    // const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
+    const conversationId = conversation.id;
+    const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
     const SwitchBoardMetadata = {
         surname: author.user?.profile?.surname,
         givenName: author.user?.profile?.givenName,
         email: author.user?.profile?.email,
         externalId: author.user?.externalId,
-        eventSource: source
+        eventSource: source.type
     };
     
     if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
         res.end();
     }
-    messagingAction.replyToUser(
-        messageContent,
-        appId,
-        conversationId,
-        SwitchBoardMetadata
-    );
-    // if (isUserMessage(author) && isTextMessage(contentType)) {
-    //     try {
-    //         if (eventType === "conversation:message") {
-    //             await messagingAction.replyToUser(
-    //                 messageContent,
-    //                 appId,
-    //                 conversationId,
-    //                 SwitchBoardMetadata
-    //             );
-    //         } else {
-    //             await messagingAction.replyToUser(
-    //                 postback,
-    //                 appId,
-    //                 conversationId,
-    //                 SwitchBoardMetadata
-    //             );
-    //         }
-    //     } catch (err) {
-    //         console.log("Error in message handler", err);
-    //         res.status(500).send(err.message);
-    //     }
-    // }
+
+    if (isUserMessage(author.type) && isTextMessage(content.type)) {
+        try {
+            messagingAction.replyToUser(
+                getEventType(messageEvent),
+                appId,
+                conversationId,
+                SwitchBoardMetadata
+            );
+        } catch (err) {
+            console.log("Error in message handler", err);
+            res.status(500).send(err.message);
+        }
+    }
     res.end();
 }
