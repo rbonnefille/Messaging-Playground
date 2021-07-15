@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const SunshineConversationsClient = require('sunshine-conversations-client');
 const defaultClient = SunshineConversationsClient.ApiClient.instance;
 const basicAuth = defaultClient.authentications['basicAuth'];

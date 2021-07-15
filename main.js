@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const express = require("express");
 let messagingAction = require("./messaging");
 const app = express();
@@ -38,8 +39,8 @@ function isUserMessage(author) {
     return author === "user";
 }
 
-function isTextMessage(content) {
-    return content === "text";
+function isTextMessage(contentType) {
+    return contentType === "text";
 }
 
 // eslint-disable-next-line max-lines-per-function
