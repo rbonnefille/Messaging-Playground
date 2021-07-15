@@ -1,0 +1,39 @@
+{
+    "type": "carousel",
+    "items": [
+        {
+            "title": "Tacos",
+            "description": "Description",
+            "mediaUrl": "https://hips.hearstapps.com/del.h-cdn.co/assets/18/11/1520956952-chicken-tacos-horizontal.jpg",
+            "actions": [
+                {
+                    "text": "Select",
+                    "type": "postback",
+                    "payload": "TACOS"
+                },
+                {
+                    "text": "More info",
+                    "type": "link",
+                    "uri": "https://en.wikipedia.org/wiki/Taco"
+                }
+            ]
+        },
+        {
+            "title": "Burrito",
+            "description": "Description",
+            "mediaUrl": "https://www.oldelpaso.co.uk/-/media/oep/uk/articles/how-to-make-a-burrito/what-is-a-burrito-featured-collection-one.png",
+            "actions": [
+                {
+                    "text": "Select",
+                    "type": "postback",
+                    "payload": "BURRITOS"
+                },
+                {
+                    "text": "More info",
+                    "type": "link",
+                    "uri": "https://en.wikipedia.org/wiki/Burrito"
+                }
+            ]
+        }
+    ]
+}

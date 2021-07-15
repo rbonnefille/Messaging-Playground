@@ -1,0 +1,18 @@
+{
+    "type": "text",
+    "text": "Which do you prefer?",
+    "actions": [
+        {
+            "type": "reply",
+            "text": "Tacos",
+            "iconUrl": "https://hips.hearstapps.com/del.h-cdn.co/assets/18/11/1520956952-chicken-tacos-horizontal.jpg",
+            "payload": "TACOS"
+        },
+        {
+            "type": "reply",
+            "text": "Burritos",
+            "iconUrl": "https://www.oldelpaso.co.uk/-/media/oep/uk/articles/how-to-make-a-burrito/what-is-a-burrito-featured-collection-one.png",
+            "payload": "BURRITOS"
+        }
+    ]
+}
