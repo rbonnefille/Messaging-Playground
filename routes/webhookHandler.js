@@ -12,7 +12,7 @@ const {
 } = process.env;
 
 // middleware that is specific to this router
-router.post(async function webhookHandler (req, res) {
+router.post("/switchboard", async (req, res) => {
     const webhookEventApiKey = req.headers["x-api-key"];
 
     if (!isAuthenticatedRequest(webhookEventApiKey)) {
