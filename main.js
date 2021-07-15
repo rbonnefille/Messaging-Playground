@@ -10,7 +10,7 @@ const {
     INTEGRATION_ID: integrationId,
     SDK_VERSION: sdkVersion,
     WEBHOOK_CONVERSATIONS_SECRET: webhookConversationsSecret,
-    BOT_SWITCHBOARD_ID: botSwitchboardIntegration
+    BOT_SWITCHBOARD_ID: botSwitchboardIntegration,
 } = process.env;
 
 app.post("/switchboard", webhookHandler);
@@ -36,24 +36,21 @@ function isCurrentSwitchboardIntegration(activeSwitchboardIntegration) {
 
 // eslint-disable-next-line consistent-return
 function getEventType(messageEvent) {
-    switch (messageEvent.type) {
-        case "conversation:message": {
-            const {
-                payload: {
-                    message: { content },
-                },
-            } = messageEvent;
-            const userMessage = content.text.toLowerCase();
-            return userMessage;
-        }
-        case "conversation:postback": {
-            const {payload: { postback }} = messageEvent;
-            const userPostback = postback.payload;
-            return userPostback;
-        }
-        default:
-            console.log(messageEvent);
+    let userMessage = "";
+    if (messageEvent.type === "conversation:message") {
+        const {
+            payload: {
+                message: { content },
+            },
+        } = messageEvent;
+        userMessage = content.text.toLowerCase();
+    } else {
+        const {
+            payload: { postback },
+        } = messageEvent;
+        userMessage = postback.payload;
     }
+    return userMessage;
 }
 
 function isUserMessage(author) {
@@ -65,14 +62,15 @@ function isTextMessage(content) {
 }
 
 async function webhookHandler(req, res) {
-
     const webhookEventApiKey = req.headers["x-api-key"];
 
     if (!isAuthenticatedRequest(webhookEventApiKey)) {
         res.sendStatus(401);
     }
 
-    const { events: [ messageEvent ] } = req.body;
+    const {
+        events: [messageEvent],
+    } = req.body;
     const {
         payload: {
             conversation,
@@ -81,15 +79,16 @@ async function webhookHandler(req, res) {
     } = messageEvent || {};
 
     const conversationId = conversation.id;
-    const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
+    const activeSwitchboardIntegration =
+        conversation.activeSwitchboardIntegration.id;
     const SwitchBoardMetadata = {
         surname: author.user?.profile?.surname,
         givenName: author.user?.profile?.givenName,
         email: author.user?.profile?.email,
         externalId: author.user?.externalId,
-        eventSource: source.type
+        eventSource: source.type,
     };
-    
+
     if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
         res.end();
     }
