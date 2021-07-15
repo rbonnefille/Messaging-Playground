@@ -86,28 +86,33 @@ async function webhookHandler(req, res) {
     if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
         res.end();
     }
-
-    if (isUserMessage(author) && isTextMessage(contentType)) {
-        try {
-            if (eventType === "conversation:message") {
-                await messagingAction.replyToUser(
-                    messageContent,
-                    appId,
-                    conversationId,
-                    SwitchBoardMetadata
-                );
-            } else {
-                await messagingAction.replyToUser(
-                    postback,
-                    appId,
-                    conversationId,
-                    SwitchBoardMetadata
-                );
-            }
-        } catch (err) {
-            console.log("Error in message handler", err);
-            res.status(500).send(err.message);
-        }
-    }
+    messagingAction.replyToUser(
+        messageContent,
+        appId,
+        conversationId,
+        SwitchBoardMetadata
+    );
+    // if (isUserMessage(author) && isTextMessage(contentType)) {
+    //     try {
+    //         if (eventType === "conversation:message") {
+    //             await messagingAction.replyToUser(
+    //                 messageContent,
+    //                 appId,
+    //                 conversationId,
+    //                 SwitchBoardMetadata
+    //             );
+    //         } else {
+    //             await messagingAction.replyToUser(
+    //                 postback,
+    //                 appId,
+    //                 conversationId,
+    //                 SwitchBoardMetadata
+    //             );
+    //         }
+    //     } catch (err) {
+    //         console.log("Error in message handler", err);
+    //         res.status(500).send(err.message);
+    //     }
+    // }
     res.end();
 }
