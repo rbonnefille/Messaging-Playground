@@ -34,26 +34,11 @@ function isCurrentSwitchboardIntegration(activeSwitchboardIntegration) {
     return activeSwitchboardIntegration === botSwitchboardIntegration;
 }
 
-// eslint-disable-next-line consistent-return
 function getEventType(messageEvent) {
-    switch (messageEvent.type) {
-        case "conversation:message": {
-            const {
-                payload: {
-                    message: { content },
-                },
-            } = messageEvent;
-            const userMessage = content.text.toLowerCase();
-            return userMessage;
-        }
-        case "conversation:postback": {
-            const {payload: { postback }} = messageEvent;
-            const userPostback = postback.payload;
-            return userPostback;
-        }
-        default:
-            console.log(messageEvent);
-    }
+    if (messageEvent.type === "conversation:message") {
+        return messageEvent.payload.message.content.text.toLowerCase();
+    } else {
+        return messageEvent.payload.postback.payload;
 }
 
 function isUserMessage(author) {
