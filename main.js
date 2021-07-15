@@ -34,11 +34,26 @@ function isCurrentSwitchboardIntegration(activeSwitchboardIntegration) {
     return activeSwitchboardIntegration === botSwitchboardIntegration;
 }
 
+// eslint-disable-next-line consistent-return
 function getEventType(messageEvent) {
-    if (messageEvent.type === "conversation:message") {
-        return messageEvent.payload.message.content.text.toLowerCase();
+    switch (messageEvent.type) {
+        case "conversation:message": {
+            const {
+                payload: {
+                    message: { content },
+                },
+            } = messageEvent;
+            const userMessage = content.text.toLowerCase();
+            return userMessage;
+        }
+        case "conversation:postback": {
+            const {payload: { postback }} = messageEvent;
+            const userPostback = postback.payload;
+            return userPostback;
+        }
+        default:
+            console.log(messageEvent);
     }
-    return messageEvent.payload.postback.payload;
 }
 
 function isUserMessage(author) {
@@ -61,12 +76,10 @@ async function webhookHandler(req, res) {
     const {
         payload: {
             conversation,
-            message: { source },
+            message: { author, content, source },
         },
     } = messageEvent || {};
 
-    const author = messageEvent.conversation.message?.author;
-    const content = messageEvent.conversation.message?.content;
     const conversationId = conversation.id;
     const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
     const SwitchBoardMetadata = {
