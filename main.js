@@ -88,26 +88,21 @@ async function webhookHandler(req, res) {
 
     if (isUserMessage(author) && isTextMessage(contentType)) {
         try {
-            switch (eventType) {
-                case "conversation:message":
-                    messagingAction.replyToUser(
-                        messageContent,
-                        appId,
-                        conversationId,
-                        SwitchBoardMetadata
-                    );
-                    break;
-                case "conversation:postback":
-                    messagingAction.replyToUser(
-                        postback,
-                        appId,
-                        conversationId,
-                        SwitchBoardMetadata
-                    );
-                    break;
-                default:
-                    break;
-            }            
+            if (eventType === "conversation:message") {
+                await messagingAction.replyToUser(
+                    messageContent,
+                    appId,
+                    conversationId,
+                    SwitchBoardMetadata
+                );
+            } else {
+                await messagingAction.replyToUser(
+                    postback,
+                    appId,
+                    conversationId,
+                    SwitchBoardMetadata
+                );
+            }
         } catch (err) {
             console.log("Error in message handler", err);
             res.status(500).send(err.message);
