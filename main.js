@@ -37,8 +37,8 @@ function isCurrentSwitchboardIntegration(activeSwitchboardIntegration) {
 function getEventType(messageEvent) {
     if (messageEvent.type === "conversation:message") {
         return messageEvent.payload.message.content.text.toLowerCase();
-    } else {
-        return messageEvent.payload.postback.payload;
+    }
+    return messageEvent.payload.postback.payload;
 }
 
 function isUserMessage(author) {
