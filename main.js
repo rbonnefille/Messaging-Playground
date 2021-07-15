@@ -77,13 +77,19 @@ async function webhookHandler(req, res) {
     const {
         payload: {
             conversation,
-            message: { author, content },
+            message: { author, content, source },
         },
     } = messageEvent || {};
 
     const conversationId = conversation.id;
     const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
-    const externalId = author.user?.externalId;
+    const SwitchBoardMetadata = {
+        surname: author.user?.profile?.surname,
+        givenName: author.user?.profile?.givenName,
+        email: author.user?.profile?.email,
+        externalId: author.user?.externalId,
+        eventSource: source.type
+    };
     
     if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
         res.sendStatus(200);
@@ -95,7 +101,7 @@ async function webhookHandler(req, res) {
                 getEventType(messageEvent),
                 appId,
                 conversationId,
-                externalId
+                SwitchBoardMetadata
             );
         } catch (err) {
             console.log("Error in message handler", err);
