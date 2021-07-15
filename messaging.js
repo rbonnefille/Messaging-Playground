@@ -3,67 +3,12 @@ const defaultClient = SunshineConversationsClient.ApiClient.instance;
 const basicAuth = defaultClient.authentications['basicAuth'];
 const avatarUrl = "https://www.gravatar.com/avatar/00000000000000000000000000000000.png?d=robohash&f=y";
 const botName = "CrazyBot";
+const replyPayload = require('./payloads/replyPayload.json');
+const carouselPayload = require('./payloads/carouselPayload.json');
+
 basicAuth.username = process.env.USERNAME;
 basicAuth.password = process.env.PASSWORD;
 
-
-const replyPayload = {
-    type: 'text',
-    text: 'Which do you prefer?',
-    actions: [
-        {
-            type: 'reply',
-            text: 'Tacos',
-            iconUrl: 'https://hips.hearstapps.com/del.h-cdn.co/assets/18/11/1520956952-chicken-tacos-horizontal.jpg',
-            payload: 'TACOS'
-        },
-        {
-            type: 'reply',
-            text: 'Burritos',
-            iconUrl: 'https://www.oldelpaso.co.uk/-/media/oep/uk/articles/how-to-make-a-burrito/what-is-a-burrito-featured-collection-one.png',
-            payload: 'BURRITOS'
-        }
-    ]
-};
-const carouselPayload = {
-    type: 'carousel',
-    items: [
-        {
-            title: 'Tacos',
-            description: 'Description',
-            mediaUrl: 'https://hips.hearstapps.com/del.h-cdn.co/assets/18/11/1520956952-chicken-tacos-horizontal.jpg',
-            actions: [
-                {
-                    text: 'Select',
-                    type: 'postback',
-                    payload: 'TACOS'
-                },
-                {
-                    text: 'More info',
-                    type: 'link',
-                    uri: 'https://en.wikipedia.org/wiki/Taco'
-                }
-            ]
-        },
-        {
-            title: 'Burrito',
-            description: 'Description',
-            mediaUrl: 'https://www.oldelpaso.co.uk/-/media/oep/uk/articles/how-to-make-a-burrito/what-is-a-burrito-featured-collection-one.png',
-            actions: [
-                {
-                    text: 'Select',
-                    type: 'postback',
-                    payload: 'BURRITOS'
-                },
-                {
-                    text: 'More info',
-                    type: 'link',
-                    uri: 'https://en.wikipedia.org/wiki/Burrito'
-                }
-            ]
-        }
-    ]
-};
 
 async function sendActivity(appId, conversationId, activityType) {
   const apiInstance = new SunshineConversationsClient.ActivitiesApi();
