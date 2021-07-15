@@ -26,9 +26,9 @@ app.use((req, res) => {
 });
 app.listen(process.env.PORT || 7777);
 
-// function isAuthenticatedRequest(webhookEventApiKey) {
-//     return webhookEventApiKey === webhookConversationsSecret;
-// }
+function isAuthenticatedRequest(webhookEventApiKey) {
+    return webhookEventApiKey === webhookConversationsSecret;
+}
 
 function isCurrentSwitchboardIntegration(activeSwitchboardIntegration) {
     return activeSwitchboardIntegration === botSwitchboardIntegration;
@@ -64,14 +64,13 @@ function isTextMessage(content) {
     return content === "text";
 }
 
-// eslint-disable-next-line max-lines-per-function
 async function webhookHandler(req, res) {
 
-    // const webhookEventApiKey = req.headers["x-api-key"];
+    const webhookEventApiKey = req.headers["x-api-key"];
 
-    // if (!isAuthenticatedRequest(webhookEventApiKey)) {
-    //     res.sendStatus(401);
-    // }
+    if (!isAuthenticatedRequest(webhookEventApiKey)) {
+        res.sendStatus(401);
+    }
 
     const { events: [ messageEvent ] } = req.body;
     const {
@@ -92,7 +91,7 @@ async function webhookHandler(req, res) {
     };
     
     if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
-        res.sendStatus(200);
+        res.end();
     }
 
     if (isUserMessage(author.type) && isTextMessage(content.type)) {
