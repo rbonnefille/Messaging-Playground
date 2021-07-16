@@ -79,7 +79,7 @@ async function webhookHandler(req, res) {
         givenName: author.user?.profile?.givenName,
         email: author.user?.profile?.email,
         externalId: author.user?.externalId,
-        eventSource: source.type,
+        eventSource: source,
     };
 
     if (!isAuthenticatedRequest(webhookEventApiKey)) {
