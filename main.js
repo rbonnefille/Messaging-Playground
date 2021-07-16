@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 const express = require("express");
 let messagingAction = require("./messaging");
 const app = express();
@@ -34,25 +35,6 @@ function isCurrentSwitchboardIntegration(activeSwitchboardIntegration) {
     return activeSwitchboardIntegration === botSwitchboardIntegration;
 }
 
-// eslint-disable-next-line consistent-return
-function getUserMessage(messageEvent) {
-    let userMessage = "";
-    if (messageEvent.type === "conversation:message") {
-        const {
-            payload: {
-                message: { content },
-            },
-        } = messageEvent;
-        userMessage = content.text.toLowerCase();
-    } else {
-        const {
-            payload: { postback },
-        } = messageEvent;
-        userMessage = postback.payload;
-    }
-    return userMessage;
-}
-
 function isUserMessage(author) {
     return author === "user";
 }
@@ -65,11 +47,12 @@ async function webhookHandler(req, res) {
     const webhookEventApiKey = req.headers["x-api-key"];
     const { events: [ messageEvent ] } = req.body;
     const payload = messageEvent.payload;
+    const postback = payload.postback?.payload;
     const message = payload.message || {};
     const source = payload.source?.type;
     const messageContent = message?.content?.text?.toLowerCase() || {};
     const contentType = messageContent.type || {};
-    const author = message?.author?.type;
+    const author = message?.author?.type || {};
     const conversationId = payload.conversation.id;
     const activeSwitchboardIntegration = payload.conversation.activeSwitchboardIntegration.id;
 
@@ -89,10 +72,12 @@ async function webhookHandler(req, res) {
     if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
         res.end();
     }
+
+if (messageEvent.type === "conversation:message") {
     if (isUserMessage(author) && isTextMessage(contentType)) {
         try {
             messagingAction.replyToUser(
-                getUserMessage(messageEvent),
+                messageContent,
                 appId,
                 conversationId,
                 SwitchBoardMetadata
@@ -102,5 +87,20 @@ async function webhookHandler(req, res) {
             res.status(500).send(err.message);
         }
     }
-    res.end();
+} else if (messageEvent.type === "conversation:postback") {
+    if (isUserMessage(author) && isTextMessage(contentType)) {
+        try {
+            messagingAction.replyToUser(
+                postback,
+                appId,
+                conversationId,
+                SwitchBoardMetadata
+            );
+        } catch (err) {
+            console.log("Error in message handler", err);
+            res.status(500).send(err.message);
+        }
+    }
+} 
+res.end();   
 }
