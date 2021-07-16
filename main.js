@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 const express = require("express");
 let messagingAction = require("./messaging");
 const app = express();
@@ -11,7 +10,7 @@ const {
     INTEGRATION_ID: integrationId,
     SDK_VERSION: sdkVersion,
     WEBHOOK_CONVERSATIONS_SECRET: webhookConversationsSecret,
-    BOT_SWITCHBOARD_ID: botSwitchboardIntegration,
+    BOT_SWITCHBOARD_ID: botSwitchboardIntegration
 } = process.env;
 
 app.post("/switchboard", webhookHandler);
@@ -44,63 +43,48 @@ function isTextMessage(content) {
 }
 
 async function webhookHandler(req, res) {
-    const webhookEventApiKey = req.headers["x-api-key"];
-    const {
-        events: [ messageEvent ],
-    } = req.body;
-    const payload = messageEvent.payload;
-    const postback = payload.postback?.payload;
-    const message = payload.message || {};
-    const source = payload.source?.type;
-    const messageContent = message?.content?.text?.toLowerCase() || {};
-    const contentType = messageContent.type || {};
-    const author = message?.author?.type || {};
-    const conversationId = payload.conversation.id;
-    const activeSwitchboardIntegration =
-        payload.conversation.activeSwitchboardIntegration.id;
 
-    const SwitchBoardMetadata = {
-        surname: author.user?.profile?.surname,
-        givenName: author.user?.profile?.givenName,
-        email: author.user?.profile?.email,
-        externalId: author.user?.externalId,
-        eventSource: source,
-    };
+    const webhookEventApiKey = req.headers["x-api-key"];
 
     if (!isAuthenticatedRequest(webhookEventApiKey)) {
         res.sendStatus(401);
     }
 
+    const { events: [ messageEvent ] } = req.body;
+    const {
+        payload: {
+            conversation,
+            message: { author, content, source },
+        },
+    } = messageEvent || {};
+
+    const conversationId = conversation.id;
+    const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
+    const userMessage = content?.text?.toLowerCase();
+    const SwitchBoardMetadata = {
+        surname: author.user?.profile?.surname,
+        givenName: author.user?.profile?.givenName,
+        email: author.user?.profile?.email,
+        externalId: author.user?.externalId,
+        eventSource: source.type
+    };
+    
     if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
         res.end();
     }
 
-    if (messageEvent.type === "conversation:message") {
-        if (isUserMessage(author) && isTextMessage(contentType)) {
-            try {
-                messagingAction.replyToUser(
-                    messageContent,
-                    appId,
-                    conversationId,
-                    SwitchBoardMetadata
-                );
-            } catch (err) {
-                console.log("Error in message handler", err);
-                res.status(500).send(err.message);
-            }
+    if (isUserMessage(author.type) && isTextMessage(content.type)) {
+        try {
+            messagingAction.replyToUser(
+                userMessage,
+                appId,
+                conversationId,
+                SwitchBoardMetadata
+            );
+        } catch (err) {
+            console.log("Error in message handler", err);
+            res.status(500).send(err.message);
         }
-    } else if (messageEvent.type === "conversation:postback") {
-            try {
-                messagingAction.replyToUser(
-                    postback,
-                    appId,
-                    conversationId,
-                    SwitchBoardMetadata
-                );
-            } catch (err) {
-                console.log("Error in message handler", err);
-                res.status(500).send(err.message);
-            }
-        }
+    }
     res.end();
 }
