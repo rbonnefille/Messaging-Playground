@@ -35,7 +35,7 @@ function isCurrentSwitchboardIntegration(activeSwitchboardIntegration) {
 }
 
 // eslint-disable-next-line consistent-return
-function getEventType(messageEvent) {
+function getUserMessage(messageEvent) {
     let userMessage = "";
     if (messageEvent.type === "conversation:message") {
         const {
@@ -63,24 +63,17 @@ function isTextMessage(content) {
 
 async function webhookHandler(req, res) {
     const webhookEventApiKey = req.headers["x-api-key"];
+    const { events: [ messageEvent ] } = req.body;
+    const payload = messageEvent.payload;
+    const message = payload.message || {};
+    const source = payload.source?.type;
+    const messageContent = message?.content?.text?.toLowerCase() || {};
+    const contentType = messageContent.type || {};
+    const author = message?.author?.type;
+    const conversationId = payload.conversation.id;
+    const activeSwitchboardIntegration = payload.conversation.activeSwitchboardIntegration.id;
 
-    if (!isAuthenticatedRequest(webhookEventApiKey)) {
-        res.sendStatus(401);
-    }
 
-    const {
-        events: [messageEvent],
-    } = req.body;
-    const {
-        payload: {
-            conversation,
-            message: { author, content, source },
-        },
-    } = messageEvent || {};
-
-    const conversationId = conversation.id;
-    const activeSwitchboardIntegration =
-        conversation.activeSwitchboardIntegration.id;
     const SwitchBoardMetadata = {
         surname: author.user?.profile?.surname,
         givenName: author.user?.profile?.givenName,
@@ -89,22 +82,28 @@ async function webhookHandler(req, res) {
         eventSource: source.type,
     };
 
+    if (!isAuthenticatedRequest(webhookEventApiKey)) {
+        res.sendStatus(401);
+    }
+
+    if (!isUserMessage(author) && !isTextMessage(contentType)) {
+        res.end();
+    }
+
     if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
         res.end();
     }
 
-    if (isUserMessage(author.type) && isTextMessage(content.type)) {
-        try {
-            messagingAction.replyToUser(
-                getEventType(messageEvent),
-                appId,
-                conversationId,
-                SwitchBoardMetadata
-            );
-        } catch (err) {
-            console.log("Error in message handler", err);
-            res.status(500).send(err.message);
-        }
+    try {
+        messagingAction.replyToUser(
+            getUserMessage(messageEvent),
+            appId,
+            conversationId,
+            SwitchBoardMetadata
+        );
+    } catch (err) {
+        console.log("Error in message handler", err);
+        res.status(500).send(err.message);
     }
     res.end();
 }
