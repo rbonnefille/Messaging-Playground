@@ -86,25 +86,22 @@ async function webhookHandler(req, res) {
         res.sendStatus(401);
     }
 
-    if (!isUserMessage(author) && !isTextMessage(contentType)) {
-        res.end();
-    }
-
     if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
         res.end();
     }
-
-    try {
-        messagingAction.replyToUser(
-            getUserMessage(messageEvent),
-            appId,
-            conversationId,
-            SwitchBoardMetadata
-        );
-        res.end();
-    } catch (err) {
-        console.log("Error in message handler", err);
-        res.status(500).send(err.message);
+    if (!isUserMessage(author) && !isTextMessage(contentType)) {
+        try {
+            messagingAction.replyToUser(
+                getUserMessage(messageEvent),
+                appId,
+                conversationId,
+                SwitchBoardMetadata
+            );
+            res.end();
+        } catch (err) {
+            console.log("Error in message handler", err);
+            res.status(500).send(err.message);
+        }
     }
     res.end();
 }
