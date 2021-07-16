@@ -89,7 +89,7 @@ async function webhookHandler(req, res) {
     if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
         res.end();
     }
-    if (!isUserMessage(author) && !isTextMessage(contentType)) {
+    if (isUserMessage(author) && isTextMessage(contentType)) {
         try {
             messagingAction.replyToUser(
                 getUserMessage(messageEvent),
