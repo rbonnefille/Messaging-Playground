@@ -97,7 +97,6 @@ async function webhookHandler(req, res) {
                 conversationId,
                 SwitchBoardMetadata
             );
-            res.end();
         } catch (err) {
             console.log("Error in message handler", err);
             res.status(500).send(err.message);
