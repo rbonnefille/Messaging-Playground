@@ -4,6 +4,7 @@ const app = express();
 // eslint-disable-next-line no-unused-vars
 app.set("view engine", "ejs");
 app.use(express.json());
+app.use(express.static('assets'));
 
 const {
     APP_ID: appId,
