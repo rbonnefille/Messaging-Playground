@@ -58,17 +58,18 @@ async function sendMessage(appId, conversationId, message, actions) {
   });
 }
 
-async function passControl(appId, conversationId, body, SwitchBoardMetadata) {
+async function passControl(appId, conversationId, body, switchBoardMetadata) {
   const apiInstance = new  SunshineConversationsClient.SwitchboardActionsApi();
   const passControlBody = new SunshineConversationsClient.PassControlBody(); // PassControlBody | 
   passControlBody[`switchboardIntegration`] = body;
   passControlBody.metadata = {
-    "dataCapture.systemField.requester.surname": SwitchBoardMetadata.surname ,
-    "dataCapture.systemField.requester.givenName": SwitchBoardMetadata.givenName,
-    "dataCapture.systemField.requester.email": SwitchBoardMetadata.email,
-    "dataCapture.ticketField.360023540498": SwitchBoardMetadata.externalId,
-    "dataCapture.systemField.tags": "SwitchboardMetadata",
-    "dataCapture.ticketField.360023540658": SwitchBoardMetadata.eventSource
+    "dataCapture.systemField.requester.surname": switchBoardMetadata.surname ,
+    "dataCapture.systemField.requester.givenName": switchBoardMetadata.givenName,
+    "dataCapture.systemField.requester.email": switchBoardMetadata.email,
+    "dataCapture.ticketField.360023540498": switchBoardMetadata.externalId,
+    "dataCapture.systemField.tags": "switchBoardMetadata",
+    "dataCapture.ticketField.360023540658": switchBoardMetadata.eventSource,
+    "dataCapture.ticketField.1900005043913": switchBoardMetadata.conversation
   };
 
   apiInstance.passControl(appId, conversationId, passControlBody).then(function (data) {
@@ -78,7 +79,7 @@ async function passControl(appId, conversationId, body, SwitchBoardMetadata) {
   });
 }
 
-async function replyToUser(userMessage, appId, conversationId, SwitchBoardMetadata) {
+async function replyToUser(userMessage, appId, conversationId, switchBoardMetadata) {
   switch (userMessage) {
     case 'hello':
     case 'hi':
@@ -91,7 +92,7 @@ async function replyToUser(userMessage, appId, conversationId, SwitchBoardMetada
     case 'agent':
       sendActivity(appId, conversationId, "typing:start");
       setTimeout(sendMessage, 2000, appId, conversationId, "Ok let me transfer you to a Zendesk agent.", null);
-      passControl(appId, conversationId, "zd-agentWorkspace", SwitchBoardMetadata);
+      passControl(appId, conversationId, "zd-agentWorkspace", switchBoardMetadata);
       break;
     case 'bot':
       sendActivity(appId, conversationId, "typing:start");

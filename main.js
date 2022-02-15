@@ -62,12 +62,13 @@ async function webhookHandler(req, res) {
     const conversationId = conversation.id;
     const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
     const userMessage = content?.text?.toLowerCase();
-    const SwitchBoardMetadata = {
+    const switchBoardMetadata = {
         surname: author.user?.profile?.surname,
         givenName: author.user?.profile?.givenName,
         email: author.user?.profile?.email,
         externalId: author.user?.externalId,
-        eventSource: source.type
+        eventSource: source.type,
+        conversation: conversationId
     };
     
     if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
@@ -80,7 +81,7 @@ async function webhookHandler(req, res) {
                 userMessage,
                 appId,
                 conversationId,
-                SwitchBoardMetadata
+                switchBoardMetadata
             );
         } catch (err) {
             console.log("Error in message handler", err);
