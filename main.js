@@ -8,20 +8,12 @@ app.use(express.static('assets'));
 
 const {
     APP_ID: appId,
-    INTEGRATION_ID: integrationId,
-    SDK_VERSION: sdkVersion,
     WEBHOOK_CONVERSATIONS_SECRET: webhookConversationsSecret,
     BOT_SWITCHBOARD_ID: botSwitchboardIntegration
 } = process.env;
 
 app.post("/switchboard", webhookHandler);
 
-app.get("/web-messenger", (req, res) => {
-    res.render("webSdk.ejs", {
-        integrationId: integrationId,
-        sdkVersion: sdkVersion,
-    });
-});
 app.use((req, res) => {
     res.status(404).render("404.ejs");
 });
