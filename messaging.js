@@ -10,13 +10,15 @@ const botName = "CrazyBot";
 const replyPayload = require('./payloads/replyPayload.json');
 const carouselPayload = require('./payloads/carouselPayload.json');
 
-basicAuth.username = process.env.USERNAME;
-basicAuth.password = process.env.PASSWORD;
 
 const {
   APP_ID: appId,
+  USERNAME: username,
+  PASSWORD: password
 } = process.env;
 
+basicAuth.username = username;
+basicAuth.password = password;
 
 async function sendActivity(appId, conversationId, activityType) {
   const apiInstance = new SunshineConversationsClient.ActivitiesApi();
