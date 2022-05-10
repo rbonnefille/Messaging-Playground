@@ -1,84 +1,15 @@
 const express = require("express");
-let messagingAction = require("./messaging");
+const messagingAction = require("./messaging");
+
+require('dotenv').config();
 const app = express();
-// eslint-disable-next-line no-unused-vars
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.static('assets'));
 
-const {
-    APP_ID: appId,
-    WEBHOOK_CONVERSATIONS_SECRET: webhookConversationsSecret,
-    BOT_SWITCHBOARD_ID: botSwitchboardIntegration
-} = process.env;
-
-app.post("/switchboard", webhookHandler);
+app.post("/switchboard", messagingAction.webhookHandler);
 
 app.use((req, res) => {
     res.status(404).render("404.ejs");
 });
 app.listen(process.env.PORT || 7777);
-
-function isAuthenticatedRequest(webhookEventApiKey) {
-    return webhookEventApiKey === webhookConversationsSecret;
-}
-
-function isCurrentSwitchboardIntegration(activeSwitchboardIntegration) {
-    return activeSwitchboardIntegration === botSwitchboardIntegration;
-}
-
-function isUserMessage(author) {
-    return author === "user";
-}
-
-function isTextMessage(content) {
-    return content === "text";
-}
-
-async function webhookHandler(req, res) {
-
-    const webhookEventApiKey = req.headers["x-api-key"];
-
-    if (!isAuthenticatedRequest(webhookEventApiKey)) {
-        res.sendStatus(401);
-    }
-
-    const { events: [ messageEvent ] } = req.body;
-    const {
-        payload: {
-            conversation,
-            message: { author, content, source },
-        },
-    } = messageEvent || {};
-
-    const conversationId = conversation.id;
-    const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
-    const userMessage = content?.text?.toLowerCase();
-    const switchBoardMetadata = {
-        surname: author.user?.profile?.surname,
-        givenName: author.user?.profile?.givenName,
-        email: author.user?.profile?.email,
-        externalId: author.user?.externalId,
-        eventSource: source.type,
-        conversation: conversationId
-    };
-    
-    if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
-        res.end();
-    }
-
-    if (isUserMessage(author.type) && isTextMessage(content.type)) {
-        try {
-            messagingAction.replyToUser(
-                userMessage,
-                appId,
-                conversationId,
-                switchBoardMetadata
-            );
-        } catch (err) {
-            console.log("Error in message handler", err);
-            res.status(500).send(err.message);
-        }
-    }
-    res.end();
-}

@@ -1,5 +1,8 @@
 /* eslint-disable no-undef */
 const SunshineConversationsClient = require('sunshine-conversations-client');
+const utils = require('./utils');
+require('dotenv').config();
+
 const defaultClient = SunshineConversationsClient.ApiClient.instance;
 const basicAuth = defaultClient.authentications['basicAuth'];
 const avatarUrl = "https://www.gravatar.com/avatar/00000000000000000000000000000000.png?d=robohash&f=y";
@@ -10,12 +13,17 @@ const carouselPayload = require('./payloads/carouselPayload.json');
 basicAuth.username = process.env.USERNAME;
 basicAuth.password = process.env.PASSWORD;
 
+const {
+  APP_ID: appId,
+} = process.env;
+
 
 async function sendActivity(appId, conversationId, activityType) {
   const apiInstance = new SunshineConversationsClient.ActivitiesApi();
   const activityPost = { "author": { "type": "business", "displayName": botName, "avatarUrl": avatarUrl }, "type": activityType };
   apiInstance.postActivity(appId, conversationId, activityPost).then(function(data) {
     console.log('API called successfully. Returned data: ' + data);
+    console.log(`ConversationId: ${conversationId}`)
   }, function(error) {
     console.error(error);
   });
@@ -53,6 +61,7 @@ async function sendMessage(appId, conversationId, message, actions) {
   // or data.author = { type: 'business' }; data.content = { type: 'form', fields: [
   await apiInstance.postMessage(appId, conversationId, messagePost).then(function (data) {
     console.log('API called successfully. Returned data: ' + data);
+    console.log(`ConversationId: ${conversationId}`)
   }, function (error) {
     console.error(error);
   });
@@ -63,8 +72,7 @@ async function passControl(appId, conversationId, body, switchBoardMetadata) {
   const passControlBody = new SunshineConversationsClient.PassControlBody(); // PassControlBody | 
   passControlBody[`switchboardIntegration`] = body;
   passControlBody.metadata = {
-    "dataCapture.systemField.requester.surname": switchBoardMetadata.surname ,
-    "dataCapture.systemField.requester.givenName": switchBoardMetadata.givenName,
+    "dataCapture.systemField.requester.name": switchBoardMetadata.givenName,
     "dataCapture.systemField.requester.email": switchBoardMetadata.email,
     "dataCapture.ticketField.360023540498": switchBoardMetadata.externalId,
     "dataCapture.systemField.tags": "switchBoardMetadata",
@@ -72,8 +80,11 @@ async function passControl(appId, conversationId, body, switchBoardMetadata) {
     "dataCapture.ticketField.1900005043913": switchBoardMetadata.conversation
   };
 
+  console.log(passControlBody.metadata)
+
   apiInstance.passControl(appId, conversationId, passControlBody).then(function (data) {
     console.log('API called successfully. Returned data: ' + data);
+    console.log(`ConversationId: ${conversationId}`)
   }, function (error) {
     console.error(error);
   });
@@ -120,7 +131,56 @@ async function replyToUser(userMessage, appId, conversationId, switchBoardMetada
       break;
   }
 }
+
+async function webhookHandler(req, res) {
+
+  const webhookEventApiKey = req.headers["x-api-key"];
+
+  if (!utils.isAuthenticatedRequest(webhookEventApiKey)) {
+      res.sendStatus(401);
+  }
+
+  const { events: [ messageEvent ] } = req.body;
+  const {
+      payload: {
+          conversation,
+          message: { author, content, source },
+      },
+  } = messageEvent || {};
+
+  const conversationId = conversation.id;
+  const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
+  const userMessage = content?.text?.toLowerCase();
+  const switchBoardMetadata = {
+      givenName: author.user?.profile?.givenName,
+      email: author.user?.profile?.email,
+      externalId: author.user?.externalId,
+      eventSource: source.type,
+      conversation: conversationId
+  };
+  
+  if (!utils.isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
+      res.end();
+  }
+
+  if (utils.isUserMessage(author.type) && utils.isTextMessage(content.type)) {
+      try {
+          replyToUser(
+              userMessage,
+              appId,
+              conversationId,
+              switchBoardMetadata
+          );
+      } catch (err) {
+          console.log("Error in message handler", err);
+          res.status(500).send(err.message);
+      }
+  }
+  res.end();
+}
+
 //exports the variables and functions above so that other modules can use them
 module.exports.sendMessage = sendMessage;
 module.exports.passControl = passControl;
 module.exports.replyToUser = replyToUser;
+module.exports.webhookHandler = webhookHandler;
