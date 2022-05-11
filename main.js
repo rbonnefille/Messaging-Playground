@@ -5,9 +5,15 @@ require('dotenv').config();
 const app = express();
 app.set("view engine", "ejs");
 app.use(express.json());
-app.use(express.static('assets'));
+app.use(express.static('public'));
 
 app.post("/switchboard", messagingAction.webhookHandler);
+
+app.get("/", (req, res) => {
+    res.render("index.ejs");
+});
+
+app.post("/auth", messagingAction.returnToken);
 
 app.use((req, res) => {
     res.status(404).render("404.ejs");

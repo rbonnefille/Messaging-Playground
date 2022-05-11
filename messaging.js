@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const SunshineConversationsClient = require('sunshine-conversations-client');
 const utils = require('./utils');
+const jwt = require("jsonwebtoken");
 require('dotenv').config();
 
 const defaultClient = SunshineConversationsClient.ApiClient.instance;
@@ -10,7 +11,6 @@ const botName = "CrazyBot";
 const replyPayload = require('./payloads/replyPayload.json');
 const carouselPayload = require('./payloads/carouselPayload.json');
 
-
 const {
   APP_ID: appId,
   USERNAME: username,
@@ -19,6 +19,16 @@ const {
 
 basicAuth.username = username;
 basicAuth.password = password;
+
+
+async function returnToken(req, res) {
+    userId = req.body.externalId;
+    jwtToken = jwt.sign({ scope: "appUser", userId: userId }, password, {
+        header: { kid: username },
+    });
+    console.log(jwtToken);
+    res.json({ token: jwtToken });
+}
 
 async function sendActivity(appId, conversationId, activityType) {
   const apiInstance = new SunshineConversationsClient.ActivitiesApi();
@@ -186,3 +196,4 @@ module.exports.sendMessage = sendMessage;
 module.exports.passControl = passControl;
 module.exports.replyToUser = replyToUser;
 module.exports.webhookHandler = webhookHandler;
+module.exports.returnToken = returnToken;
