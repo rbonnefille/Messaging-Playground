@@ -15,6 +15,8 @@ app.get("/", (req, res) => {
 
 app.post("/auth", messagingAction.returnToken);
 
+app.post("/auth/messaging", messagingAction.returnTokenMessaging);
+
 app.use((req, res) => {
     res.status(404).render("404.ejs");
 });

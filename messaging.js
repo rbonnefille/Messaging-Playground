@@ -1,15 +1,14 @@
 /* eslint-disable no-undef */
 const SunshineConversationsClient = require('sunshine-conversations-client');
 const utils = require('./utils');
-const jwt = require("jsonwebtoken");
+const replyPayload = require('./payloads/replyPayload.json');
+const carouselPayload = require('./payloads/carouselPayload.json');
 require('dotenv').config();
 
 const defaultClient = SunshineConversationsClient.ApiClient.instance;
 const basicAuth = defaultClient.authentications['basicAuth'];
 const avatarUrl = "https://www.gravatar.com/avatar/00000000000000000000000000000000.png?d=robohash&f=y";
 const botName = "CrazyBot";
-const replyPayload = require('./payloads/replyPayload.json');
-const carouselPayload = require('./payloads/carouselPayload.json');
 
 const {
   APP_ID: appId,
@@ -23,11 +22,16 @@ basicAuth.password = password;
 
 async function returnToken(req, res) {
     userId = req.body.externalId;
-    jwtToken = jwt.sign({ scope: "appUser", userId: userId }, password, {
-        header: { kid: username },
-    });
+    jwtToken = utils.signJwt(userId);
     console.log(jwtToken);
     res.json({ token: jwtToken });
+}
+
+async function returnTokenMessaging(req, res) {
+  userId = req.body.externalId;
+  jwtToken = utils.signJwtMessaging(userId);
+  console.log(jwtToken);
+  res.json({ token: jwtToken });
 }
 
 async function sendActivity(appId, conversationId, activityType) {
@@ -192,8 +196,4 @@ async function webhookHandler(req, res) {
 }
 
 //exports the variables and functions above so that other modules can use them
-module.exports.sendMessage = sendMessage;
-module.exports.passControl = passControl;
-module.exports.replyToUser = replyToUser;
-module.exports.webhookHandler = webhookHandler;
-module.exports.returnToken = returnToken;
+module.exports = { sendMessage, passControl, replyToUser, webhookHandler, returnToken, returnTokenMessaging };

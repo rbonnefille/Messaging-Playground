@@ -199,7 +199,10 @@
     Click on the icon on the right buttom of the page to start a conversation!
 </h3>
 <div class="center" id="insert">
+    <p>Login m-scott with SunCo JWT</p>
     <button id="btnLogin">Log as m-scott</button>
+    <p>Login m-scott with Messaging JWT</p>
+    <button id="btnLoginMessaging">Log as m-scott</button>
 </div>
 
 <img
@@ -243,6 +246,36 @@
         });
         // Smooch.login('m-scott', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6ImFwcF82MTFiODU4MDdlZWRkODAwZDM5OTlhOGUifQ.eyJzY29wZSI6ImFwcFVzZXIiLCJ1c2VySWQiOiJtLXNjb3R0In0.tu2a6xbakY9W3srp8vkSAcshRBdD-MIoGcUlXHesAQA');
     });
+
+    document.getElementById("btnLoginMessaging").addEventListener("click", function () {
+        const data = {
+        // external_id: "test12345",
+        // email: "email@example.com",
+        // name: "Romain",
+        externalId: "m-scott"
+      };
+
+      fetch("https://romain.ngrok.io/auth/messaging", {
+        method: "POST",
+        // mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data.token);
+          Smooch.login('m-scott', data.token);
+          Smooch.open();
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          console.log(error);
+        });
+        // Smooch.login('m-scott', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6ImFwcF82MTFiODU4MDdlZWRkODAwZDM5OTlhOGUifQ.eyJzY29wZSI6ImFwcFVzZXIiLCJ1c2VySWQiOiJtLXNjb3R0In0.tu2a6xbakY9W3srp8vkSAcshRBdD-MIoGcUlXHesAQA');
+    });
+    
 
     
         // Smooch.on('widget:opened', () => {
