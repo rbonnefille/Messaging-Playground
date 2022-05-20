@@ -21,15 +21,10 @@ basicAuth.password = password;
 
 
 async function returnToken(req, res) {
-    userId = req.body.externalId;
-    jwtToken = utils.signJwt(userId);
-    console.log(jwtToken);
-    res.json({ token: jwtToken });
-}
-
-async function returnTokenMessaging(req, res) {
-  userId = req.body.externalId;
-  jwtToken = utils.signJwtMessaging(userId);
+  external_id = req.body.external_id;
+  requesterName = req.body.name;
+  requesterEmail = req.body.email;
+  jwtToken = utils.signJwt(external_id, requesterName, requesterEmail);
   console.log(jwtToken);
   res.json({ token: jwtToken });
 }
@@ -91,7 +86,7 @@ async function passControl(appId, conversationId, body, switchBoardMetadata) {
     "dataCapture.systemField.requester.name": switchBoardMetadata.givenName,
     "dataCapture.systemField.requester.email": switchBoardMetadata.email,
     "dataCapture.ticketField.360023540498": switchBoardMetadata.externalId,
-    "dataCapture.systemField.tags": "switchBoardMetadata",
+    "dataCapture.systemField.tags": "switchBoardMetadata," + switchBoardMetadata.eventSource,
     "dataCapture.ticketField.360023540658": switchBoardMetadata.eventSource,
     "dataCapture.ticketField.1900005043913": switchBoardMetadata.conversation
   };
@@ -196,4 +191,4 @@ async function webhookHandler(req, res) {
 }
 
 //exports the variables and functions above so that other modules can use them
-module.exports = { sendMessage, passControl, replyToUser, webhookHandler, returnToken, returnTokenMessaging };
+module.exports = { sendMessage, passControl, replyToUser, webhookHandler, returnToken };
