@@ -3,31 +3,12 @@ require('dotenv').config();
 const jwt = require("jsonwebtoken");
 
 const {
-    WEBHOOK_CONVERSATIONS_SECRET: webhookConversationsSecret,
-    BOT_SWITCHBOARD_INTEGRATION_ID: botSwitchboardIntegration,
     USERNAME: username,
     PASSWORD: password
   } = process.env;
 
-function isAuthenticatedRequest(webhookEventApiKey) {
-    return webhookEventApiKey === webhookConversationsSecret;
-}
-
-function isCurrentSwitchboardIntegration(activeSwitchboardIntegration) {
-    return activeSwitchboardIntegration === botSwitchboardIntegration;
-}
-
-function isUserMessage(author) {
-    return author === "user";
-}
-
-function isTextMessage(content) {
-    return content === "text";
-}
-
 
 //Generating SunCo token
-//  can add email, name later?
 function signJwt(external_id, name, email) {
     const expiry_time_in_seconds = 600
     const defaultExpiry = 300
@@ -51,5 +32,13 @@ function signJwt(external_id, name, email) {
     })
   }
 
+async function returnToken(req, res) {
+    external_id = req.body.external_id;
+    requesterName = req.body.name;
+    requesterEmail = req.body.email;
+    jwtToken = signJwt(external_id, requesterName, requesterEmail);
+    console.log(jwtToken);
+    res.json({ token: jwtToken });
+  }
 
-module.exports = { isAuthenticatedRequest, isCurrentSwitchboardIntegration, isUserMessage, isTextMessage, signJwt };
+module.exports = { signJwt, returnToken };
