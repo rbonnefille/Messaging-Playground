@@ -32,12 +32,12 @@ function signJwt(external_id, name, email) {
     })
   }
 
-async function returnToken(req, res) {
+function returnToken(req, res) {
     external_id = req.body.external_id;
     requesterName = req.body.name;
     requesterEmail = req.body.email;
     jwtToken = signJwt(external_id, requesterName, requesterEmail);
-    console.log(jwtToken);
+    console.log(`JWT Token generated: ${jwtToken}`);
     res.json({ token: jwtToken });
   }
 
