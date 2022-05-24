@@ -21,8 +21,8 @@ async function sendActivity(appId, conversationId, activityType) {
   const activityPost = { "author": { "type": "business", "displayName": botName, "avatarUrl": avatarUrl }, "type": activityType };
   apiInstance.postActivity(appId, conversationId, activityPost).then(function(data) {
     // console.log('API called successfully. Returned data: ' + JSON.stringify(data));
-    console.log('API called successfully');
-    console.log(`ConversationId: ${conversationId}`)
+    console.log(`postActivity API called successfully for ConversationId: ${conversationId}`);
+
   }, function(error) {
     console.error(error);
   });
@@ -86,12 +86,10 @@ async function passControl(appId, conversationId, body, switchBoardMetadata) {
 
   await apiInstance.passControl(appId, conversationId, passControlBody).then(function (data) {
     // console.log('passControl API called successfully. Returned data: ' + JSON.stringify(data));
-    console.log('passControl API called successfully');
-    console.log(`ConversationId: ${conversationId}`)
+    console.log(`passControl API called successfully for ConversationId: ${conversationId}`);
   }, function (error) {
     console.error(error);
   });
 }
-
 
 module.exports = { sendMessage, passControl, sendActivity };
