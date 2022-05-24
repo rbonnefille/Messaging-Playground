@@ -1,7 +1,5 @@
 /* eslint-disable no-undef */
 const SunshineConversationsClient = require('sunshine-conversations-client');
-const replyPayload = require('../payloads/replyPayload.json');
-const carouselPayload = require('../payloads/carouselPayload.json');
 require('dotenv').config();
 
 const defaultClient = SunshineConversationsClient.ApiClient.instance;
@@ -35,13 +33,20 @@ async function sendMessage(appId, conversationId, message, actions) {
   messagePost.setAuthor({ type: "business" ,"avatarUrl": avatarUrl, "displayName": botName});
   switch (actions) {
     case "carousel":
-      messagePost.setContent(carouselPayload);
-      break;
-    case "quickReply":
-      messagePost.setContent(replyPayload);
+      messagePost.setContent({type: "text", text: "%((template:mexican_carousel))%"});
       break;
     case "flow":
-      messagePost.setContent({ type: "text", text: message, actions: [ { text: "Agent", type: "reply", payload: "agent" }, { text: "Bot", type: "reply", payload: "bot" }, { text: "Hi", type: "reply", payload: "hi" }, { text: "Help", type: "reply", payload: "help" } ] });
+      messagePost.setContent({
+          type: "text",
+          text: message,
+          actions: [
+              { text: "Agent", type: "reply", payload: "agent" },
+              { text: "Bot", type: "reply", payload: "bot" },
+              { text: "Hi", type: "reply", payload: "hi" },
+              { text: "Help", type: "reply", payload: "help" },
+              { text: "Carousel", type: "reply", payload: "carousel" }
+          ],
+      });
       break;
     case "tacos":
       messagePost.setContent({type: "text", text: message});

@@ -40,10 +40,6 @@ async function replyToUser(userMessage, appId, conversationId, switchBoardMetada
         suncoActions.sendActivity(appId, conversationId, "typing:start");
         setTimeout(suncoActions.sendMessage, 2000, appId, conversationId, null , "carousel");
         break;
-      case 'reply':
-        suncoActions.sendActivity(appId, conversationId, "typing:start");
-        setTimeout(suncoActions.sendMessage, 2000, appId, conversationId, null , "quickReply");
-        break;
       case 'tacos':
         suncoActions.sendActivity(appId, conversationId, "typing:start");
         setTimeout(suncoActions.sendMessage, 2000, appId, conversationId, "🌮 are so yummy!!!" , "tacos");
