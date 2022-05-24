@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 const SunshineConversationsClient = require('sunshine-conversations-client');
-const utils = require('./utils');
-const bot = require('./bot');
+const { isAuthenticatedRequest, isCurrentSwitchboardIntegration, isUserMessage, isTextMessage } = require('./utils');
+const { replyToUser } = require('./bot');
 require('dotenv').config();
 
 const defaultClient = SunshineConversationsClient.ApiClient.instance;
@@ -22,7 +22,7 @@ async function webhookHandler(req, res) {
 
     const webhookEventApiKey = req.headers["x-api-key"];
   
-    if (!utils.isAuthenticatedRequest(webhookEventApiKey)) {
+    if (!isAuthenticatedRequest(webhookEventApiKey)) {
         res.sendStatus(401);
     }
   
@@ -45,13 +45,13 @@ async function webhookHandler(req, res) {
         conversation: conversationId
     };
     
-    if (!utils.isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
+    if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
         res.end();
     }
   
-    if (utils.isUserMessage(author.type) && utils.isTextMessage(content.type)) {
+    if (isUserMessage(author.type) && isTextMessage(content.type)) {
         try {
-            bot.replyToUser(
+            replyToUser(
                 userMessage,
                 appId,
                 conversationId,

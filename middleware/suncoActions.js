@@ -20,7 +20,7 @@ async function sendActivity(appId, conversationId, activityType) {
   const apiInstance = new SunshineConversationsClient.ActivitiesApi();
   const activityPost = { "author": { "type": "business", "displayName": botName, "avatarUrl": avatarUrl }, "type": activityType };
   apiInstance.postActivity(appId, conversationId, activityPost).then(function(data) {
-    console.log('API called successfully. Returned data: ' + data);
+    console.log('API called successfully. Returned data: ' + JSON.stringify(data));
     console.log(`ConversationId: ${conversationId}`)
   }, function(error) {
     console.error(error);
@@ -32,8 +32,8 @@ async function sendMessage(appId, conversationId, message, actions) {
   const messagePost = new SunshineConversationsClient.MessagePost();
   messagePost.setAuthor({ type: "business" ,"avatarUrl": avatarUrl, "displayName": botName});
   switch (actions) {
-    case "carousel":
-      messagePost.setContent({type: "text", text: "%((template:mexican_carousel))%"});
+    case "default":
+      messagePost.setContent({type: "text", text: message});
       break;
     case "flow":
       messagePost.setContent({
@@ -44,28 +44,24 @@ async function sendMessage(appId, conversationId, message, actions) {
               { text: "Bot", type: "reply", payload: "bot" },
               { text: "Hi", type: "reply", payload: "hi" },
               { text: "Help", type: "reply", payload: "help" },
-              { text: "Carousel", type: "reply", payload: "carousel" }
+              { text: "Carousel", type: "reply", payload: "carousel" },
+              { text: "Compound Message", type: "reply", payload: "compound message" },
+              { text: "File Message", type: "reply", payload: "file message" },
+              { text: "Form Message", type: "reply", payload: "form message" },
+              { text: "Location Request", type: "reply", payload: "location request" },
           ],
       });
-      break;
-    case "tacos":
-      messagePost.setContent({type: "text", text: message});
-      break;
-    case "burritos":
-      messagePost.setContent({type: "text", text: message});
-      break;
-    case null:
-      messagePost.setContent({ "type": "text", "text": message });
       break;
     default:
         console.log(`Error while sending the message`);
       break;
   }
+
   //alternative way to send the messagePost
   //messagePost = {"author":{"type": "business" }, "content": { "type": "text", "text": "Hello again!" }};
   // or data.author = { type: 'business' }; data.content = { type: 'form', fields: [
   await apiInstance.postMessage(appId, conversationId, messagePost).then(function (data) {
-    console.log('API called successfully. Returned data: ' + data);
+    console.log('API called successfully. Returned data: ' + JSON.stringify(data));
     console.log(`ConversationId: ${conversationId}`)
   }, function (error) {
     console.error(error);
@@ -88,7 +84,7 @@ async function passControl(appId, conversationId, body, switchBoardMetadata) {
   console.log(passControlBody.metadata)
 
   apiInstance.passControl(appId, conversationId, passControlBody).then(function (data) {
-    console.log('API called successfully. Returned data: ' + data);
+    console.log('API called successfully. Returned data: ' + JSON.stringify(data));
     console.log(`ConversationId: ${conversationId}`)
   }, function (error) {
     console.error(error);

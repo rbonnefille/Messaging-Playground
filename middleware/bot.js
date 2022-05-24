@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 const SunshineConversationsClient = require('sunshine-conversations-client');
-const utils = require('./utils');
-const suncoActions = require('./suncoActions');
+const { sendActivity, sendMessage, passControl } = require('./suncoActions');
 require('dotenv').config();
 
 const defaultClient = SunshineConversationsClient.ApiClient.instance;
@@ -23,34 +22,50 @@ async function replyToUser(userMessage, appId, conversationId, switchBoardMetada
       case 'hi':
       case 'hey':
       case 'help':
-        // setTimeout(suncoActions.sendMessage, 2000, appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "flow" );
-        suncoActions.sendActivity(appId, conversationId, "typing:start");
-        setTimeout(suncoActions.sendMessage, 2000, appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "flow");
+        // setTimeout(sendMessage, 2000, appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "flow" );
+        sendActivity(appId, conversationId, "typing:start");
+        setTimeout(sendMessage, 2000, appId, conversationId, "Hey there! You can ask me the following and might reply 😆", "flow");
         break;
       case 'agent':
-        suncoActions.sendActivity(appId, conversationId, "typing:start");
-        setTimeout(suncoActions.sendMessage, 2000, appId, conversationId, "Ok let me transfer you to a Zendesk agent.", null);
-        suncoActions.passControl(appId, conversationId, "zd-agentWorkspace", switchBoardMetadata);
+        sendActivity(appId, conversationId, "typing:start");
+        setTimeout(sendMessage, 2000, appId, conversationId, "Ok let me transfer you to a Zendesk agent.", "default");
+        passControl(appId, conversationId, "zd-agentWorkspace", switchBoardMetadata);
         break;
       case 'bot':
-        suncoActions.sendActivity(appId, conversationId, "typing:start");
-        setTimeout(suncoActions.sendMessage, 2000, appId, conversationId, "Yes it's me, I'm only a bot!", "flow");
+        sendActivity(appId, conversationId, "typing:start");
+        setTimeout(sendMessage, 2000, appId, conversationId, "Yes it's me, I'm only a bot!", "flow");
         break;
       case 'carousel':
-        suncoActions.sendActivity(appId, conversationId, "typing:start");
-        setTimeout(suncoActions.sendMessage, 2000, appId, conversationId, null , "carousel");
+        sendActivity(appId, conversationId, "typing:start");
+        setTimeout(sendMessage, 2000, appId, conversationId, "%((template:mexican_carousel))%" , "default");
         break;
       case 'tacos':
-        suncoActions.sendActivity(appId, conversationId, "typing:start");
-        setTimeout(suncoActions.sendMessage, 2000, appId, conversationId, "🌮 are so yummy!!!" , "tacos");
+        sendActivity(appId, conversationId, "typing:start");
+        setTimeout(sendMessage, 2000, appId, conversationId, "🌮 are so yummy!!!" , "default");
         break;
       case 'burritos':
-        suncoActions.sendActivity(appId, conversationId, "typing:start");
-        setTimeout(suncoActions.sendMessage, 2000, appId, conversationId, "🌯 are so yummy too!!!" , "burritos");
+        sendActivity(appId, conversationId, "typing:start");
+        setTimeout(sendMessage, 2000, appId, conversationId, "🌯 are so yummy too!!!" , "default");
+        break;
+      case 'compound message':
+        sendActivity(appId, conversationId, "typing:start");
+        setTimeout(sendMessage, 2000, appId, conversationId, "%((template: smooch_tmpl_family_basket))%" , "default");
+        break;
+      case 'file message':
+        sendActivity(appId, conversationId, "typing:start");
+        setTimeout(sendMessage, 2000, appId, conversationId, "%((template: smooch_tmpl_warranty))%" , "default");
+        break;
+      case 'form message':
+        sendActivity(appId, conversationId, "typing:start");
+        setTimeout(sendMessage, 2000, appId, conversationId, "%((template: smooch_tmpl_lead_capture))%" , "default");
+        break;
+      case 'location request':
+        sendActivity(appId, conversationId, "typing:start");
+        setTimeout(sendMessage, 2000, appId, conversationId, "%((template: smooch_tmpl_request_location))%" , "default");
         break;
       default:
-        suncoActions.sendActivity(appId, conversationId, "typing:start");
-        setTimeout(suncoActions.sendMessage, 2000, appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?", "flow");
+        sendActivity(appId, conversationId, "typing:start");
+        setTimeout(sendMessage, 2000, appId, conversationId, "Sorry I didn't get that. Can you please try to say something else?", "flow");
         break;
     }
   }
