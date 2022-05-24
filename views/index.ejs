@@ -1,223 +1,232 @@
 <html>
-  <head>
-    <!-- <link rel="stylesheet" type="text/css" href="/public/assets/styles.css" /> -->
-    <title>SunCo Web SDK</title>
-    <script>
-        const webSdkVersion = "5";
-        const myIntegrationId = "6062e769761a7700d3fbce3f";
-        !(function (o, p, s, e, c) {
-            var i,
-                a,
-                h,
-                u = [],
-                d = [];
-            function t() {
-                var t = webSdkVersion;
-                try {
-                    if (!c) throw new Error(t);
-                    var e,
-                        n = "https://cdn.smooch.io/",
-                        r = "smooch";
-                    if (
-                        (e =
-                            "string" == typeof this.response
-                                ? JSON.parse(this.response)
-                                : this.response).url
-                    ) {
-                        var o = p.getElementsByTagName("script")[0],
-                            s = p.createElement("script");
-                        s.async = !0;
-                        var i = c.match(/([0-9]+)\.?([0-9]+)?\.?([0-9]+)?/),
-                            a = i && i[1];
-                        if (i && i[3]) s.src = n + r + "." + c + ".min.js";
-                        else {
-                            if (!(4 <= a && e["v" + a])) throw new Error(t);
-                            s.src = e["v" + a];
-                        }
-                        o.parentNode.insertBefore(s, o);
-                    }
-                } catch (e) {
-                    e.message === t && console.error(e);
-                }
+
+<head>
+  <!-- <link rel="stylesheet" type="text/css" href="/public/assets/styles.css" /> -->
+  <title>SunCo Web SDK</title>
+  <script>
+    const webSdkVersion = "5";
+    const myIntegrationId = "6062e769761a7700d3fbce3f";
+    !(function (o, p, s, e, c) {
+      var i,
+        a,
+        h,
+        u = [],
+        d = [];
+      function t() {
+        var t = webSdkVersion;
+        try {
+          if (!c) throw new Error(t);
+          var e,
+            n = "https://cdn.smooch.io/",
+            r = "smooch";
+          if (
+            (e =
+              "string" == typeof this.response
+                ? JSON.parse(this.response)
+                : this.response).url
+          ) {
+            var o = p.getElementsByTagName("script")[0],
+              s = p.createElement("script");
+            s.async = !0;
+            var i = c.match(/([0-9]+)\.?([0-9]+)?\.?([0-9]+)?/),
+              a = i && i[1];
+            if (i && i[3]) s.src = n + r + "." + c + ".min.js";
+            else {
+              if (!(4 <= a && e["v" + a])) throw new Error(t);
+              s.src = e["v" + a];
             }
-            (o[s] = {
-                init: function () {
-                    i = arguments;
-                    var t = {
-                        then: function (e) {
-                            return d.push({ type: "t", next: e }), t;
-                        },
-                        catch: function (e) {
-                            return d.push({ type: "c", next: e }), t;
-                        },
-                    };
-                    return t;
-                },
-                on: function () {
-                    u.push(arguments);
-                },
-                render: function () {
-                    a = arguments;
-                },
-                destroy: function () {
-                    h = arguments;
-                },
-            }),
-                (o.__onWebMessengerHostReady__ = function (e) {
-                    if ((delete o.__onWebMessengerHostReady__, (o[s] = e), i))
-                        for (var t = e.init.apply(e, i), n = 0; n < d.length; n++) {
-                            var r = d[n];
-                            t = "t" === r.type ? t.then(r.next) : t.catch(r.next);
-                        }
-                    a && e.render.apply(e, a), h && e.destroy.apply(e, h);
-                    for (n = 0; n < u.length; n++) e.on.apply(e, u[n]);
-                });
-            var n = new XMLHttpRequest();
-            n.addEventListener("load", t),
-                n.open("GET", "https://" + e + ".webloader.smooch.io/", !0),
-                (n.responseType = "json"),
-                n.send();
-        })(window, document, "Smooch", myIntegrationId, webSdkVersion);
-    </script>
-    <style>
-        title {
-    color: rgb(00000);
-  }
-  
-  body {
-    background-color: rgb(227, 227, 227, 1);
-  }
-  
-  h1,
-  h3 {
-    text-align: center;
-    color: rgb(00000);
-    font-family: "Roboto", serif;
-  }
-  
-  img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 10%;
-  }
-  p {
-    font-family: "Roboto", serif;
-  }
-  
-  .button {
-    border: none;
-    border-radius: 10px;
-    padding: 15px;
-    min-height: 30px;
-    min-width: 120px;
-  }
-  
-  .center {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-  }
-  
-  @font-face {
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu72xKKTU1Kvnz.woff2)
-      format("woff2");
-    unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F,
-      U+FE2E-FE2F;
-  }
-  /* cyrillic */
-  @font-face {
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu5mxKKTU1Kvnz.woff2)
-      format("woff2");
-    unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-  }
-  /* greek-ext */
-  @font-face {
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu7mxKKTU1Kvnz.woff2)
-      format("woff2");
-    unicode-range: U+1F00-1FFF;
-  }
-  /* greek */
-  @font-face {
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu4WxKKTU1Kvnz.woff2)
-      format("woff2");
-    unicode-range: U+0370-03FF;
-  }
-  /* vietnamese */
-  @font-face {
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu7WxKKTU1Kvnz.woff2)
-      format("woff2");
-    unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1,
-      U+01AF-01B0, U+1EA0-1EF9, U+20AB;
-  }
-  /* latin-ext */
-  @font-face {
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu7GxKKTU1Kvnz.woff2)
-      format("woff2");
-    unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB,
-      U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-  }
-  /* latin */
-  @font-face {
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2)
-      format("woff2");
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-      U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-      U+FEFF, U+FFFD;
-  }
-  
-    </style>
+            o.parentNode.insertBefore(s, o);
+          }
+        } catch (e) {
+          e.message === t && console.error(e);
+        }
+      }
+      (o[s] = {
+        init: function () {
+          i = arguments;
+          var t = {
+            then: function (e) {
+              return d.push({ type: "t", next: e }), t;
+            },
+            catch: function (e) {
+              return d.push({ type: "c", next: e }), t;
+            },
+          };
+          return t;
+        },
+        on: function () {
+          u.push(arguments);
+        },
+        render: function () {
+          a = arguments;
+        },
+        destroy: function () {
+          h = arguments;
+        },
+      }),
+        (o.__onWebMessengerHostReady__ = function (e) {
+          if ((delete o.__onWebMessengerHostReady__, (o[s] = e), i))
+            for (var t = e.init.apply(e, i), n = 0; n < d.length; n++) {
+              var r = d[n];
+              t = "t" === r.type ? t.then(r.next) : t.catch(r.next);
+            }
+          a && e.render.apply(e, a), h && e.destroy.apply(e, h);
+          for (n = 0; n < u.length; n++) e.on.apply(e, u[n]);
+        });
+      var n = new XMLHttpRequest();
+      n.addEventListener("load", t),
+        n.open("GET", "https://" + e + ".webloader.smooch.io/", !0),
+        (n.responseType = "json"),
+        n.send();
+    })(window, document, "Smooch", myIntegrationId, webSdkVersion);
+  </script>
+  <style>
+    title {
+      color: rgb(00000);
+    }
+
+    body {
+      background-color: rgb(227, 227, 227, 1);
+    }
+
+    h1,
+    h3 {
+      text-align: center;
+      color: rgb(00000);
+      font-family: "Roboto", serif;
+    }
+
+    img {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      width: 10%;
+    }
+
+    p {
+      font-family: "Roboto", serif;
+    }
+
+    .button {
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      min-height: 30px;
+      min-width: 120px;
+    }
+
+    .center {
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+
+    @font-face {
+      font-family: "Roboto";
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu72xKKTU1Kvnz.woff2) format("woff2");
+      unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F,
+        U+FE2E-FE2F;
+    }
+
+    /* cyrillic */
+    @font-face {
+      font-family: "Roboto";
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu5mxKKTU1Kvnz.woff2) format("woff2");
+      unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+    }
+
+    /* greek-ext */
+    @font-face {
+      font-family: "Roboto";
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu7mxKKTU1Kvnz.woff2) format("woff2");
+      unicode-range: U+1F00-1FFF;
+    }
+
+    /* greek */
+    @font-face {
+      font-family: "Roboto";
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu4WxKKTU1Kvnz.woff2) format("woff2");
+      unicode-range: U+0370-03FF;
+    }
+
+    /* vietnamese */
+    @font-face {
+      font-family: "Roboto";
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu7WxKKTU1Kvnz.woff2) format("woff2");
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1,
+        U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+    }
+
+    /* latin-ext */
+    @font-face {
+      font-family: "Roboto";
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu7GxKKTU1Kvnz.woff2) format("woff2");
+      unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB,
+        U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+
+    /* latin */
+    @font-face {
+      font-family: "Roboto";
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2) format("woff2");
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+        U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+        U+FEFF, U+FFFD;
+    }
+  </style>
 </head>
 
 <body>
-<h1>Welcome to our support page</h1>
-<h3>
+  <h1>Welcome to our support page</h1>
+  <h3>
     Click on the icon on the right buttom of the page to start a conversation!
-</h3>
-<div class="center" id="insert">
-    <p>Login m-scott with JWT</p>
+  </h3>
+  <div class="center" id="insert">
+    <p>SunCo Login</p>
     <button id="btnLogin">Log as m-scott</button>
-</div>
+    <p>Clear local storage and destroy SunCo Widget</p>
+    <button onclick="deleteItems()">JUST DO IT!</button>
+  </div>
 
-<img
+  <img
     src="https://mlst3x584ijx.i.optimole.com/J4U7zT4-jtmOnQok/w:auto/h:auto/q:75/https://acmegeneral.com/wp-content/uploads/2020/09/cropped-ACMELogo_Color_WBKND-01.png" />
-<script>
+  <script>
+
+    function deleteItems() {
+      // Clear localStorage items 
+      // Destroy SunCo widget
+      localStorage.clear();
+      Smooch.destroy();
+    }
 
     Smooch.init({
-        integrationId: myIntegrationId,
-        canUserSeeConversationList: true,
+      integrationId: myIntegrationId,
+      canUserSeeConversationList: true,
     }).then(function () {
-        console.log("SunCo widget ready");
-        var user = Smooch.getUser();
-        console.log(user);
+      console.log("SunCo widget ready");
+      var user = Smooch.getUser();
+      console.log(user);
     });
 
     document.getElementById("btnLogin").addEventListener("click", function () {
-        const data = {
+      const data = {
         external_id: "m-scott",
         name: "Michael Scott",
         email: "m-scott@example.com"
@@ -241,9 +250,9 @@
           console.error("Error:", error);
           console.log(error);
         });
-        // Smooch.login('m-scott', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6ImFwcF82MTFiODU4MDdlZWRkODAwZDM5OTlhOGUifQ.eyJzY29wZSI6ImFwcFVzZXIiLCJ1c2VySWQiOiJtLXNjb3R0In0.tu2a6xbakY9W3srp8vkSAcshRBdD-MIoGcUlXHesAQA');
+      // Smooch.login('m-scott', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6ImFwcF82MTFiODU4MDdlZWRkODAwZDM5OTlhOGUifQ.eyJzY29wZSI6ImFwcFVzZXIiLCJ1c2VySWQiOiJtLXNjb3R0In0.tu2a6xbakY9W3srp8vkSAcshRBdD-MIoGcUlXHesAQA');
     });
-    
+
         // Smooch.on('widget:opened', () => {
         // var conversations = Smooch.getConversations();
         //      if (!conversations.length) {
@@ -255,7 +264,7 @@
         //          })
         //      }
         // });
-</script>
+  </script>
 </body>
 
 </html>
