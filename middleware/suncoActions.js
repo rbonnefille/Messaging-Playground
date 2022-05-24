@@ -20,7 +20,8 @@ async function sendActivity(appId, conversationId, activityType) {
   const apiInstance = new SunshineConversationsClient.ActivitiesApi();
   const activityPost = { "author": { "type": "business", "displayName": botName, "avatarUrl": avatarUrl }, "type": activityType };
   apiInstance.postActivity(appId, conversationId, activityPost).then(function(data) {
-    console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+    // console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+    console.log('API called successfully');
     console.log(`ConversationId: ${conversationId}`)
   }, function(error) {
     console.error(error);
@@ -61,8 +62,8 @@ async function sendMessage(appId, conversationId, message, actions) {
   //messagePost = {"author":{"type": "business" }, "content": { "type": "text", "text": "Hello again!" }};
   // or data.author = { type: 'business' }; data.content = { type: 'form', fields: [
   await apiInstance.postMessage(appId, conversationId, messagePost).then(function (data) {
-    console.log('API called successfully. Returned data: ' + JSON.stringify(data));
-    console.log(`ConversationId: ${conversationId}`)
+    // console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+    console.log(`postMessage API called successfully for ConversationId: ${conversationId}`);
   }, function (error) {
     console.error(error);
   });
@@ -83,8 +84,9 @@ async function passControl(appId, conversationId, body, switchBoardMetadata) {
 
   console.log(passControlBody.metadata)
 
-  apiInstance.passControl(appId, conversationId, passControlBody).then(function (data) {
-    console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+  await apiInstance.passControl(appId, conversationId, passControlBody).then(function (data) {
+    // console.log('passControl API called successfully. Returned data: ' + JSON.stringify(data));
+    console.log('passControl API called successfully');
     console.log(`ConversationId: ${conversationId}`)
   }, function (error) {
     console.error(error);
