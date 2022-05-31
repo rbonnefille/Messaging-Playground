@@ -32,7 +32,7 @@ function signJwt(external_id, name, email) {
     })
   }
 
-function returnToken(req, res) {
+exports.returnToken = (req, res) => {
     external_id = req.body.external_id;
     requesterName = req.body.name;
     requesterEmail = req.body.email;
@@ -40,5 +40,3 @@ function returnToken(req, res) {
     console.log(`JWT Token generated: ${jwtToken}`);
     res.json({ token: jwtToken });
   }
-
-module.exports = { signJwt, returnToken };

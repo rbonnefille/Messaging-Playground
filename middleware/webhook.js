@@ -18,7 +18,7 @@ basicAuth.username = username;
 basicAuth.password = password;
 
 
-function webhookHandler(req, res) {
+exports.webhookHandler = (req, res) => {
 
     const webhookEventApiKey = req.headers["x-api-key"];
   
@@ -64,5 +64,3 @@ function webhookHandler(req, res) {
     }
     res.end();
   }
-
-module.exports = { webhookHandler };
