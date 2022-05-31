@@ -35,7 +35,7 @@ exports.webhookHandler = (req, res) => {
     } = messageEvent || {};
   
     const conversationId = conversation.id;
-    const activeSwitchboardIntegration = conversation.activeSwitchboardIntegration.id;
+    const activeSwitchboardIntegration = conversation?.activeSwitchboardIntegration?.id || {};
     const userMessage = content?.text?.toLowerCase();
     const switchBoardMetadata = {
         givenName: author.user?.profile?.givenName,
@@ -44,23 +44,23 @@ exports.webhookHandler = (req, res) => {
         eventSource: source.type,
         conversation: conversationId
     };
-    
-    if (!isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
+ 
+    if (isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
+        if (isUserMessage(author.type) && isTextMessage(content.type)) {
+            try {
+                replyToUser(
+                    userMessage,
+                    appId,
+                    conversationId,
+                    switchBoardMetadata
+                );
+            } catch (err) {
+                console.log("Error in message handler", err);
+                res.status(500).send(err.message);
+            }
+        }
+        res.end();
+    } else {
         res.end();
     }
-  
-    if (isUserMessage(author.type) && isTextMessage(content.type)) {
-        try {
-            replyToUser(
-                userMessage,
-                appId,
-                conversationId,
-                switchBoardMetadata
-            );
-        } catch (err) {
-            console.log("Error in message handler", err);
-            res.status(500).send(err.message);
-        }
-    }
-    res.end();
-  }
+}
