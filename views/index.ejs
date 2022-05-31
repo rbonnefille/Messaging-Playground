@@ -101,18 +101,75 @@
     function deleteItems() {
       // Clear localStorage items 
       // Destroy SunCo widget
-      localStorage.clear();
+      // localStorage.clear();
+      clearSessionAuth();
       Smooch.destroy();
     }
+
+    // const delegate = {
+
+    //   onInvalidAuth() {
+    //     const data = {
+    //     external_id: "m-scott",
+    //     name: "Michael Scott",
+    //     email: "m-scott@example.com"
+    //   };
+    //     getToken(data);
+    //     const { token } = getSessionAuth();
+    //     console.log("fetching a new token");
+    //     return new Promise((resolve) => resolve(token));
+    //   }
+    // };
+
+
+    const clearSessionAuth = () =>
+      window.sessionStorage.removeItem("<%= sessionStorageKey %>");
+
+    const setSessionAuth = (external_id, token) => {
+      window.sessionStorage.setItem(
+        "<%= sessionStorageKey %>",
+        JSON.stringify({ external_id, token })
+      );
+    };
+
+    const getSessionAuth = () =>
+      JSON.parse(window.sessionStorage.getItem('<%= sessionStorageKey %>')) || {};
 
     Smooch.init({
       integrationId: myIntegrationId,
       canUserSeeConversationList: true,
+      // delegate
     }).then(function () {
       console.log("SunCo widget ready");
       var user = Smooch.getUser();
       console.log(user);
     });
+
+    function getToken(userData) {
+      fetch("https://romain.ngrok.io/auth", {
+        method: "POST",
+        // mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data.token);
+          const token = data.token;
+          const external_id = userData.external_id;
+          console.log(token, external_id)
+          setSessionAuth(external_id, token);
+          // Smooch.login('m-scott', data.token);
+          // Smooch.open();
+          return data;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          console.log(error);
+        });
+    }
 
     document.getElementById("btnLogin").addEventListener("click", function () {
       const data = {
@@ -120,39 +177,38 @@
         name: "Michael Scott",
         email: "m-scott@example.com"
       };
+      getToken(data);
+      const { external_id, token } = getSessionAuth();
+      setTimeout(() => {
+        // loginAndOpenSunCo(external_id, token);
+        Smooch.login(external_id, token);
+      }, 2000);
+      // } else {
+      //   Smooch.login(external_id, token);
+      //   Smooch.open();
 
-      fetch("https://romain.ngrok.io/auth", {
-        method: "POST",
-        // mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Success:", data.token);
-          Smooch.login('m-scott', data.token);
-          Smooch.open();
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          console.log(error);
-        });
-      // Smooch.login('m-scott', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6ImFwcF82MTFiODU4MDdlZWRkODAwZDM5OTlhOGUifQ.eyJzY29wZSI6ImFwcFVzZXIiLCJ1c2VySWQiOiJtLXNjb3R0In0.tu2a6xbakY9W3srp8vkSAcshRBdD-MIoGcUlXHesAQA');
     });
 
-        // Smooch.on('widget:opened', () => {
-        // var conversations = Smooch.getConversations();
-        //      if (!conversations.length) {
-        //          Smooch.createConversation({
-        //              messages: [{
-        //                  type: 'text',
-        //                  text: 'Hi there! Welcome to ACME Corp Support!'
-        //                  }]
-        //          })
-        //      }
-        // });
+    function loginAndOpenSunCo(external_id, token){
+      // const { external_id, token } = getSessionAuth();
+      if (external_id && token) {
+        Smooch.login(external_id, token);
+        Smooch.open();
+      }
+    }
+
+    Smooch.on('widget:opened', () => {
+        // loginAndOpenSunCo(external_id, token);
+        const { external_id, token } = getSessionAuth();
+        Smooch.login(external_id, token);
+    });
+
+    // This event triggers when the widget is closed
+    Smooch.on('widget:closed', function () {
+      console.log('Widget is closed!');
+      // clearSessionAuth();
+    });
+
   </script>
 </body>
 
