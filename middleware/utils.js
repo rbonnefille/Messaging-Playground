@@ -6,21 +6,23 @@ const {
     BOT_SWITCHBOARD_INTEGRATION_ID: botSwitchboardIntegration
   } = process.env;
 
-function isAuthenticatedRequest(webhookEventApiKey) {
-    return webhookEventApiKey === webhookConversationsSecret;
+class Utils {
+    constructor() {
+        this.webhookConversationsSecret = webhookConversationsSecret;
+        this.botSwitchboardIntegration = botSwitchboardIntegration;
+      }
+    isAuthenticatedRequest(webhookConversationsSecret) {
+        return webhookConversationsSecret === this.webhookConversationsSecret;
+    }
+    isCurrentSwitchboardIntegration(activeSwitchboardIntegration) {
+        return activeSwitchboardIntegration === this.botSwitchboardIntegration;
+    }
+    isUserMessage(authorType) {
+        return authorType === "user";
+    }
+    isTextMessage(contentType) {
+        return contentType === "text";
+    }
 }
 
-function isCurrentSwitchboardIntegration(activeSwitchboardIntegration) {
-    return activeSwitchboardIntegration === botSwitchboardIntegration;
-}
-
-function isUserMessage(author) {
-    return author === "user";
-}
-
-function isTextMessage(content) {
-    return content === "text";
-}
-
-
-module.exports = { isAuthenticatedRequest, isCurrentSwitchboardIntegration, isUserMessage, isTextMessage };
+module.exports = Utils;

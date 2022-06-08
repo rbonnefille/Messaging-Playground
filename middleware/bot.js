@@ -3,20 +3,12 @@ const SunshineConversationsClient = require('sunshine-conversations-client');
 const { sendActivity, sendMessage, passControl } = require('./suncoActions');
 require('dotenv').config();
 
-const defaultClient = SunshineConversationsClient.ApiClient.instance;
-const basicAuth = defaultClient.authentications['basicAuth'];
+class Bot {
+  constructor() {
+    this.replyToUser = this.replyToUser.bind(this);
+  }
 
-
-const {
-  USERNAME: username,
-  PASSWORD: password
-} = process.env;
-
-basicAuth.username = username;
-basicAuth.password = password;
-
-
-async function replyToUser(userMessage, appId, conversationId, switchBoardMetadata) {
+ replyToUser(userMessage, appId, conversationId, switchBoardMetadata) {
     switch (userMessage) {
       case 'hello':
       case 'hi':
@@ -69,5 +61,6 @@ async function replyToUser(userMessage, appId, conversationId, switchBoardMetada
         break;
     }
   }
+}
 
-  module.exports = { replyToUser };
+  module.exports = Bot;

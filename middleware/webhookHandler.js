@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 const SunshineConversationsClient = require('sunshine-conversations-client');
-const { isAuthenticatedRequest, isCurrentSwitchboardIntegration, isUserMessage, isTextMessage } = require('./utils');
+const Utils = require('./utils');
 const WebhookRequest = require("./webhookRequest");
-const { replyToUser } = require('./bot');
+const Bot = require('./bot');
 require('dotenv').config();
 
 const defaultClient = SunshineConversationsClient.ApiClient.instance;
@@ -20,16 +20,18 @@ basicAuth.password = password;
 exports.webhookHandler = (req, res) => {
     
     const webhookRequest = new WebhookRequest(req);
+    const utils = new Utils();
+    const bot = new Bot();
 
-    if (!isAuthenticatedRequest(webhookRequest.webhookEventApiKey)) {
+    if (!utils.isAuthenticatedRequest(webhookRequest.webhookEventApiKey)) {
         res.sendStatus(401);
     }
     // console.log(JSON.stringify(req.body));
  
-    if (isCurrentSwitchboardIntegration(webhookRequest.activeSwitchboardIntegration)) {
-        if (isUserMessage(webhookRequest.author.type) && isTextMessage(webhookRequest.content.type)) {
+    if (utils.isCurrentSwitchboardIntegration(webhookRequest.activeSwitchboardIntegration)) {
+        if (utils.isUserMessage(webhookRequest.author.type) && utils.isTextMessage(webhookRequest.content.type)) {
             try {
-                replyToUser(
+                bot.replyToUser(
                     webhookRequest.userMessage,
                     appId,
                     webhookRequest.conversationId,
