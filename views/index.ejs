@@ -107,7 +107,6 @@
     }
 
     // const delegate = {
-
     //   onInvalidAuth() {
     //     const data = {
     //     external_id: "m-scott",
@@ -126,6 +125,7 @@
       window.sessionStorage.removeItem("<%= sessionStorageKey %>");
 
     const setSessionAuth = (external_id, token) => {
+      clearSessionAuth();
       window.sessionStorage.setItem(
         "<%= sessionStorageKey %>",
         JSON.stringify({ external_id, token })
@@ -137,7 +137,7 @@
 
     Smooch.init({
       integrationId: myIntegrationId,
-      canUserSeeConversationList: true,
+      canUserSeeConversationList: true
       // delegate
     }).then(function () {
       console.log("SunCo widget ready");
@@ -178,29 +178,20 @@
         email: "m-scott@example.com"
       };
       getToken(data);
-      const { external_id, token } = getSessionAuth();
       setTimeout(() => {
-        // loginAndOpenSunCo(external_id, token);
-        Smooch.login(external_id, token);
-      }, 2000);
+        Smooch.open();
+      }, 1000);
       // } else {
       //   Smooch.login(external_id, token);
       //   Smooch.open();
 
     });
 
-    function loginAndOpenSunCo(external_id, token){
-      // const { external_id, token } = getSessionAuth();
+    Smooch.on('widget:opened', () => {
+      const { external_id, token } = getSessionAuth();
       if (external_id && token) {
         Smooch.login(external_id, token);
-        Smooch.open();
       }
-    }
-
-    Smooch.on('widget:opened', () => {
-        // loginAndOpenSunCo(external_id, token);
-        const { external_id, token } = getSessionAuth();
-        Smooch.login(external_id, token);
     });
 
     // This event triggers when the widget is closed

@@ -10,11 +10,11 @@ const {
 
 //Generating SunCo token
 function signJwt(external_id, name, email) {
-    const expiry_time_in_seconds = 600
-    const defaultExpiry = 300
+    const expiry_time_in_seconds = 3600
+    const defaultExpiry = 3600
     const nowInSeconds = Math.floor(Date.now() / 1000)
     const expiry = parseInt(expiry_time_in_seconds, 10) || defaultExpiry
-  
+
     const body = {
       scope: 'user',
       external_id: external_id,
