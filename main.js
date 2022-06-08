@@ -1,5 +1,5 @@
 const express = require("express");
-const { webhookHandler } = require("./middleware/webhook");
+const { webhookHandler } = require("./middleware/webhookHandler");
 const { returnToken } = require("./middleware/auth");
 
 require("dotenv").config();
