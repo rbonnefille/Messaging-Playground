@@ -29,7 +29,21 @@ exports.webhookHandler = (req, res) => {
     // console.log(JSON.stringify(req.body));
  
     if (utils.isCurrentSwitchboardIntegration(webhookRequest.activeSwitchboardIntegration)) {
-        if (utils.isUserMessage(webhookRequest.author.type) && utils.isTextMessage(webhookRequest.content.type)) {
+        if (webhookRequest.messageEventType === "conversation:create") {
+            try {
+                bot.replyToUser(
+                    "hi",
+                    appId,
+                    webhookRequest.conversationId,
+                    webhookRequest.switchBoardMetadata
+                );
+                res.end();
+            } catch (error) {
+                console.log(error);
+                res.status(500).send(err.message);
+            }
+            res.end();
+        } else if (utils.isUserMessage(webhookRequest.author.type) && utils.isTextMessage(webhookRequest.content.type) && webhookRequest.source.type != "twitter") {
             try {
                 bot.replyToUser(
                     webhookRequest.userMessage,
@@ -43,7 +57,5 @@ exports.webhookHandler = (req, res) => {
             }
         }
         res.end();
-    } else {
-        res.end();
-    }
+    } 
 }
