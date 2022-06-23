@@ -4,8 +4,8 @@ require('dotenv').config();
 
 const defaultClient = SunshineConversationsClient.ApiClient.instance;
 const basicAuth = defaultClient.authentications['basicAuth'];
-const avatarUrl = "https://www.gravatar.com/avatar/00000000000000000000000000000000.png?d=robohash&f=y";
-const botName = "CrazyBot";
+const avatarUrl = "https://i.pinimg.com/236x/a7/f8/ab/a7f8ab865a42a916a0fc8d99aea3bf27.jpg";
+const botName = "Bugs Bunny";
 
 const {
   USERNAME: username,
