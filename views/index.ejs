@@ -106,21 +106,6 @@
       Smooch.destroy();
     }
 
-    // const delegate = {
-    //   onInvalidAuth() {
-    //     const data = {
-    //     external_id: "m-scott",
-    //     name: "Michael Scott",
-    //     email: "m-scott@example.com"
-    //   };
-    //     getToken(data);
-    //     const { token } = getSessionAuth();
-    //     console.log("fetching a new token");
-    //     return new Promise((resolve) => resolve(token));
-    //   }
-    // };
-
-
     const clearSessionAuth = () =>
       window.sessionStorage.removeItem("<%= sessionStorageKey %>");
 
@@ -137,7 +122,7 @@
 
     Smooch.init({
       integrationId: myIntegrationId,
-      canUserSeeConversationList: true
+      canUserSeeConversationList: true,
       // delegate
     }).then(function () {
       console.log("SunCo widget ready");
