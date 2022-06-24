@@ -4,8 +4,6 @@ require('dotenv').config();
 
 const defaultClient = SunshineConversationsClient.ApiClient.instance;
 const basicAuth = defaultClient.authentications['basicAuth'];
-const avatarUrl = "https://i.pinimg.com/236x/a7/f8/ab/a7f8ab865a42a916a0fc8d99aea3bf27.jpg";
-const botName = "Bugs Bunny";
 
 const {
   USERNAME: username,
@@ -16,7 +14,7 @@ basicAuth.username = username;
 basicAuth.password = password;
 
 
-async function sendActivity(appId, conversationId, activityType) {
+async function sendActivity(appId, conversationId, activityType, botName, avatarUrl) {
   const apiInstance = new SunshineConversationsClient.ActivitiesApi();
   const activityPost = { "author": { "type": "business", "displayName": botName, "avatarUrl": avatarUrl }, "type": activityType };
   apiInstance.postActivity(appId, conversationId, activityPost).then(function(data) {
@@ -28,7 +26,7 @@ async function sendActivity(appId, conversationId, activityType) {
   });
 }
 
-async function sendMessage(appId, conversationId, message, actions) {
+async function sendMessage(appId, conversationId, message, actions, botName, avatarUrl) {
   const apiInstance = new SunshineConversationsClient.MessagesApi();
   const messagePost = new SunshineConversationsClient.MessagePost();
   messagePost.setAuthor({ type: "business" ,"avatarUrl": avatarUrl, "displayName": botName});
