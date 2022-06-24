@@ -1,40 +1,27 @@
 /* eslint-disable no-undef */
-const SunshineConversationsClient = require('sunshine-conversations-client');
-const Utils = require('./utils');
+require('dotenv').config();
 const WebhookRequest = require("./webhookRequest");
 const Bot = require('./bot');
-require('dotenv').config();
-
-const defaultClient = SunshineConversationsClient.ApiClient.instance;
-const basicAuth = defaultClient.authentications['basicAuth'];
 
 const {
-  APP_ID: appId,
-  USERNAME: username,
-  PASSWORD: password
+  APP_ID: appId
 } = process.env;
-
-basicAuth.username = username;
-basicAuth.password = password;
 
 exports.webhookHandler = (req, res) => {
     
     const webhookRequest = new WebhookRequest(req);
-    const utils = new Utils();
-    const bot = new Bot();
+    const bot = new Bot(appId, webhookRequest.conversationId);
 
-    if (!utils.isAuthenticatedRequest(webhookRequest.webhookEventApiKey)) {
+    if (!webhookRequest.isAuthenticatedRequest(webhookRequest.webhookEventApiKey)) {
         res.sendStatus(401);
     }
     // console.log(JSON.stringify(req.body));
  
-    if (utils.isCurrentSwitchboardIntegration(webhookRequest.activeSwitchboardIntegration)) {
-        if (webhookRequest.messageEventType === "conversation:create") {
+    if (webhookRequest.isCurrentSwitchboardIntegration(webhookRequest.activeSwitchboardIntegration)) {
+        if (webhookRequest.isConversationCreate(webhookRequest.messageEventType)) {
             try {
                 bot.replyToUser(
-                    "hi",
-                    appId,
-                    webhookRequest.conversationId,
+                    "start",
                     webhookRequest.switchBoardMetadata
                 );
                 res.end();
@@ -43,12 +30,10 @@ exports.webhookHandler = (req, res) => {
                 res.status(500).send(err.message);
             }
             res.end();
-        } else if (utils.isUserMessage(webhookRequest.author.type) && utils.isTextMessage(webhookRequest.content.type) && webhookRequest.source.type != "twitter") {
+        } else if (webhookRequest.isUserMessage(webhookRequest.authorType) && webhookRequest.isTextMessage(webhookRequest.contentType) && webhookRequest.contentType != "twitter") {
             try {
                 bot.replyToUser(
                     webhookRequest.userMessage,
-                    appId,
-                    webhookRequest.conversationId,
                     webhookRequest.switchBoardMetadata
                 );
             } catch (err) {
