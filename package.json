@@ -9,13 +9,13 @@
   "author": "Romain Bonnefille",
   "license": "ISC",
   "dependencies": {
-    "ejs": "^3.1.6",
-    "express": "^4.17.1",
-    "node": "15.x",
-    "package.json": "^2.0.1",
-    "sunshine-conversations-client": "^9.6.0"
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "node": "18.x",
+    "package.json": "^0.0.0",
+    "sunshine-conversations-client": "^9.8.0"
   },
   "devDependencies": {
-    "eslint": "^7.29.0"
+    "eslint": "^8.19.0"
   }
 }

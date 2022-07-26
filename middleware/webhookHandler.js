@@ -18,7 +18,7 @@ exports.webhookHandler = (req, res) => {
     // console.log(JSON.stringify(req.body));
  
     if (webhookRequest.isCurrentSwitchboardIntegration(webhookRequest.activeSwitchboardIntegration)) {
-        if (webhookRequest.isConversationCreate(webhookRequest.messageEventType)) {
+        if (webhookRequest.isConversationCreate(webhookRequest.messageEventType) && !webhookRequest.isIgnoredChannel(webhookRequest.sourceType)) {
             try {
                 bot.replyToUser(
                     "start",
@@ -30,7 +30,7 @@ exports.webhookHandler = (req, res) => {
                 res.status(500).send(err.message);
             }
             res.end();
-        } else if (webhookRequest.isUserMessage(webhookRequest.authorType) && webhookRequest.isTextMessage(webhookRequest.contentType) && webhookRequest.contentType != "twitter") {
+        } else if (webhookRequest.isUserMessage(webhookRequest.authorType) && webhookRequest.isTextMessage(webhookRequest.contentType) && (webhookRequest.sourceType != "api:conversations") ) {
             try {
                 bot.replyToUser(
                     webhookRequest.userMessage,

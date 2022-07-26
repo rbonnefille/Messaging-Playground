@@ -7,6 +7,7 @@ const {
 
 class WebhookRequest {
     constructor(req) {
+        
         this.webhookConversationsSecret = webhookConversationsSecret;
         this.botSwitchboardIntegration = botSwitchboardIntegration;
         this.webhookEventApiKey = req.headers["x-api-key"];
@@ -19,7 +20,7 @@ class WebhookRequest {
         this.authorType = this.author.type || {};        
         this.content = this.message?.content || {};
         this.contentType = this.content.type || {};
-        this.source = this.message?.source;
+        this.sourceType = this.payload?.source?.type || this.message?.source?.type || {};
         this.conversationId = this.conversation.id;
         this.activeSwitchboardIntegration = this.conversation?.activeSwitchboardIntegration?.id || {};
         this.userMessage = this.content?.text?.toLowerCase();
@@ -27,7 +28,7 @@ class WebhookRequest {
             givenName: this.author?.user?.profile?.givenName,
             email: this.author?.user?.profile?.email,
             externalId: this.author?.user?.externalId,
-            eventSource: this.source?.type,
+            eventSource: this.sourceType,
             conversation: this.conversationId
         };
     }
@@ -46,6 +47,9 @@ class WebhookRequest {
     }
     isTextMessage(contentType) {
         return contentType === "text";
+    }
+    isIgnoredChannel(sourceType){
+        return sourceType === "twitter" || sourceType === "instagram" || sourceType === "api:conversations" || sourceType === "web";
     }
 }
 
