@@ -1,5 +1,6 @@
 const express = require("express");
 const { webhookHandler } = require("./middleware/webhookHandler");
+const { createConversationWebhook } = require("./middleware/conversationCreateWebhook");
 const { returnToken } = require("./middleware/auth");
 
 require("dotenv").config();
@@ -11,6 +12,8 @@ app.use("/public", express.static("public"));
 const { SUNCO_AUTH_TOKEN: sessionStorageKey } = process.env;
 
 app.post("/switchboard", webhookHandler);
+
+app.post("/conversationCreate", createConversationWebhook);
 
 app.get("/", (req, res) => {
     res.render("index.ejs", { sessionStorageKey: sessionStorageKey });
