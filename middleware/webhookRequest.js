@@ -21,7 +21,11 @@ const isTextMessage = (contentType) => {
     return contentType === "text";
 }
 const isIgnoredChannel = (sourceType) =>{
-    return sourceType === "twitter" || sourceType === "instagram" || sourceType === "api:conversations" || sourceType === "web";
+    return sourceType === "twitter" || sourceType === "instagram" || sourceType === "web";
 }
 
-module.exports = { isAuthenticatedRequest, isCurrentSwitchboardIntegration, isUserMessage, isConversationCreate, isTextMessage, isIgnoredChannel };
+const isCreationReasonStartConversation = (creationReason) => {
+    return creationReason === "startConversation";
+}
+
+module.exports = { isAuthenticatedRequest, isCurrentSwitchboardIntegration, isUserMessage, isConversationCreate, isTextMessage, isIgnoredChannel, isCreationReasonStartConversation };

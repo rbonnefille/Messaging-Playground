@@ -5,8 +5,9 @@ class Bot {
     constructor(appId, conversationId) {
         this.appId = appId;
         this.conversationId = conversationId;
-        this.avatarUrl =
-            "https://i.pinimg.com/236x/a7/f8/ab/a7f8ab865a42a916a0fc8d99aea3bf27.jpg";
+        // this.avatarUrl =
+        //     "https://i.pinimg.com/236x/a7/f8/ab/a7f8ab865a42a916a0fc8d99aea3bf27.jpg";
+        this.avatarUrl = "https://media.smooch.io/apps/6062e4fb75a38000d2988959/UmpgnbGvXG7vxipmVYt-iZ59/acme.png";
         this.botName = "Bugs Bunny";
         this.typingStart = "typing:start";
         this.welcomeMessage =
