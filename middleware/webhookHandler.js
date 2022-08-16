@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 require('dotenv').config();
-const { isAuthenticatedRequest, isCurrentSwitchboardIntegration, isUserMessage, isConversationCreate, isTextMessage, isIgnoredChannel } = require("./webhookRequest");
+const { isAuthenticatedRequest, isCurrentSwitchboardIntegration, isUserMessage, isTextMessage } = require("./webhookRequest");
 const Bot = require('./bot');
 
 exports.webhookHandler = (req, res) => {
@@ -11,6 +11,12 @@ exports.webhookHandler = (req, res) => {
 
     if (!isAuthenticatedRequest(webhookEventApiKey)) {
         res.sendStatus(401);
+    }
+
+    if (!isUserMessage(req.body.events[0].payload.message.author.type)){
+        res.sendStatus(200);
+        res.end();
+        return;
     }
 
     const {
@@ -28,10 +34,7 @@ exports.webhookHandler = (req, res) => {
                 },
             },
             message: {
-                author: { userId, type: authorType, displayName } = {},
-                user: {
-                    externalId: externalId } = { externalId: `${userId}` },
-                profile: { email } = { email: `${userId}@example.com` },
+                author: { userId, displayName: displayName, type: authorType, user: { externalId, profile: { surname, givenName, email, locale } } } = {},
                 content: { text: userMessage, type: contentType, payload: contentPayload } = { text: "hi", type: "text", payload: "hi" },
                 source: { integrationId: sourceIntegrationId , type: sourceType },
             } = {},
@@ -49,7 +52,7 @@ exports.webhookHandler = (req, res) => {
     const bot = new Bot(appId, conversationId);
     
     if (isCurrentSwitchboardIntegration(activeSwitchboardIntegration)) {
-        if (isUserMessage(authorType) && isTextMessage(contentType) && (sourceType != "api:conversations") ) {
+        if (isTextMessage(contentType) && (sourceType != "api:conversations") ) {
             try {
                 bot.replyToUser(
                     userMessage.toLowerCase(),
