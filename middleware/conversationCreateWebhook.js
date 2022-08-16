@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 require("dotenv").config();
-const { isConversationCreate } = require("./webhookRequest");
+const { isConversationCreate, isCreationReasonStartConversation, isIgnoredChannel } = require("./webhookRequest");
 const Bot = require("./bot");
 const apikey =
     "Tx5G27N0ueQFg70mwH-rOfKGFWGWJne_Qi6xLWiVTXelOLRyy8AHm07rBDjvnh5kDyPbsh2JZJIUKUAGgUaqGg";
@@ -27,6 +27,11 @@ exports.createConversationWebhook = (req, res) => {
             },
             user: {
                 externalId: externalId
+            },
+            creationReason,
+            source: {
+                type: sourceType,
+                integrationId
             }
         }
     } = messageEvent || {};
@@ -37,7 +42,7 @@ exports.createConversationWebhook = (req, res) => {
         externalId: externalId
     };
 
-    if (isConversationCreate(messageEventType)) {
+    if (isConversationCreate(messageEventType) && isCreationReasonStartConversation(creationReason) && !isIgnoredChannel(sourceType)) {
         try {
             bot.replyToUser("start", switchBoardMetadata);
             res.end();
