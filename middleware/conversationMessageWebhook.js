@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 require('dotenv').config();
 const Bot = require('./bot');
+const PassControlMetadata = require('./passControlMetadata');
 const ConversationMessage = require('./webhook').ConversationMessage;
 
 exports.conversationMessageWebhook = (req, res) => {
@@ -18,17 +19,9 @@ exports.conversationMessageWebhook = (req, res) => {
     if (!webhookMessage.isUserMessage(webhookMessage.authorType)){
         res.sendStatus(200);
         res.end();
-        return;
     }
 
-    switchBoardMetadata = {
-        givenName: webhookMessage.displayName,
-        email: webhookMessage.email,
-        externalId: webhookMessage.externalId,
-        eventSource: webhookMessage.sourceType,
-        conversation: webhookMessage.conversationId
-    };
-
+    const metadata = new PassControlMetadata(webhookMessage);
     const bot = new Bot(webhookMessage.appId, webhookMessage.conversationId);
     
     if (webhookMessage.isCurrentSwitchboardIntegration(webhookMessage.activeSwitchboardIntegrationId)) {
@@ -36,7 +29,7 @@ exports.conversationMessageWebhook = (req, res) => {
             try {
                 bot.replyToUser(
                     webhookMessage.userMessage.toLowerCase(),
-                    switchBoardMetadata
+                    metadata
                 );
             } catch (err) {
                 console.log(`Error in message handler ${err}`);

@@ -5,23 +5,17 @@ require('dotenv').config();
 const defaultClient = SunshineConversationsClient.ApiClient.instance;
 const basicAuth = defaultClient.authentications['basicAuth'];
 
-const {
-  USERNAME: username,
-  PASSWORD: password
-} = process.env;
-
-basicAuth.username = username;
-basicAuth.password = password;
+basicAuth.username = process.env.USERNAME;
+basicAuth.password = process.env.PASSWORD;
 
 
 async function sendActivity(appId, conversationId, activityType, botName, avatarUrl) {
   const apiInstance = new SunshineConversationsClient.ActivitiesApi();
   const activityPost = { "author": { "type": "business", "displayName": botName, "avatarUrl": avatarUrl }, "type": activityType };
-  apiInstance.postActivity(appId, conversationId, activityPost).then(function(data) {
-    // console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+  apiInstance.postActivity(appId, conversationId, activityPost).then(function (data) {
     console.log(`postActivity API called successfully for ConversationId: ${conversationId}`);
 
-  }, function(error) {
+  }, function (error) {
     console.error(error);
   });
 }
@@ -29,30 +23,30 @@ async function sendActivity(appId, conversationId, activityType, botName, avatar
 async function sendMessage(appId, conversationId, message, actions, botName, avatarUrl) {
   const apiInstance = new SunshineConversationsClient.MessagesApi();
   const messagePost = new SunshineConversationsClient.MessagePost();
-  messagePost.setAuthor({ type: "business" ,"avatarUrl": avatarUrl, "displayName": botName});
+  messagePost.setAuthor({ type: "business", "avatarUrl": avatarUrl, "displayName": botName });
   switch (actions) {
     case "default":
-      messagePost.setContent({type: "text", text: message});
+      messagePost.setContent({ type: "text", text: message });
       break;
     case "flow":
       messagePost.setContent({
-          type: "text",
-          text: message,
-          actions: [
-              { text: "Agent", type: "reply", payload: "agent" },
-              { text: "Bot", type: "reply", payload: "bot" },
-              { text: "Hi", type: "reply", payload: "hi" },
-              { text: "Help", type: "reply", payload: "help" },
-              { text: "Carousel", type: "reply", payload: "carousel" },
-              { text: "Compound Message", type: "reply", payload: "compound message" },
-              { text: "File Message", type: "reply", payload: "file message" },
-              { text: "Form Message", type: "reply", payload: "form message" },
-              { text: "Location Request", type: "reply", payload: "location request" },
-          ],
+        type: "text",
+        text: message,
+        actions: [
+          { text: "Agent", type: "reply", payload: "agent" },
+          { text: "Bot", type: "reply", payload: "bot" },
+          { text: "Hi", type: "reply", payload: "hi" },
+          { text: "Help", type: "reply", payload: "help" },
+          { text: "Carousel", type: "reply", payload: "carousel" },
+          { text: "Compound Message", type: "reply", payload: "compound message" },
+          { text: "File Message", type: "reply", payload: "file message" },
+          { text: "Form Message", type: "reply", payload: "form message" },
+          { text: "Location Request", type: "reply", payload: "location request" },
+        ],
       });
       break;
     default:
-        console.log(`Error while sending the message`);
+      console.log(`Error while sending the message`);
       break;
   }
 
@@ -67,10 +61,10 @@ async function sendMessage(appId, conversationId, message, actions, botName, ava
   });
 }
 
-async function passControl(appId, conversationId, body, switchBoardMetadata) {
-  const apiInstance = new  SunshineConversationsClient.SwitchboardActionsApi();
+async function passControl(appId, conversationId, nextSwitchboardIntegration, switchBoardMetadata) {
+  const apiInstance = new SunshineConversationsClient.SwitchboardActionsApi();
   const passControlBody = new SunshineConversationsClient.PassControlBody(); // PassControlBody | 
-  passControlBody[`switchboardIntegration`] = body;
+  passControlBody[`switchboardIntegration`] = nextSwitchboardIntegration;
   passControlBody.metadata = {
     "dataCapture.systemField.requester.name": switchBoardMetadata.givenName,
     "dataCapture.systemField.requester.email": switchBoardMetadata.email,
@@ -83,11 +77,15 @@ async function passControl(appId, conversationId, body, switchBoardMetadata) {
   console.log(passControlBody.metadata)
 
   await apiInstance.passControl(appId, conversationId, passControlBody).then(function (data) {
-    // console.log('passControl API called successfully. Returned data: ' + JSON.stringify(data));
     console.log(`passControl API called successfully for ConversationId: ${conversationId}`);
   }, function (error) {
     console.error(error);
   });
 }
 
-module.exports = { sendMessage, passControl, sendActivity };
+
+module.exports = {
+  sendActivity,
+  sendMessage,
+  passControl
+};

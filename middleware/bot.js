@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const { sendActivity, sendMessage, passControl } = require("./suncoActions");
+const { sendActivity, sendMessage, passControl } = require('./suncoMethods');
 
 class Bot {
     constructor(appId, conversationId) {
