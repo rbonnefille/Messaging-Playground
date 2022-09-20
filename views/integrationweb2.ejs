@@ -1,0 +1,213 @@
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="/public/assets/styles.css" />
+  <title>SunCo Web SDK</title>
+  <script>
+    const webSdkVersion = "5";
+    const myIntegrationId = "6318a0b4a7bd3800f3591aa1";
+    !(function (o, p, s, e, c) {
+      var i,
+        a,
+        h,
+        u = [],
+        d = [];
+      function t() {
+        var t = webSdkVersion;
+        try {
+          if (!c) throw new Error(t);
+          var e,
+            n = "https://cdn.smooch.io/",
+            r = "smooch";
+          if (
+            (e =
+              "string" == typeof this.response
+                ? JSON.parse(this.response)
+                : this.response).url
+          ) {
+            var o = p.getElementsByTagName("script")[0],
+              s = p.createElement("script");
+            s.async = !0;
+            var i = c.match(/([0-9]+)\.?([0-9]+)?\.?([0-9]+)?/),
+              a = i && i[1];
+            if (i && i[3]) s.src = n + r + "." + c + ".min.js";
+            else {
+              if (!(4 <= a && e["v" + a])) throw new Error(t);
+              s.src = e["v" + a];
+            }
+            o.parentNode.insertBefore(s, o);
+          }
+        } catch (e) {
+          e.message === t && console.error(e);
+        }
+      }
+      (o[s] = {
+        init: function () {
+          i = arguments;
+          var t = {
+            then: function (e) {
+              return d.push({ type: "t", next: e }), t;
+            },
+            catch: function (e) {
+              return d.push({ type: "c", next: e }), t;
+            },
+          };
+          return t;
+        },
+        on: function () {
+          u.push(arguments);
+        },
+        render: function () {
+          a = arguments;
+        },
+        destroy: function () {
+          h = arguments;
+        },
+      }),
+        (o.__onWebMessengerHostReady__ = function (e) {
+          if ((delete o.__onWebMessengerHostReady__, (o[s] = e), i))
+            for (var t = e.init.apply(e, i), n = 0; n < d.length; n++) {
+              var r = d[n];
+              t = "t" === r.type ? t.then(r.next) : t.catch(r.next);
+            }
+          a && e.render.apply(e, a), h && e.destroy.apply(e, h);
+          for (n = 0; n < u.length; n++) e.on.apply(e, u[n]);
+        });
+      var n = new XMLHttpRequest();
+      n.addEventListener("load", t),
+        n.open("GET", "https://" + e + ".webloader.smooch.io/", !0),
+        (n.responseType = "json"),
+        n.send();
+    })(window, document, "Smooch", myIntegrationId, webSdkVersion);
+  </script>
+</head>
+
+<body>
+  <h1>Welcome to our support page</h1>
+  <h3>
+    Click on the icon on the right buttom of the page to start a conversation!
+  </h3>
+  <div class="center">
+    <!-- form to collect externalid, name and email -->
+    <form id=suncoData onsubmit="return false">
+      <label for="externalid">External ID</label>
+      <br>
+      <input type="text" id="externalid" name="externalid" />
+      <br>
+      <label for="name">Name</label>
+      <br>
+      <input type="text" id="name" name="name" />
+      <br>
+      <label for="email">Email</label>
+      <br>
+      <input type="text" id="email" name="email" />
+      <br>
+      <input type="submit" value="Submit" onclick="authenticateUser()" />
+      <br>
+    </form>
+    <div>
+      <p>Clear local storage and destroy SunCo Widget</p>
+      <button onclick="deleteItems()">JUST DO IT!</button>
+  </div>
+  </div>
+
+  <img
+    src="https://mlst3x584ijx.i.optimole.com/J4U7zT4-jtmOnQok/w:auto/h:auto/q:75/https://acmegeneral.com/wp-content/uploads/2020/09/cropped-ACMELogo_Color_WBKND-01.png" />
+  <script>
+
+    function deleteItems() {
+      // Clear localStorage items 
+      // Destroy SunCo widget
+      // localStorage.clear();
+      clearSessionAuth();
+      Smooch.destroy();
+    }
+
+    const clearSessionAuth = () =>
+      window.sessionStorage.removeItem("<%= sessionStorageKey %>");
+
+    const setSessionAuth = (external_id, token) => {
+      clearSessionAuth();
+      window.sessionStorage.setItem(
+        "<%= sessionStorageKey %>",
+        JSON.stringify({ external_id, token })
+      );
+    };
+
+    const getSessionAuth = () =>
+      JSON.parse(window.sessionStorage.getItem('<%= sessionStorageKey %>')) || {};
+
+    Smooch.init({
+      integrationId: myIntegrationId,
+      canUserSeeConversationList: false,
+      externalId: "m-scott",
+      jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFwcF82MDY0MzU2ODA4OWRlYzAwZDJjMzZhNDMifQ.eyJzY29wZSI6InVzZXIiLCJleHRlcm5hbF9pZCI6Im0tc2NvdHQiLCJuYW1lIjoiTWljaGFlbCBTY290dCIsImVtYWlsIjoibS1zY290dEBleGFtcGxlLmNvbSIsImlhdCI6MTY2MjU2MDcxMywiZXhwIjoxNjYyNTY0MzEzfQ.PQiL-Q7K6Zhu3rIxzhqtZtTWTVEuckoGZi-WMNYlBtU"
+      // delegate
+    }).then(function () {
+      console.log("SunCo widget ready");
+      var user = Smooch.getUser();
+      console.log(user);
+      Smooch.loadConversation('6704d49e79cd05bbc721ea8d');
+    });
+
+    function getToken(userData) {
+      fetch("https://romain.ngrok.io/auth", {
+        method: "POST",
+        // mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data.token);
+          const token = data.token;
+          const external_id = userData.external_id;
+          console.log(token, external_id)
+          setSessionAuth(external_id, token);
+          // Smooch.login('m-scott', data.token);
+          // Smooch.open();
+          return data;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          console.log(error);
+        });
+    }
+
+    function authenticateUser() {
+      var x = document.getElementById("suncoData");
+      var externalid = x.elements[0].value;
+      var name = x.elements[1].value;
+      var email = x.elements[2].value;
+      const data = {
+        external_id: externalid,
+        name: name,
+        email: email
+      };
+      getToken(data);
+      setTimeout(() => {
+        Smooch.loadConversation('6704d49e79cd05bbc721ea8d').then(function () {
+          Smooch.open();
+        });
+      }, 1000);
+    }
+
+    // Smooch.on('widget:opened', () => {
+    //   const { external_id, token } = getSessionAuth();
+    //   if (external_id && token) {
+    //     Smooch.login(external_id, token);
+    //   }
+    // });
+
+    // This event triggers when the widget is closed
+    Smooch.on('widget:closed', function () {
+      console.log('Widget is closed!');
+      // clearSessionAuth();
+    });
+
+  </script>
+</body>
+
+</html>
