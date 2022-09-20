@@ -1,5 +1,5 @@
 const express = require("express");
-const { webhookHandler } = require("./middleware/webhookHandler");
+const { conversationMessageWebhook } = require("./middleware/conversationMessageWebhook");
 const { createConversationWebhook } = require("./middleware/conversationCreateWebhook");
 const { returnToken } = require("./middleware/auth");
 
@@ -9,14 +9,18 @@ app.set("view engine", "ejs");
 app.use(express.json());
 app.use("/public", express.static("public"));
 
-const { SUNCO_AUTH_TOKEN: sessionStorageKey } = process.env;
+const { BROWSER_SESSION_STORAGE_KEY: sessionStorageKey } = process.env;
 
-app.post("/switchboard", webhookHandler);
+app.post("/switchboard", conversationMessageWebhook);
 
 app.post("/conversationCreate", createConversationWebhook);
 
 app.get("/", (req, res) => {
     res.render("index.ejs", { sessionStorageKey: sessionStorageKey });
+});
+
+app.get("/integrationweb2", (req, res) => {
+    res.render("integrationweb2.ejs", { sessionStorageKey: sessionStorageKey });
 });
 
 app.post("/auth", returnToken);
