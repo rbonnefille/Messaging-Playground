@@ -87,11 +87,28 @@
   <h3>
     Click on the icon on the right buttom of the page to start a conversation!
   </h3>
-  <div class="center" id="insert">
-    <p>SunCo Login</p>
-    <button id="btnLogin">Log as m-scott</button>
-    <p>Clear local storage and destroy SunCo Widget</p>
-    <button onclick="deleteItems()">JUST DO IT!</button>
+  <div class="center">
+    <!-- form to collect externalid, name and email -->
+    <form id=suncoData onsubmit="return false">
+      <label for="externalid">External ID</label>
+      <br>
+      <input type="text" id="externalid" name="externalid" />
+      <br>
+      <label for="name">Name</label>
+      <br>
+      <input type="text" id="name" name="name" />
+      <br>
+      <label for="email">Email</label>
+      <br>
+      <input type="text" id="email" name="email" />
+      <br>
+      <input type="submit" value="Submit" onclick="authenticateUser()" />
+      <br>
+    </form>
+    <div>
+      <p>Clear local storage and destroy SunCo Widget</p>
+      <button onclick="deleteItems()">JUST DO IT!</button>
+  </div>
   </div>
 
   <img
@@ -156,21 +173,21 @@
         });
     }
 
-    document.getElementById("btnLogin").addEventListener("click", function () {
+    function authenticateUser() {
+      var x = document.getElementById("suncoData");
+      var externalid = x.elements[0].value;
+      var name = x.elements[1].value;
+      var email = x.elements[2].value;
       const data = {
-        external_id: "m-scott",
-        name: "Michael Scott",
-        email: "m-scott@example.com"
+        external_id: externalid,
+        name: name,
+        email: email
       };
       getToken(data);
       setTimeout(() => {
         Smooch.open();
       }, 1000);
-      // } else {
-      //   Smooch.login(external_id, token);
-      //   Smooch.open();
-
-    });
+    }
 
     Smooch.on('widget:opened', () => {
       const { external_id, token } = getSessionAuth();
