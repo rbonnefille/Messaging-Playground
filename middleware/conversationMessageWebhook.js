@@ -8,12 +8,11 @@ exports.conversationMessageWebhook = (req, res) => {
     console.log("##########################");
     console.log(JSON.stringify(req.body));
 
-    const webhookEventApiKey = req.headers["x-api-key"];
+    const webhookMessage = new ConversationMessage(req);
 
-    const webhookMessage = new ConversationMessage(req.body);
-
-    if (!webhookMessage.isAuthenticatedRequest(webhookEventApiKey)) {
+    if (!webhookMessage.isAuthenticatedRequest(webhookMessage.webhookEventApiKey)) {
         res.sendStatus(401);
+        return;
     }
 
     if (!webhookMessage.isUserMessage(webhookMessage.authorType)){

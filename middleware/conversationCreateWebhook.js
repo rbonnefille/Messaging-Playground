@@ -7,12 +7,11 @@ const ConversationCreate = require("./webhook").ConversationCreate;
 exports.createConversationWebhook = (req, res) => {
     console.log(JSON.stringify(req.body));
 
-    const webhookEventApiKey = req.headers["x-api-key"];
+    const webhookCreate = new ConversationCreate(req);
 
-    const webhookCreate = new ConversationCreate(req.body);
-
-    if (!webhookCreate.isAuthenticatedRequest(webhookEventApiKey)) {
+    if (!webhookCreate.isAuthenticatedRequest(webhookCreate.webhookEventApiKey)) {
         res.sendStatus(401);
+        return;
     }
 
     // const {
