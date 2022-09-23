@@ -93,17 +93,17 @@
       <label for="externalid">External ID</label>
       <br>
       <input type="text" id="externalid" name="externalid" />
-      <br>
+      <br><br>
       <label for="name">Name</label>
       <br>
       <input type="text" id="name" name="name" />
-      <br>
+      <br><br>
       <label for="email">Email</label>
       <br>
       <input type="text" id="email" name="email" />
-      <br>
+      <br><br>
       <input type="submit" value="Submit" onclick="authenticateUser()" />
-      <br>
+      <br><br>
     </form>
     <div>
       <p>Clear local storage and destroy SunCo Widget</p>
@@ -148,7 +148,7 @@
     });
 
     function getToken(userData) {
-      fetch("https://romain.ngrok.io/auth", {
+      fetch("auth", {
         method: "POST",
         // mode: "cors",
         headers: {
