@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 require('dotenv').config();
-const Bot = require('./bot');
+const Bot = require('../models/bot');
 const PassControlMetadata = require('./passControlMetadata');
-const ConversationMessage = require('./webhook').ConversationMessage;
+const ConversationMessage = require('../models/webhook').ConversationMessage;
 
 exports.conversationMessageWebhook = (req, res) => {
     console.log("##########################");

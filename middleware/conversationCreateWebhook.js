@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 require("dotenv").config();
-const Bot = require("./bot");
-const ConversationCreate = require("./webhook").ConversationCreate;
+const Bot = require("../models/bot");
+const ConversationCreate = require("../models/webhook").ConversationCreate;
 const PassControlMetadata = require('./passControlMetadata');
 
 

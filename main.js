@@ -1,7 +1,7 @@
 const express = require("express");
 const { conversationMessageWebhook } = require("./middleware/conversationMessageWebhook");
 const { createConversationWebhook } = require("./middleware/conversationCreateWebhook");
-const { returnToken } = require("./middleware/auth");
+const { returnToken } = require("./utils/auth");
 
 require("dotenv").config();
 const app = express();
