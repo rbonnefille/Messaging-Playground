@@ -2,6 +2,7 @@
 require("dotenv").config();
 const Bot = require("./bot");
 const ConversationCreate = require("./webhook").ConversationCreate;
+const PassControlMetadata = require('./passControlMetadata');
 
 
 exports.createConversationWebhook = (req, res) => {
@@ -9,7 +10,7 @@ exports.createConversationWebhook = (req, res) => {
 
     const webhookCreate = new ConversationCreate(req);
 
-    if (!webhookCreate.isAuthenticatedRequest(webhookCreate.webhookEventApiKey)) {
+    if (!webhookCreate.isNotAuthenticatedRequest(webhookCreate.webhookEventApiKey)) {
         res.sendStatus(401);
         return;
     }
@@ -37,14 +38,12 @@ exports.createConversationWebhook = (req, res) => {
     // } = messageEvent || {};
 
     const bot = new Bot(webhookCreate.appId, webhookCreate.conversationId);
+    const metadata = new PassControlMetadata(webhookCreate);
 
-    switchBoardMetadata = {
-        externalId: webhookCreate.userExternalId
-    };
 
-    if (webhookCreate.isConversationCreate(webhookCreate.eventType) && webhookCreate.isCreationReasonStartConversation(webhookCreate.creationReason) && !webhookCreate.isIgnoredChannel(webhookCreate.sourceType)) {
+    if (webhookCreate.isConversationCreate(webhookCreate.eventType) && webhookCreate.isCreationReasonStartConversation(webhookCreate.creationReason) && webhookCreate.isAllowedChannel(webhookCreate.sourceType)) {
         try {
-            bot.replyToUser("start", switchBoardMetadata);
+            bot.replyToUser("start", metadata);
             res.end();
         } catch (error) {
             console.log(error);

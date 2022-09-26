@@ -10,12 +10,12 @@ exports.conversationMessageWebhook = (req, res) => {
 
     const webhookMessage = new ConversationMessage(req);
 
-    if (!webhookMessage.isAuthenticatedRequest(webhookMessage.webhookEventApiKey)) {
+    if (!webhookMessage.isNotAuthenticatedRequest(webhookMessage.webhookEventApiKey)) {
         res.sendStatus(401);
         return;
     }
 
-    if (!webhookMessage.isUserMessage(webhookMessage.authorType)){
+    if (webhookMessage.isBusinessMessage(webhookMessage.authorType)){
         res.sendStatus(200);
         res.end();
     }
@@ -24,7 +24,7 @@ exports.conversationMessageWebhook = (req, res) => {
     const bot = new Bot(webhookMessage.appId, webhookMessage.conversationId);
     
     if (webhookMessage.isCurrentSwitchboardIntegration(webhookMessage.activeSwitchboardIntegrationId)) {
-        if (webhookMessage.isTextMessage(webhookMessage.contentType) && (webhookMessage.sourceType != "api:conversations") ) {
+        if (webhookMessage.isTextMessage(webhookMessage.contentType) && (webhookMessage.isAllowedChannel(webhookMessage.sourceType)) ) {
             try {
                 bot.replyToUser(
                     webhookMessage.userMessage.toLowerCase(),
