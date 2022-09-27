@@ -4,7 +4,7 @@ const Bot = require('../models/bot');
 const PassControlMetadata = require('./passControlMetadata');
 const ConversationMessage = require('../models/webhook').ConversationMessage;
 
-exports.conversationMessageWebhook = (req, res) => {
+exports.conversationMessage = (req, res) => {
     console.log("##########################");
     console.log(JSON.stringify(req.body));
 

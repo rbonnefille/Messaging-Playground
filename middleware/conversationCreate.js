@@ -5,7 +5,7 @@ const ConversationCreate = require("../models/webhook").ConversationCreate;
 const PassControlMetadata = require('./passControlMetadata');
 
 
-exports.createConversationWebhook = (req, res) => {
+exports.conversationCreate = (req, res) => {
     console.log(JSON.stringify(req.body));
 
     const webhookCreate = new ConversationCreate(req);
@@ -14,28 +14,6 @@ exports.createConversationWebhook = (req, res) => {
         res.sendStatus(401);
         return;
     }
-
-    // const {
-    //     app: { id: appId },
-    //     events: [messageEvent],
-    // } = req.body;
-    
-    // const {
-    //     type: messageEventType,
-    //     payload: {
-    //         conversation: {
-    //             id: conversationId
-    //         },
-    //         user: {
-    //             externalId: externalId
-    //         },
-    //         creationReason,
-    //         source: {
-    //             type: sourceType,
-    //             integrationId
-    //         }
-    //     }
-    // } = messageEvent || {};
 
     const bot = new Bot(webhookCreate.appId, webhookCreate.conversationId);
     const metadata = new PassControlMetadata(webhookCreate);

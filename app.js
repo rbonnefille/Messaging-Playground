@@ -1,6 +1,6 @@
 const express = require("express");
-const { conversationMessageWebhook } = require("./middleware/conversationMessageWebhook");
-const { createConversationWebhook } = require("./middleware/conversationCreateWebhook");
+const { conversationMessage } = require("./middleware/conversationMessage");
+const { conversationCreate } = require("./middleware/conversationCreate");
 const { returnToken } = require("./utils/auth");
 
 require("dotenv").config();
@@ -11,9 +11,9 @@ app.use("/public", express.static("public"));
 
 const { BROWSER_SESSION_STORAGE_KEY: sessionStorageKey } = process.env;
 
-app.post("/switchboard", conversationMessageWebhook);
+app.post("/conversationMessage", conversationMessage);
 
-app.post("/conversationCreate", createConversationWebhook);
+app.post("/conversationCreate", conversationCreate);
 
 app.get("/", (req, res) => {
     res.render("index.ejs", { sessionStorageKey: sessionStorageKey });
