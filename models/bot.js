@@ -49,23 +49,13 @@ class Bot {
                 );
                 break;
             case "cat":
-                sendActivity(
-                    this.appId,
-                    this.conversationId,
-                    this.typingStart,
-                    this.botName,
-                    this.avatarUrl
-                );
-                setTimeout(
-                    sendMessage,
-                    2000,
+                    sendMessage(
                     this.appId,
                     this.conversationId,
                     this.catMessage,
                     "cat",
                     this.botName,
-                    this.avatarUrl
-                );
+                    this.avatarUrl);
                 break;
             case "agent":
                 sendActivity(

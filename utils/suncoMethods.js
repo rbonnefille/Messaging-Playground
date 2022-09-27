@@ -74,6 +74,7 @@ async function sendMessage(
             type: "reply",
             payload: "location request",
           },
+          { text: "Show me a cat", type: "reply", payload: "cat" }
         ],
       });
       break;
