@@ -26,10 +26,17 @@ exports.conversationMessageWebhook = (req, res) => {
     if (webhookMessage.isCurrentSwitchboardIntegration(webhookMessage.activeSwitchboardIntegrationId)) {
         if (webhookMessage.isTextMessage(webhookMessage.contentType) && (webhookMessage.isAllowedChannel(webhookMessage.sourceType)) ) {
             try {
-                bot.replyToUser(
-                    webhookMessage.userMessage.toLowerCase(),
-                    metadata
-                );
+                if (webhookMessage.payload) {
+                    bot.replyToUser(
+                        webhookMessage.payload.toLowerCase(),
+                        metadata
+                    );
+                } else {
+                    bot.replyToUser(
+                        webhookMessage.userMessage.toLowerCase(),
+                        metadata
+                    );
+                }
             } catch (err) {
                 console.log(`Error in message handler ${err}`);
                 res.status(500).send(err.message);
@@ -38,25 +45,3 @@ exports.conversationMessageWebhook = (req, res) => {
         res.end();
     } 
 }
-    // Desctructre the request body
-    // const {
-    //     app: { id: appId } ,
-    //     events: [messageEvent],
-    // } = req.body;
-    
-    // const {
-    //     type: messageEventType,
-    //     payload: {
-    //         conversation: {
-    //             id: conversationId,
-    //             activeSwitchboardIntegration: {
-    //                 id: activeSwitchboardIntegrationId,
-    //             } = {},
-    //         },
-    //         message: {
-    //             author: { userId, displayName: displayName, type: authorType, user: { externalId, profile: { surname, givenName, email, locale } } } = {},
-    //             content: { text: userMessage, type: contentType, payload: contentPayload } = { text: "hi", type: "text", payload: "hi" },
-    //             source: { integrationId: sourceIntegrationId , type: sourceType },
-    //         } = {},
-    //     },
-    // } = messageEvent || {};
