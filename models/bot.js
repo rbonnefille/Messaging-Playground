@@ -21,6 +21,7 @@ class Bot {
         this.carouselMessage = "%((template:mexican_carousel))%";
         this.tacosMessage = "🌮 are so yummy!!!";
         this.burritoMessage = "🌯 are so yummy too!!!";
+        this.catMessage = "Here's a cat picture for you!";
     }
 
     replyToUser(userMessage, switchBoardMetadata) {
@@ -43,6 +44,25 @@ class Bot {
                     this.conversationId,
                     this.welcomeMessage,
                     "flow",
+                    this.botName,
+                    this.avatarUrl
+                );
+                break;
+            case "cat":
+                sendActivity(
+                    this.appId,
+                    this.conversationId,
+                    this.typingStart,
+                    this.botName,
+                    this.avatarUrl
+                );
+                setTimeout(
+                    sendMessage,
+                    2000,
+                    this.appId,
+                    this.conversationId,
+                    this.catMessage,
+                    "cat",
                     this.botName,
                     this.avatarUrl
                 );
