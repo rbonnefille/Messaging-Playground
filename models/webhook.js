@@ -19,8 +19,9 @@ class WebhookEvent {
         this.activeSwitchboardIntegrationId = this.payload.conversation.activeSwitchboardIntegration?.id;
         this.activeSwitchboardIntegrationName = this.payload.conversation.activeSwitchboardIntegration?.name;
         this.activeSwitchboardIntegrationIntegrationId = this.payload.conversation.activeSwitchboardIntegration?.integrationId;
-        this.activeSwitchboardIntegrationIntegrationType = this.payload.conversation.activeSwitchboardIntegration?.integrationType;
+        this.activeSwitchboardIntegrationIntegrationType = this.payload.conversation.activeSwitchboardIntegration?.integrationType;        
     }
+
     isNotAuthenticatedRequest(webhookSecret) {
         return webhookSecret === process.env.WEBHOOK_CONVERSATIONS_CREATE_SECRET || webhookSecret === process.env.WEBHOOK_CONVERSATIONS_MESSAGE_SECRET;
     }
@@ -30,7 +31,7 @@ class WebhookEvent {
     isAllowedChannel(){
         switch (this.eventType) {
             case "conversation:message":
-                return this.message.source.type === "android" || this.message.source.type === "ios";
+                return this.message.source.type !== "api:conversations";
             case "conversation:create":
                 return this.payload.source.type === "android" || this.payload.source.type === "ios";        
         }
@@ -72,6 +73,7 @@ class ConversationMessage extends WebhookEvent {
         this.userMetadata = this.message.author.user?.metadata;
         this.contentType = this.message.content.type;
         this.userMessage = this.message.content.text;
+        this.payload = this.message.content.payload;
         this.sourceIntegrationId = this.message.source.integrationId;
         this.sourceType = this.message.source.type;
     }
