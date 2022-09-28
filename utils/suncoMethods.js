@@ -79,9 +79,10 @@ async function sendMessage(
       });
       break;
     case "cat":
+      const catImage = await getCatPicture();
       messagePost.setContent({
           type: "image",
-          mediaUrl: await getCatPicture,
+          mediaUrl: catImage,
           text: "So cute no?"
       });
       break;

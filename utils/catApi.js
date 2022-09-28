@@ -4,18 +4,19 @@ require("dotenv").config();
 const cat_key = process.env.CAT_API_KEY;
 const cat_url = process.env.CAT_API_URL;
 
-const getCatPicture = axios
-  .get(cat_url, {
+exports.getCatPicture = async () => {
+  let response;
+  const config = {
     headers: {
-      "x-api-key": cat_key,
-    },
-  })
-  .then(response => {
-    // console.log(response.data[0].url);
-    return response.data[0].url;
-  })
-  .catch(error => {
-    console.error(error);
-  });
+      "x-api-key": cat_key
+    }
+  };
 
-module.exports = { getCatPicture };
+  try {
+    response = await axios.get(cat_url, config);
+  } catch (e) {
+    // catch error
+    throw new Error(e.message)
+  }
+  return response?.data[0]?.url ? response.data[0].url : "https://cdn2.thecatapi.com/images/agb.jpg";
+}
