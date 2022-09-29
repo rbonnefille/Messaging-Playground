@@ -1,13 +1,13 @@
-/* eslint-disable no-undef */
-require('dotenv').config();
-const Bot = require('../models/bot');
-const PassControlMetadata = require('./passControlMetadata');
-const ConversationMessage = require('../models/webhook').ConversationMessage;
+const Bot = require("../models/bot");
+const { ConversationCreate, ConversationMessage } = require("../models/webhook");
+const PassControlMetadata = require('../models/passControlMetadata');
+const logger = require("../utils/logger");
+const express = require("express");
+const router = express.Router();
 
-exports.conversationMessage = (req, res) => {
-    console.log("##########################");
-    console.log(JSON.stringify(req.body));
+router.use(logger);
 
+router.post("/messages", (req, res) => {
     const webhookMessage = new ConversationMessage(req);
 
     if (!webhookMessage.isNotAuthenticatedRequest(webhookMessage.webhookEventApiKey)) {
@@ -44,4 +44,29 @@ exports.conversationMessage = (req, res) => {
         }
         res.end();
     } 
-}
+});
+
+router.post("/creates", (req, res) => {
+    const webhookCreate = new ConversationCreate(req);
+
+    if (!webhookCreate.isNotAuthenticatedRequest(webhookCreate.webhookEventApiKey)) {
+        res.sendStatus(401);
+        return;
+    }
+
+    const bot = new Bot(webhookCreate.appId, webhookCreate.conversationId);
+    const metadata = new PassControlMetadata(webhookCreate);
+
+    if (webhookCreate.isConversationCreate(webhookCreate.eventType) && webhookCreate.isCreationReasonStartConversation(webhookCreate.creationReason) && webhookCreate.isAllowedChannel(webhookCreate.sourceType)) {
+        try {
+            bot.replyToUser("start", metadata);
+            res.end();
+        } catch (error) {
+            console.log(error);
+            res.status(500).send(err.message);
+        }
+        res.end();
+    }
+});
+
+module.exports = router;
