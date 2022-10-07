@@ -22,8 +22,8 @@ class WebhookEvent {
         this.activeSwitchboardIntegrationIntegrationType = this.payload.conversation.activeSwitchboardIntegration?.integrationType;        
     }
 
-    isNotAuthenticatedRequest(webhookSecret) {
-        return webhookSecret === process.env.WEBHOOK_CONVERSATIONS_CREATE_SECRET || webhookSecret === process.env.WEBHOOK_CONVERSATIONS_MESSAGE_SECRET;
+    isAuthenticatedRequest(webhookSecret) {
+        return webhookSecret === process.env.WEBHOOK_SUNCO;
     }
     isCurrentSwitchboardIntegration(activeSwitchboardIntegration){
         return activeSwitchboardIntegration === process.env.BOT_SWITCHBOARD_INTEGRATION_ID;
