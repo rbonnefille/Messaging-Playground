@@ -49,6 +49,18 @@ class Bot {
                 );
                 break;
             case "cat":
+            case "cats":
+            case "🐱":
+            case "😼":
+            case "😹":
+            case "🙀":
+            case "😾":
+            case "😿":
+            case "😻":
+            case "😺":
+            case "😸":
+            case "😽":
+            case "🐈":
                     sendMessage(
                     this.appId,
                     this.conversationId,
