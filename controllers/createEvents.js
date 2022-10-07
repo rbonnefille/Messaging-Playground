@@ -3,11 +3,13 @@ const Bot = require("../models/bot");
 const PassControlMetadata = require("../models/passControlMetadata");
 
 function createEvents(req, res, next) {
-  if (req.body.events[0]?.type !== "conversation:create") {
+
+  const webhookCreate = new ConversationCreate(req);
+
+  if (!webhookCreate.isConversationCreate(webhookCreate.webhookEventType)) {
     return next();
   }
-    
-  const webhookCreate = new ConversationCreate(req);
+
   const bot = new Bot(webhookCreate.appId, webhookCreate.conversationId);
   const metadata = new PassControlMetadata(webhookCreate);
 

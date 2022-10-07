@@ -41,11 +41,13 @@ class WebhookEvent {
 class ConversationCreate extends WebhookEvent {
     constructor(req) {
         super(req);
-        this.userId = this.payload.user?.id;
-        this.userExternalId = this.payload.user?.externalId;
-        this.creationReason = this.payload.creationReason;
-        this.sourceType = this.payload.source.type;
-        this.sourceIntegrationId = this.payload.source.integrationId;
+        if (this.isConversationCreate()) {
+            this.userId = this.payload.user?.id;
+            this.userExternalId = this.payload.user?.externalId;
+            this.creationReason = this.payload.creationReason;
+            this.sourceType = this.payload.source.type;
+            this.sourceIntegrationId = this.payload.source.integrationId;
+        }
     }
     isConversationCreate() {
         return this.eventType === "conversation:create";
@@ -58,24 +60,26 @@ class ConversationCreate extends WebhookEvent {
 class ConversationMessage extends WebhookEvent {
     constructor(req) {
         super(req);
-        this.messageId = this.message.id;
-        this.receivedAt = this.message.received;
-        this.authorId = this.message.author.userId;
-        this.avatarUrl = this.message.author?.avatarUrl;
-        this.displayName = this.message.author?.displayName;
-        this.authorType = this.message.author?.type;
-        this.userId = this.message.author.user?.id;
-        this.userExternalId = this.message.author.user?.externalId;
-        this.givenName = this.message.author.user?.profile.givenName;
-        this.email = this.message.author.user?.profile.email;
-        this.locale = this.message.author.user?.profile.locale;
-        this.signedUpAt = this.message.author.user?.signedUpAt;
-        this.userMetadata = this.message.author.user?.metadata;
-        this.contentType = this.message.content.type;
-        this.userMessage = this.message.content.text;
-        this.payload = this.message.content.payload;
-        this.sourceIntegrationId = this.message.source.integrationId;
-        this.sourceType = this.message.source.type;
+        if(this.isConversationMessage()){
+            this.messageId = this.message.id;
+            this.receivedAt = this.message.received;
+            this.authorId = this.message.author.userId;
+            this.avatarUrl = this.message.author?.avatarUrl;
+            this.displayName = this.message.author?.displayName;
+            this.authorType = this.message.author?.type;
+            this.userId = this.message.author.user?.id;
+            this.userExternalId = this.message.author.user?.externalId;
+            this.givenName = this.message.author.user?.profile.givenName;
+            this.email = this.message.author.user?.profile.email;
+            this.locale = this.message.author.user?.profile.locale;
+            this.signedUpAt = this.message.author.user?.signedUpAt;
+            this.userMetadata = this.message.author.user?.metadata;
+            this.contentType = this.message.content.type;
+            this.userMessage = this.message.content.text;
+            this.payload = this.message.content.payload;
+            this.sourceIntegrationId = this.message.source.integrationId;
+            this.sourceType = this.message.source.type;
+        }
     }
     isConversationMessage() {
         return this.eventType === "conversation:message";

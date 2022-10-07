@@ -3,11 +3,12 @@ const { ConversationMessage } = require("../models/webhook");
 const PassControlMetadata = require("../models/passControlMetadata");
 
 function messageEvents(req, res, next) {
-  if (req.body.events[0]?.type !== "conversation:message") {
+   
+  const webhookMessage = new ConversationMessage(req);
+
+  if (!webhookMessage.isConversationMessage(webhookMessage.eventType)) {
     return next();
   }
-
-  const webhookMessage = new ConversationMessage(req);
 
   if (
     !webhookMessage.isAuthenticatedRequest(webhookMessage.webhookEventApiKey)
