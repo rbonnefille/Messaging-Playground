@@ -1,291 +1,116 @@
 /* eslint-disable no-undef */
-const { sendActivity, sendMessage, passControl } = require('../utils/suncoMethods');
+const { getCatPicture } = require("../utils/catApi");
+
+const {
+  sendActivity,
+  sendMessage,
+  passControl,
+} = require("../utils/suncoMethods");
 
 class Bot {
-    constructor(appId, conversationId) {
-        this.appId = appId;
-        this.conversationId = conversationId;
-        // this.avatarUrl =
-        //     "https://i.pinimg.com/236x/a7/f8/ab/a7f8ab865a42a916a0fc8d99aea3bf27.jpg";
-        this.avatarUrl = "https://media.smooch.io/apps/6062e4fb75a38000d2988959/UmpgnbGvXG7vxipmVYt-iZ59/acme.png";
-        this.botName = "Bugs Bunny";
-        this.typingStart = "typing:start";
-        this.welcomeMessage =
-            "Hey there! Welcome to Acme Corp Support, I'm Bugs Bunny, how can I help you today?";
-        this.transferMessage = "Ok let me transfer you to a Zendesk agent.";
-        this.nextSwitchboardIntegration = "zd-agentWorkspace";
-        this.defaultMessage =
-            "Sorry I didn't get that. Can you please try to say something else?";
-        this.botMessage =
-            "I'm a bot, I'm not a real person. I'm just a bot that can help you with your problems.";
-        this.carouselMessage = "%((template:mexican_carousel))%";
-        this.tacosMessage = "🌮 are so yummy!!!";
-        this.burritoMessage = "🌯 are so yummy too!!!";
-        this.catMessage = "Here's a cat picture for you!";
+  constructor(appId, conversationId) {
+    this.messages = {
+      default:
+        "%((template:quick_replies))%",
+      error:
+        "Sorry I didn't get that. Can you please try to say something else?",
+      bot: "I'm a bot, I'm not a real person. I'm just a bot that can help you with your problems.",
+      carousel: "%((template:mexican_carousel))%",
+      compound: "%((template: smooch_tmpl_family_basket))%",
+      file: "%((template: smooch_tmpl_warranty))%",
+      form: "%((template: smooch_tmpl_lead_capture))%",
+      location: "%((template: smooch_tmpl_request_location))%",
+      tacos: "🌮 are so yummy!!!",
+      burrito: "🌯 are so yummy too!!!",
+      cat: "Here's a cat picture for you!",
+      handover: "I'm going to transfer you to a human agent."
+    };
+      this.data = {
+        appId: appId,
+        conversationId: conversationId,
+        author: {
+          avatarUrl:
+            "https://media.smooch.io/apps/6062e4fb75a38000d2988959/UmpgnbGvXG7vxipmVYt-iZ59/acme.png",
+          botName: "Bugs Bunny",
+        },
+        message: undefined,
+        image: undefined
+      };
+  }
+  async replyToUser(userMessage, switchBoardMetadata) {
+    switch (userMessage) {
+      case "hello":
+      case "hi":
+      case "hey":
+      case "help":
+      case "start":
+        this.data.message = this.messages.default;
+        sendActivity(this.data);
+        return setTimeout(sendMessage, 2000, this.data);
+      case "cat":
+      case "cats":
+      case "🐱":
+      case "😼":
+      case "😹":
+      case "🙀":
+      case "😾":
+      case "😿":
+      case "😻":
+      case "😺":
+      case "😸":
+      case "😽":
+      case "🐈":
+        const catImage = await getCatPicture();
+        this.data.message = this.messages.cat;
+        this.data.image = catImage;
+        sendActivity(this.data);
+        return setTimeout(sendMessage, 2000, this.data);
+      case "agent":
+        this.data.message = this.messages.handover;
+        sendActivity(this.data);
+        setTimeout(sendMessage, 2000, this.data);
+        return passControl(
+          this.data,
+          switchBoardMetadata
+        );
+      case "bot":
+        this.data.message = this.messages.bot;
+        sendActivity(this.data);
+        return setTimeout(sendMessage, 2000, this.data);
+      case "carousel":
+        this.data.message = this.messages.carousel;
+        sendActivity(this.data);
+        return setTimeout(sendMessage, 2000, this.data);
+      case "tacos":
+        this.data.message = this.messages.tacos;
+        sendActivity(this.data);
+        return setTimeout(sendMessage, 2000, this.data);
+      case "burritos":
+        this.data.message = this.messages.burrito;
+        sendActivity(this.data);
+        return setTimeout(sendMessage, 2000, this.data);
+      case "compound message":
+        this.data.message = this.messages.compound;
+        sendActivity(this.data);
+        return setTimeout(sendMessage, 2000, this.data);
+      case "file message":
+        this.data.message = this.messages.file;
+        sendActivity(this.data);
+        return setTimeout(sendMessage, 2000, this.data);
+      case "form message":
+        this.data.message = this.messages.form;
+        sendActivity(this.data);
+        return setTimeout(sendMessage, 2000, this.data);
+      case "location request":
+        this.data.message = this.messages.location;
+        sendActivity(this.data);
+        return setTimeout(sendMessage, 2000, this.data);
+      default:
+        this.data.message = this.messages.default;
+        sendActivity(this.data);
+        return setTimeout(sendMessage, 2000, this.data);
     }
-
-    replyToUser(userMessage, switchBoardMetadata) {
-        switch (userMessage) {
-            case "hello":
-            case "hi":
-            case "hey":
-            case "help":
-                sendActivity(
-                    this.appId,
-                    this.conversationId,
-                    this.typingStart,
-                    this.botName,
-                    this.avatarUrl
-                );
-                setTimeout(
-                    sendMessage,
-                    2000,
-                    this.appId,
-                    this.conversationId,
-                    this.welcomeMessage,
-                    "flow",
-                    this.botName,
-                    this.avatarUrl
-                );
-                break;
-            case "cat":
-            case "cats":
-            case "🐱":
-            case "😼":
-            case "😹":
-            case "🙀":
-            case "😾":
-            case "😿":
-            case "😻":
-            case "😺":
-            case "😸":
-            case "😽":
-            case "🐈":
-                    sendMessage(
-                    this.appId,
-                    this.conversationId,
-                    this.catMessage,
-                    "cat",
-                    this.botName,
-                    this.avatarUrl);
-                break;
-            case "agent":
-                sendActivity(
-                    this.appId,
-                    this.conversationId,
-                    this.typingStart,
-                    this.botName,
-                    this.avatarUrl
-                );
-                setTimeout(
-                    sendMessage,
-                    2000,
-                    this.appId,
-                    this.conversationId,
-                    this.transferMessage,
-                    "default",
-                    this.botName,
-                    this.avatarUrl
-                );
-                passControl(
-                    this.appId,
-                    this.conversationId,
-                    this.nextSwitchboardIntegration,
-                    switchBoardMetadata
-                );
-                break;
-            case "bot":
-                sendActivity(
-                    this.appId,
-                    this.conversationId,
-                    this.typingStart,
-                    this.botName,
-                    this.avatarUrl
-                );
-                setTimeout(
-                    sendMessage,
-                    2000,
-                    this.appId,
-                    this.conversationId,
-                    this.botMessage,
-                    "flow",
-                    this.botName,
-                    this.avatarUrl
-                );
-                break;
-            case "carousel":
-                sendActivity(
-                    this.appId,
-                    this.conversationId,
-                    this.typingStart,
-                    this.botName,
-                    this.avatarUrl
-                );
-                setTimeout(
-                    sendMessage,
-                    2000,
-                    this.appId,
-                    this.conversationId,
-                    this.carouselMessage,
-                    "default",
-                    this.botName,
-                    this.avatarUrl
-                );
-                break;
-            case "tacos":
-                sendActivity(
-                    this.appId,
-                    this.conversationId,
-                    this.typingStart,
-                    this.botName,
-                    this.avatarUrl
-                );
-                setTimeout(
-                    sendMessage,
-                    2000,
-                    this.appId,
-                    this.conversationId,
-                    this.tacosMessage,
-                    "default",
-                    this.botName,
-                    this.avatarUrl
-                );
-                break;
-            case "burritos":
-                sendActivity(
-                    this.appId,
-                    this.conversationId,
-                    this.typingStart,
-                    this.botName,
-                    this.avatarUrl
-                );
-                setTimeout(
-                    sendMessage,
-                    2000,
-                    this.appId,
-                    this.conversationId,
-                    this.burritoMessage,
-                    "default",
-                    this.botName,
-                    this.avatarUrl
-                );
-                break;
-            case "compound message":
-                sendActivity(
-                    this.appId,
-                    this.conversationId,
-                    this.typingStart,
-                    this.botName,
-                    this.avatarUrl
-                );
-                setTimeout(
-                    sendMessage,
-                    2000,
-                    this.appId,
-                    this.conversationId,
-                    "%((template: smooch_tmpl_family_basket))%",
-                    "default",
-                    this.botName,
-                    this.avatarUrl
-                );
-                break;
-            case "file message":
-                sendActivity(
-                    this.appId,
-                    this.conversationId,
-                    this.typingStart,
-                    this.botName,
-                    this.avatarUrl
-                );
-                setTimeout(
-                    sendMessage,
-                    2000,
-                    this.appId,
-                    this.conversationId,
-                    "%((template: smooch_tmpl_warranty))%",
-                    "default",
-                    this.botName,
-                    this.avatarUrl
-                );
-                break;
-            case "form message":
-                sendActivity(
-                    this.appId,
-                    this.conversationId,
-                    this.typingStart,
-                    this.botName,
-                    this.avatarUrl
-                );
-                setTimeout(
-                    sendMessage,
-                    2000,
-                    this.appId,
-                    this.conversationId,
-                    "%((template: smooch_tmpl_lead_capture))%",
-                    "default",
-                    this.botName,
-                    this.avatarUrl
-                );
-                break;
-            case "location request":
-                sendActivity(
-                    this.appId,
-                    this.conversationId,
-                    this.typingStart,
-                    this.botName,
-                    this.avatarUrl
-                );
-                setTimeout(
-                    sendMessage,
-                    2000,
-                    this.appId,
-                    this.conversationId,
-                    "%((template: smooch_tmpl_request_location))%",
-                    "default",
-                    this.botName,
-                    this.avatarUrl
-                );
-                break;
-            case "start":
-                sendActivity(
-                    this.appId,
-                    this.conversationId,
-                    this.typingStart,
-                    this.botName,
-                    this.avatarUrl
-                );
-                setTimeout(
-                    sendMessage,
-                    2000,
-                    this.appId,
-                    this.conversationId,
-                    this.welcomeMessage,
-                    "flow",
-                    this.botName,
-                    this.avatarUrl
-                );
-                break;
-            default:
-                sendActivity(
-                    this.appId,
-                    this.conversationId,
-                    this.typingStart,
-                    this.botName,
-                    this.avatarUrl
-                );
-                setTimeout(
-                    sendMessage,
-                    2000,
-                    this.appId,
-                    this.conversationId,
-                    this.defaultMessage,
-                    "flow",
-                    this.botName,
-                    this.avatarUrl
-                );
-                break;
-        }
-    }
+  }
 }
 
 module.exports = Bot;

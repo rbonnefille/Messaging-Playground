@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const SunshineConversationsClient = require("sunshine-conversations-client");
-const { getCatPicture } = require("./catApi");
+const axios = require("axios");
+const { env } = require("process");
 require("dotenv").config();
 
 const defaultClient = SunshineConversationsClient.ApiClient.instance;
@@ -9,134 +10,140 @@ const basicAuth = defaultClient.authentications["basicAuth"];
 basicAuth.username = process.env.USERNAME;
 basicAuth.password = process.env.PASSWORD;
 
-async function sendActivity(
-  appId,
-  conversationId,
-  activityType,
-  botName,
-  avatarUrl
-) {
-  const apiInstance = new SunshineConversationsClient.ActivitiesApi();
-  const activityPost = {
-    author: { type: "business", displayName: botName, avatarUrl: avatarUrl },
-    type: activityType,
-  };
-  apiInstance.postActivity(appId, conversationId, activityPost).then(
-    function (data) {
-      console.log(
-        `postActivity API called successfully for ConversationId: ${conversationId}`
-      );
-    },
-    function (error) {
-      console.error(error);
-    }
-  );
-}
+const suncoEndpoints = {
+  messages: "messages",
+  activity: "activity",
+  passControl: "passControl"
+};
 
-async function sendMessage(
-  appId,
-  conversationId,
-  message,
-  actions,
-  botName,
-  avatarUrl
-) {
-  const apiInstance = new SunshineConversationsClient.MessagesApi();
-  const messagePost = new SunshineConversationsClient.MessagePost();
-  messagePost.setAuthor({
+// const actionsQuickReply = [
+//   { text: "Agent", type: "reply", payload: "agent" },
+//   { text: "Bot", type: "reply", payload: "bot" },
+//   { text: "Hi", type: "reply", payload: "hi" },
+//   { text: "Help", type: "reply", payload: "help" },
+//   { text: "Carousel", type: "reply", payload: "carousel" },
+//   {
+//     text: "Compound Message",
+//     type: "reply",
+//     payload: "compound message",
+//   },
+//   { text: "File Message", type: "reply", payload: "file message" },
+//   { text: "Form Message", type: "reply", payload: "form message" },
+//   {
+//     text: "Location Request",
+//     type: "reply",
+//     payload: "location request",
+//   },
+//   { text: "Show me a cat", type: "reply", payload: "cat" },
+// ];
+
+
+function constructBody(author, message, image) {
+  const messageAuthor = {
     type: "business",
-    avatarUrl: avatarUrl,
-    displayName: botName,
-  });
-  switch (actions) {
-    case "default":
-      messagePost.setContent({ type: "text", text: message });
-      break;
-    case "flow":
-      messagePost.setContent({
+    displayName: author.botName,
+    avatarUrl: author.avatarUrl,
+  };
+  if (image) {
+    return Object.assign({
+      author: messageAuthor,
+      content: {
+        type: "image",
+        mediaUrl: image,
+        text: message,
+      },
+    });
+  } else {
+    return Object.assign({
+      author: messageAuthor,
+      content: {
         type: "text",
         text: message,
-        actions: [
-          { text: "Agent", type: "reply", payload: "agent" },
-          { text: "Bot", type: "reply", payload: "bot" },
-          { text: "Hi", type: "reply", payload: "hi" },
-          { text: "Help", type: "reply", payload: "help" },
-          { text: "Carousel", type: "reply", payload: "carousel" },
-          {
-            text: "Compound Message",
-            type: "reply",
-            payload: "compound message",
-          },
-          { text: "File Message", type: "reply", payload: "file message" },
-          { text: "Form Message", type: "reply", payload: "form message" },
-          {
-            text: "Location Request",
-            type: "reply",
-            payload: "location request",
-          },
-          { text: "Show me a cat", type: "reply", payload: "cat" }
-        ],
-      });
-      break;
-    case "cat":
-      const catImage = await getCatPicture();
-      messagePost.setContent({
-          type: "image",
-          mediaUrl: catImage,
-          text: "So cute no?"
-      });
-      break;
-    default:
-      console.log(`Error while sending the message`);
-      break;
+      },
+    });
   }
+}
 
-  //alternative way to send the messagePost
-  //messagePost = {"author":{"type": "business" }, "content": { "type": "text", "text": "Hello again!" }};
-  // or data.author = { type: 'business' }; data.content = { type: 'form', fields: [
-  await apiInstance.postMessage(appId, conversationId, messagePost).then(
-    function (data) {
-      // console.log('API called successfully. Returned data: ' + JSON.stringify(data));
-      console.log(
-        `postMessage API called successfully for ConversationId: ${conversationId}`
-      );
-    },
-    function (error) {
-      console.error(error);
-    }
+function activityBody(author){
+  const messageAuthor = {
+    type: "business",
+    displayName: author.botName,
+    avatarUrl: author.avatarUrl,
+  };
+  return Object.assign({
+    author: messageAuthor,
+    type: "typing:start",
+  });
+}
+
+async function postRequest(body, appId, conversationId, suncoEndpoint) {
+  const url = `https://api.smooch.io/v2/apps/${appId}/conversations/${conversationId}/${suncoEndpoint}`;
+  let response;
+  try {
+    response = await axios.post(url, body, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.SUNCO_JWT}`,
+      },
+    });
+    console.log(
+      `${suncoEndpoint} API called successfully for ConversationId: ${conversationId}`
+    );
+  } catch (e) {
+    // catch error
+    throw new Error(JSON.stringify(e.response.data, null, 2));
+  }
+  return response;
+}
+
+function sendActivity(data) {
+  return postRequest(
+    activityBody(data.author),
+    data.appId,
+    data.conversationId,
+    suncoEndpoints.activity
   );
 }
 
-async function passControl(
-  appId,
-  conversationId,
-  nextSwitchboardIntegration,
-  switchBoardMetadata
-) {
-  const apiInstance = new SunshineConversationsClient.SwitchboardActionsApi();
-  const passControlBody = new SunshineConversationsClient.PassControlBody(); // PassControlBody |
-  passControlBody[`switchboardIntegration`] = nextSwitchboardIntegration;
-  passControlBody.metadata = {
-    "dataCapture.systemField.requester.name": switchBoardMetadata.givenName,
-    "dataCapture.systemField.requester.email": switchBoardMetadata.email,
-    "dataCapture.ticketField.360023540498": switchBoardMetadata.externalId,
-    "dataCapture.systemField.tags":
-      "switchBoardMetadata," + switchBoardMetadata.eventSource,
-    "dataCapture.ticketField.360023540658": switchBoardMetadata.eventSource,
-    "dataCapture.ticketField.1900005043913": switchBoardMetadata.conversation,
-  };
+function sendMessage(data) {
+  return postRequest(
+    constructBody(data.author, data.message, data.image),
+    data.appId,
+    data.conversationId,
+    suncoEndpoints.messages
+  );
+  //  switch (data.dialogue) {
+  //     case "default":
+  //       return postRequest(constructBody(author, message), appId, conversationId,"messages");
+  //     case "flow":
+  //       return postRequest(constructBody(author, message, actionsQuickReply), appId, conversationId, "messages");
+  //     case "cat":
+  //       const catImage = await getCatPicture();
+  //       return postRequest(constructBody(author, "So cute no?",dialogue=null , catImage), appId, conversationId, "messages");
+  //     default:
+  //       return console.log(`Error while sending the message`);
+  //   }
+}
 
-  console.log(passControlBody.metadata);
-
-  await apiInstance.passControl(appId, conversationId, passControlBody).then(
-    function (data) {
-      console.log(
-        `passControl API called successfully for ConversationId: ${conversationId}`
-      );
-    },
-    function (error) {
-      console.error(error);
+function passControl(data, switchBoardMetadata) {
+   const passControlBody = {
+    "switchboardIntegration": process.env.NEXT_SWITCHBOARD_INTEGRATION,
+    "metadata": {
+      "dataCapture.systemField.requester.name": switchBoardMetadata.givenName,
+      "dataCapture.systemField.requester.email": switchBoardMetadata.email,
+      "dataCapture.ticketField.360023540498": switchBoardMetadata.externalId,
+      "dataCapture.systemField.tags":
+        `switchBoardMetadata, ${switchBoardMetadata.eventSource}`,
+      "dataCapture.ticketField.360023540658": switchBoardMetadata.eventSource,
+      "dataCapture.ticketField.1900005043913": switchBoardMetadata.conversation
     }
+  };
+  console.log(passControlBody);
+  return postRequest(
+    passControlBody,
+    data.appId,
+    data.conversationId,
+    suncoEndpoints.passControl
   );
 }
 
