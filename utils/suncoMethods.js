@@ -112,17 +112,6 @@ function sendMessage(data) {
     data.conversationId,
     suncoEndpoints.messages
   );
-  //  switch (data.dialogue) {
-  //     case "default":
-  //       return postRequest(constructBody(author, message), appId, conversationId,"messages");
-  //     case "flow":
-  //       return postRequest(constructBody(author, message, actionsQuickReply), appId, conversationId, "messages");
-  //     case "cat":
-  //       const catImage = await getCatPicture();
-  //       return postRequest(constructBody(author, "So cute no?",dialogue=null , catImage), appId, conversationId, "messages");
-  //     default:
-  //       return console.log(`Error while sending the message`);
-  //   }
 }
 
 function passControl(data, switchBoardMetadata) {
