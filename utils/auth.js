@@ -32,8 +32,12 @@ const jwt = require("jsonwebtoken");
   }
 
 exports.returnToken = (req, res) => {
-    const jwt = new Jwt(req.body.external_id, req.body.name, req.body.email);
-    jwtToken = jwt.signJwt();
-    console.log(`JWT Token generated: ${jwtToken}`);
-    res.json({ token: jwtToken });
+    if (req.get('origin') === 'https://romain.ngrok.io') {
+      const jwt = new Jwt(req.body.external_id, req.body.name, req.body.email);
+      jwtToken = jwt.signJwt();
+      console.log(`JWT Token generated: ${jwtToken}`);
+      res.json({ token: jwtToken });
+    } else {
+      res.status(403).send('Forbidden');
+    }
   }
