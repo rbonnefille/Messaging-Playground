@@ -1,6 +1,7 @@
 <html>
 
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="/public/assets/styles.css" />
   <title>SunCo Web SDK</title>
   <script>
@@ -80,6 +81,7 @@
         n.send();
     })(window, document, "Smooch", myIntegrationId, webSdkVersion);
   </script>
+
 </head>
 
 <body>
@@ -156,7 +158,7 @@
         },
         body: JSON.stringify(userData),
       })
-        .then((response) => response.json())
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((data) => {
           console.log("Success:", data.token);
           const token = data.token;
@@ -169,7 +171,7 @@
         })
         .catch((error) => {
           console.error("Error:", error);
-          console.log(error);
+          window.alert(`Error: ${error.statusText}`);
         });
     }
 
