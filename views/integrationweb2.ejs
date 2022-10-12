@@ -147,7 +147,6 @@
       console.log("SunCo widget ready");
       var user = Smooch.getUser();
       console.log(user);
-      Smooch.loadConversation('6704d49e79cd05bbc721ea8d');
     });
 
     function getToken(userData) {
@@ -188,9 +187,7 @@
       };
       getToken(data);
       setTimeout(() => {
-        Smooch.loadConversation('6704d49e79cd05bbc721ea8d').then(function () {
           Smooch.open();
-        });
       }, 1000);
     }
 
