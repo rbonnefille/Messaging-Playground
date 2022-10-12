@@ -2,10 +2,9 @@
 const { getCatPicture } = require("../utils/catApi");
 
 const {
-  sendActivity,
-  sendMessage,
   passControl,
-} = require("../utils/suncoMethods");
+  sendResponse
+} = require("../utils/suncoApi");
 
 class Bot {
   constructor(appId, conversationId) {
@@ -23,7 +22,8 @@ class Bot {
       tacos: "🌮 are so yummy!!!",
       burrito: "🌯 are so yummy too!!!",
       cat: "Here's a cat picture for you!",
-      handover: "I'm going to transfer you to a human agent."
+      handover: "I'm going to transfer you to a human agent.",
+      webview: "%((template: webview))%"
     };
       this.data = {
         appId: appId,
@@ -45,8 +45,7 @@ class Bot {
       case "help":
       case "start":
         this.data.message = this.messages.default;
-        sendActivity(this.data);
-        return setTimeout(sendMessage, 2000, this.data);
+        return sendResponse(this.data);
       case "cat":
       case "cats":
       case "🐱":
@@ -63,52 +62,46 @@ class Bot {
         const catImage = await getCatPicture();
         this.data.message = this.messages.cat;
         this.data.image = catImage;
-        sendActivity(this.data);
-        return setTimeout(sendMessage, 2000, this.data);
+        return sendResponse(this.data);
       case "agent":
         this.data.message = this.messages.handover;
-        sendActivity(this.data);
-        setTimeout(sendMessage, 2000, this.data);
+        sendResponse(this.data);
         return passControl(
           this.data,
           switchBoardMetadata
         );
       case "bot":
         this.data.message = this.messages.bot;
-        sendActivity(this.data);
-        return setTimeout(sendMessage, 2000, this.data);
+        return sendResponse(this.data);
       case "carousel":
         this.data.message = this.messages.carousel;
-        sendActivity(this.data);
-        return setTimeout(sendMessage, 2000, this.data);
+        return sendResponse(this.data);
       case "tacos":
         this.data.message = this.messages.tacos;
-        sendActivity(this.data);
-        return setTimeout(sendMessage, 2000, this.data);
+        return sendResponse(this.data);
       case "burritos":
         this.data.message = this.messages.burrito;
-        sendActivity(this.data);
-        return setTimeout(sendMessage, 2000, this.data);
+        return sendResponse(this.data);
       case "compound message":
         this.data.message = this.messages.compound;
-        sendActivity(this.data);
-        return setTimeout(sendMessage, 2000, this.data);
+        return sendResponse(this.data);
       case "file message":
         this.data.message = this.messages.file;
-        sendActivity(this.data);
-        return setTimeout(sendMessage, 2000, this.data);
+        return sendResponse(this.data);
       case "form message":
         this.data.message = this.messages.form;
-        sendActivity(this.data);
-        return setTimeout(sendMessage, 2000, this.data);
+        return sendResponse(this.data);
       case "location request":
         this.data.message = this.messages.location;
-        sendActivity(this.data);
-        return setTimeout(sendMessage, 2000, this.data);
+        return sendResponse(this.data);
+      case "webview":
+        this.data.message = this.messages.webview;
+        return sendResponse(this.data);
+      case "passControl":
+        return passControl(this.data, switchBoardMetadata);  
       default:
         this.data.message = this.messages.default;
-        sendActivity(this.data);
-        return setTimeout(sendMessage, 2000, this.data);
+        return sendResponse(this.data);
     }
   }
 }
