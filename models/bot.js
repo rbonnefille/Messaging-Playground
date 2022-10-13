@@ -77,21 +77,27 @@ class Bot {
         this.data.message = this.messages.carousel;
         return sendResponse(this.data);
       case "tacos":
+      case "taco":
         this.data.message = this.messages.tacos;
         return sendResponse(this.data);
       case "burritos":
+      case "burrito":
         this.data.message = this.messages.burrito;
         return sendResponse(this.data);
       case "compound message":
+      case "compound":
         this.data.message = this.messages.compound;
         return sendResponse(this.data);
       case "file message":
+      case "file":
         this.data.message = this.messages.file;
         return sendResponse(this.data);
       case "form message":
+      case "form":
         this.data.message = this.messages.form;
         return sendResponse(this.data);
       case "location request":
+      case "location":
         this.data.message = this.messages.location;
         return sendResponse(this.data);
       case "webview":
@@ -100,7 +106,7 @@ class Bot {
       case "passControl":
         return passControl(this.data, switchBoardMetadata);  
       default:
-        this.data.message = this.messages.default;
+        this.data.message = this.messages.error;
         return sendResponse(this.data);
     }
   }
