@@ -1,14 +1,6 @@
 /* eslint-disable no-undef */
-const SunshineConversationsClient = require("sunshine-conversations-client");
 const axios = require("axios");
-const { env } = require("process");
 require("dotenv").config();
-
-const defaultClient = SunshineConversationsClient.ApiClient.instance;
-const basicAuth = defaultClient.authentications["basicAuth"];
-
-basicAuth.username = process.env.USERNAME;
-basicAuth.password = process.env.PASSWORD;
 
 const suncoEndpoints = {
   messages: "messages",
