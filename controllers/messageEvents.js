@@ -2,24 +2,31 @@ const Bot = require("../models/bot");
 const { ConversationMessage } = require("../models/webhook");
 const PassControlMetadata = require("../models/passControlMetadata");
 
-function messageEvents(req, res, next) {
+const messageEvents = (req, res, next) => {
    
   const webhookMessage = new ConversationMessage(req);
+  const metadata = new PassControlMetadata(webhookMessage);
+  const bot = new Bot(webhookMessage.appId, webhookMessage.conversationId);
 
   if (!webhookMessage.isConversationMessage(webhookMessage.eventType)) {
     return next();
   }
 
+  if (webhookMessage.sourceIntegrationId === "61a78b31aff78000eb72d579") {
+    bot.replyToUser("passControl", metadata);
+    res.end();
+    return;
+  }
+
   if (
     !webhookMessage.isAuthenticatedRequest(webhookMessage.webhookEventApiKey)
   ) {
-    res.sendStatus(401);
+    res.sendStatus(401).end();
     return;
   }
 
   if (webhookMessage.isBusinessMessage(webhookMessage.authorType)) {
-    res.sendStatus(200);
-    res.end();
+    res.sendStatus(200).end();
     return;
   }
 
@@ -28,13 +35,12 @@ function messageEvents(req, res, next) {
       webhookMessage.activeSwitchboardIntegrationId
     )
   ) {
-    res.sendStatus(200);
-    res.end();
+    res.sendStatus(200).end();
     return;
   }
 
-  const metadata = new PassControlMetadata(webhookMessage);
-  const bot = new Bot(webhookMessage.appId, webhookMessage.conversationId);
+  // const metadata = new PassControlMetadata(webhookMessage);
+  // const bot = new Bot(webhookMessage.appId, webhookMessage.conversationId);
 
   if (
     webhookMessage.isTextMessage(webhookMessage.contentType) &&
@@ -42,9 +48,9 @@ function messageEvents(req, res, next) {
   ) {
     try {
       if (webhookMessage.payload) {
-        bot.replyToUser(webhookMessage.payload.toLowerCase(), metadata);
+        bot.replyToUser(webhookMessage.payload.toLowerCase().trim(), metadata);
       } else {
-        bot.replyToUser(webhookMessage.userMessage.toLowerCase(), metadata);
+        bot.replyToUser(webhookMessage.userMessage.toLowerCase().trim(), metadata);
       }
     } catch (err) {
       console.log(`Error in message handler ${err}`);
@@ -52,6 +58,7 @@ function messageEvents(req, res, next) {
     }
   }
   res.end();
+  return;
 }
 
 module.exports = messageEvents;

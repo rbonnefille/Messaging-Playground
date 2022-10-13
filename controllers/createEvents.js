@@ -2,7 +2,7 @@ const { ConversationCreate } = require("../models/webhook");
 const Bot = require("../models/bot");
 const PassControlMetadata = require("../models/passControlMetadata");
 
-function createEvents(req, res, next) {
+const createEvents = (req, res, next) => {
 
   const webhookCreate = new ConversationCreate(req);
 
