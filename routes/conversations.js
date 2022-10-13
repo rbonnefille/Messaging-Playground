@@ -9,4 +9,8 @@ router.use(logger);
 
 router.post("/", createEvents, messageEvents, readEvents)
 
+router.head("/", (req, res) => {
+    return res.sendStatus(200);
+});
+
 module.exports = router;
