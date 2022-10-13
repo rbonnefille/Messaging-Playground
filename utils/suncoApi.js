@@ -38,7 +38,7 @@ const suncoEndpoints = {
 // ];
 
 
-function constructBody(author, message, image) {
+const constructBody = (author, message, image) => {
   const messageAuthor = {
     type: "business",
     displayName: author.botName,
@@ -64,7 +64,7 @@ function constructBody(author, message, image) {
   }
 }
 
-function activityBody(author){
+const activityBody = (author) =>{
   const messageAuthor = {
     type: "business",
     displayName: author.botName,
@@ -76,7 +76,7 @@ function activityBody(author){
   });
 }
 
-async function postRequest(body, appId, conversationId, suncoEndpoint) {
+const postRequest = async (body, appId, conversationId, suncoEndpoint) => {
   const url = `https://api.smooch.io/v2/apps/${appId}/conversations/${conversationId}/${suncoEndpoint}`;
   let response;
   try {
@@ -96,7 +96,7 @@ async function postRequest(body, appId, conversationId, suncoEndpoint) {
   return response;
 }
 
-function sendActivity(data) {
+const sendActivity = (data) => {
   postRequest(
     activityBody(data.author),
     data.appId,
@@ -105,7 +105,7 @@ function sendActivity(data) {
   );
 }
 
-function sendMessage(data) {
+const sendMessage = (data) => {
   return postRequest(
     constructBody(data.author, data.message, data.image),
     data.appId,
@@ -114,16 +114,16 @@ function sendMessage(data) {
   );
 }
 
-function sendResponse(data) {
+const sendResponse = (data) => {
   if (data) {
     sendActivity(data, sendMessage);
-    setTimeout(sendMessage, 2000, data);
+    setTimeout(sendMessage, 1200, data);
   } else {
     throw new Error("No data provided");
   }
 }
 
-function passControl(data, switchBoardMetadata) {
+const passControl = (data, switchBoardMetadata) => {
    const passControlBody = {
     "switchboardIntegration": process.env.NEXT_SWITCHBOARD_INTEGRATION,
     "metadata": {
