@@ -1,11 +1,11 @@
 const fs = require("fs");
 const logger = (req, res, next) => {
   if (req.body?.events[0]?.payload?.message?.author?.type === "user") {
-    console.log(`#####################################################`);
-    console.log(`Event type: ${req.body.events[0]?.type}`);
-    console.log(
-      `Message from: ${req.body.events[0]?.payload?.message?.author?.type}`
-    );
+    // console.log(`#####################################################`);
+    // console.log(`Event type: ${req.body.events[0]?.type}`);
+    // console.log(
+    //   `Message from: ${req.body.events[0]?.payload?.message?.author?.type}`
+    // );
 
     var stream = fs.createWriteStream(
       "/Users/rbonnefille/Documents/Testing/SmoochLibs/NodeJSLib/suncoBot/logs/logs.log",
