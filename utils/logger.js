@@ -1,19 +1,20 @@
 const fs = require("fs");
 const logger = (req, res, next) => {
-  if (req.body?.events[0]?.payload?.message?.author?.type === "user") {
-    // console.log(`#####################################################`);
-    // console.log(`Event type: ${req.body.events[0]?.type}`);
-    // console.log(
-    //   `Message from: ${req.body.events[0]?.payload?.message?.author?.type}`
-    // );
-
+  const authorType = req.body.events[0]?.payload?.message?.author?.type;
+  if (authorType === "user") {
+    const conversationId = req.body.events[0].payload.conversation.id;
+    const createdAt = req.body.events[0]?.createdAt;
+    const userId = req.body.events[0].payload?.message?.author?.userId;
+    const message = req.body.events[0]?.payload?.message?.content?.text;
+    const channel = req.body.events[0]?.payload?.message?.source?.type;
+    
     var stream = fs.createWriteStream(
       "/Users/rbonnefille/Documents/Testing/SmoochLibs/NodeJSLib/suncoBot/logs/logs.log",
       { flags: "a" }
     );
     // stream.write(JSON.stringify(req.body, null, 2) + ",\n");
     stream.write(
-      `${req.body.events[0]?.createdAt} - UserId: ${req.body.events[0]?.payload?.message?.author.userId} - ConversationId: ${req.body.events[0]?.payload?.conversation?.id}\n`
+      `${createdAt} - UserId: ${userId} - ConversationId: ${conversationId} - Message: ${message} - Channel: ${channel}\n`
     );
     stream.on("error", (err) => {
       console.log(`Error in read stream... ${err}`);
