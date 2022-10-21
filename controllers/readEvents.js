@@ -1,5 +1,3 @@
-const logger = require("../utils/logger");
-
 const readEvents = (req, res, next) => {
   const eventType = req.body.events[0].type;
   const conversationId = req.body.events[0].payload.conversation.id;
