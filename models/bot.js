@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 const { getCatPicture } = require("../utils/catApi");
+const executeQueries = require("../controllers/gdf");
 
 const {
   passControl,
@@ -104,7 +105,11 @@ class Bot {
         this.data.message = this.messages.webview;
         return sendResponse(this.data);
       case "passControl":
-        return passControl(this.data, switchBoardMetadata);  
+        return passControl(this.data, switchBoardMetadata);
+      case "gdf":
+        const gdf = await executeQueries("Hey there, how are you?");
+        this.data.message = gdf;
+        return sendResponse(this.data);  
       default:
         this.data.message = this.messages.error;
         return sendResponse(this.data);
