@@ -83,7 +83,7 @@ const postRequest = async (body, appId, conversationId, suncoEndpoint) => {
     );
   } catch (e) {
     // catch error
-    throw new Error(JSON.stringify(e.response.data, null, 2));
+    throw new Error(JSON.stringify(e?.response?.data, null, 2) || e);
   }
   return response;
 }
