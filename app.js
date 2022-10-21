@@ -1,6 +1,7 @@
 const express = require("express");
 const { returnToken } = require("./utils/auth");
 const conversationRouter = require("./routes/conversations");
+const dialogFlow = require("./routes/dialogFlow");
 const { BROWSER_SESSION_STORAGE_KEY: sessionStorageKey } = process.env;
 
 require("dotenv").config();
@@ -14,6 +15,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/conversations", conversationRouter);
+
+app.use("/gdf", dialogFlow);
 
 app.get("/integrationweb2", (req, res) => {
     res.render("integrationweb2.ejs", { sessionStorageKey: sessionStorageKey });
