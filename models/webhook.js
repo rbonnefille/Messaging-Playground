@@ -33,7 +33,7 @@ class WebhookEvent {
             case "conversation:message":
                 return this.message.source.type !== "api:conversations";
             case "conversation:create":
-                return this.payload.source.type === "android" || this.payload.source.type === "ios";        
+                return this.payload.source.type === "android" || this.payload.source.type === "ios" || this.payload.source.type === "web";        
         }
     }
 }
