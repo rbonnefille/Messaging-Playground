@@ -26,7 +26,8 @@ const createEvents = (req, res, next) => {
     webhookCreate.isAllowedChannel(webhookCreate.sourceType)
   ) {
     try {
-      bot.replyToUser("start", metadata);
+      webhookCreate.userMessage = "start";
+      bot.replyToUser(webhookCreate, metadata);
       res.end();
     } catch (error) {
       console.log(error);

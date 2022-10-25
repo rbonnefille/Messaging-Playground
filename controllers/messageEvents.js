@@ -39,18 +39,13 @@ const messageEvents = (req, res, next) => {
     return;
   }
 
-  // const metadata = new PassControlMetadata(webhookMessage);
-  // const bot = new Bot(webhookMessage.appId, webhookMessage.conversationId);
-
   if (
     webhookMessage.isTextMessage(webhookMessage.contentType) &&
     webhookMessage.isAllowedChannel(webhookMessage.sourceType)
   ) {
     try {
-      if (webhookMessage.payload) {
-        bot.replyToUser(webhookMessage.payload.toLowerCase().trim(), metadata);
-      } else {
-        bot.replyToUser(webhookMessage.userMessage.toLowerCase().trim(), metadata);
+      if (webhookMessage.userMessage) {
+        bot.replyToUser(webhookMessage, metadata);
       }
     } catch (err) {
       console.log(`Error in message handler ${err}`);

@@ -30,19 +30,19 @@ const suncoEndpoints = {
 // ];
 
 
-const constructBody = (author, message, image) => {
+const constructBody = (data) => {
   const messageAuthor = {
     type: "business",
-    displayName: author.botName,
-    avatarUrl: author.avatarUrl,
+    displayName: data.author.botName,
+    avatarUrl: data.author.avatarUrl,
   };
-  if (image) {
+  if (data.image) {
     return Object.assign({
       author: messageAuthor,
       content: {
         type: "image",
-        mediaUrl: image,
-        text: message,
+        mediaUrl: data.image,
+        text: data.message,
       },
     });
   } else {
@@ -50,7 +50,7 @@ const constructBody = (author, message, image) => {
       author: messageAuthor,
       content: {
         type: "text",
-        text: message,
+        text: data.message,
       },
     });
   }
@@ -99,7 +99,7 @@ const sendActivity = (data) => {
 
 const sendMessage = (data) => {
   return postRequest(
-    constructBody(data.author, data.message, data.image),
+    constructBody(data),
     data.appId,
     data.conversationId,
     suncoEndpoints.messages

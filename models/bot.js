@@ -26,7 +26,7 @@ class Bot {
       handover: "I'm going to transfer you to a human agent.",
       webview: "%((template: webview))%"
     };
-      this.data = {
+      this.replyData = {
         appId: appId,
         conversationId: conversationId,
         author: {
@@ -38,15 +38,17 @@ class Bot {
         image: undefined
       };
   }
-  async replyToUser(userMessage, switchBoardMetadata) {
-    switch (userMessage) {
+
+  async replyToUser(eventMessage, switchBoardMetadata) {
+    const userQuery = eventMessage.userMessage;
+    switch (userQuery) {
       case "hello":
       case "hi":
       case "hey":
       case "help":
       case "start":
-        this.data.message = this.messages.default;
-        return sendResponse(this.data);
+        this.replyData.message = this.messages.default;
+        return sendResponse(this.replyData);
       case "cat":
       case "cats":
       case "🐱":
@@ -61,58 +63,58 @@ class Bot {
       case "😽":
       case "🐈":
         const catImage = await getCatPicture();
-        this.data.message = this.messages.cat;
-        this.data.image = catImage;
-        return sendResponse(this.data);
+        this.replyData.message = this.messages.cat;
+        this.replyData.image = catImage;
+        return sendResponse(this.replyData);
       case "agent":
-        this.data.message = this.messages.handover;
-        sendResponse(this.data);
+        this.replyData.message = this.messages.handover;
+        sendResponse(this.replyData);
         return passControl(
-          this.data,
+          this.replyData,
           switchBoardMetadata
         );
       case "bot":
-        this.data.message = this.messages.bot;
-        return sendResponse(this.data);
+        this.replyData.message = this.messages.bot;
+        return sendResponse(this.replyData);
       case "carousel":
-        this.data.message = this.messages.carousel;
-        return sendResponse(this.data);
+        this.replyData.message = this.messages.carousel;
+        return sendResponse(this.replyData);
       case "tacos":
       case "taco":
-        this.data.message = this.messages.tacos;
-        return sendResponse(this.data);
+        this.replyData.message = this.messages.tacos;
+        return sendResponse(this.replyData);
       case "burritos":
       case "burrito":
-        this.data.message = this.messages.burrito;
-        return sendResponse(this.data);
+        this.replyData.message = this.messages.burrito;
+        return sendResponse(this.replyData);
       case "compound message":
       case "compound":
-        this.data.message = this.messages.compound;
-        return sendResponse(this.data);
+        this.replyData.message = this.messages.compound;
+        return sendResponse(this.replyData);
       case "file message":
       case "file":
-        this.data.message = this.messages.file;
-        return sendResponse(this.data);
+        this.replyData.message = this.messages.file;
+        return sendResponse(this.replyData);
       case "form message":
       case "form":
-        this.data.message = this.messages.form;
-        return sendResponse(this.data);
+        this.replyData.message = this.messages.form;
+        return sendResponse(this.replyData);
       case "location request":
       case "location":
-        this.data.message = this.messages.location;
-        return sendResponse(this.data);
+        this.replyData.message = this.messages.location;
+        return sendResponse(this.replyData);
       case "webview":
-        this.data.message = this.messages.webview;
-        return sendResponse(this.data);
+        this.replyData.message = this.messages.webview;
+        return sendResponse(this.replyData);
       case "passControl":
-        return passControl(this.data, switchBoardMetadata);
+        return passControl(this.replyData, switchBoardMetadata);
       case "gdf":
         const gdf = await executeQueries("Hey there, how are you?");
-        this.data.message = gdf;
-        return sendResponse(this.data);  
+        this.replyData.message = gdf;
+        return sendResponse(this.replyData);  
       default:
-        this.data.message = this.messages.error;
-        return sendResponse(this.data);
+        this.replyData.message = this.messages.error;
+        return sendResponse(this.replyData);
     }
   }
 }
