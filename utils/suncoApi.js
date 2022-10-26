@@ -2,6 +2,9 @@
 const axios = require("axios");
 require("dotenv").config();
 
+const baseUrl = "https://api.smooch.io/v2/apps/";
+const podBaseUrl = "https://z3nsuncoswitchboard.zendesk.com/sc/v2/apps/";
+
 const suncoEndpoints = {
   messages: "messages",
   activity: "activity",
@@ -69,7 +72,7 @@ const activityBody = (author) =>{
 }
 
 const postRequest = async (body, appId, conversationId, suncoEndpoint) => {
-  const url = `https://api.smooch.io/v2/apps/${appId}/conversations/${conversationId}/${suncoEndpoint}`;
+  const url = `${baseUrl}${appId}/conversations/${conversationId}/${suncoEndpoint}`;
   let response;
   try {
     response = await axios.post(url, body, {

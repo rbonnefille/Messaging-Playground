@@ -3,7 +3,7 @@ const postbackEvents = (req, res, next) => {
     const postbackPayload = req.body.events[0].payload.postback.payload;
   if (eventType === "conversation:postback") {
     console.log(
-      `Message postback`
+      `Message postback: ${postbackPayload}`
     );
     res.end();
   } else {

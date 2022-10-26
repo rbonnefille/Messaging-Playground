@@ -45,7 +45,7 @@ class WebhookEvent {
             case "conversation:message":
                 return this.messageType !== "api:conversations";
             case "conversation:create":
-                return this.messageType === "android" || this.messageType === "ios" || this.messageType === "web";        
+                return this.messageType === "android" || this.messageType === "ios";        
         }
     }
 }
@@ -87,7 +87,7 @@ class ConversationMessage extends WebhookEvent {
             this.signedUpAt = req.body.events[0].payload.message.author.user?.signedUpAt;
             this.userMetadata = req.body.events[0].payload.message.author.user?.metadata;
             this.contentType = req.body.events[0].payload.message.content.type;
-            this._userMessage = req.body.events[0].payload.message.content.text?.toLowerCase().trim() || req.body.events[0].payload.message.content.payload?.toLowerCase().trim();
+            this._userMessage = req.body.events[0].payload.message.content.payload?.toLowerCase().trim() || req.body.events[0].payload.message.content.text?.toLowerCase().trim();
             this.sourceIntegrationId = req.body.events[0].payload.message.source.integrationId;
             this.sourceType = req.body.events[0].payload.message.source.type;
         }

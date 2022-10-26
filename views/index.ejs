@@ -4,6 +4,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="/public/assets/styles.css" />
   <title>SunCo Web SDK</title>
+  <style id="custom-css">
+    /* override the widget depth to not be hidden by mobile fixed header */   
+   #web-messenger-container {
+      z-index: 99999;
+   }
+   </style>
+
   <script>
     const webSdkVersion = "5";
     const myIntegrationId = "6062e769761a7700d3fbce3f";
@@ -116,6 +123,8 @@
   <img
     src="https://mlst3x584ijx.i.optimole.com/J4U7zT4-jtmOnQok/w:auto/h:auto/q:75/https://acmegeneral.com/wp-content/uploads/2020/09/cropped-ACMELogo_Color_WBKND-01.png" />
   <script>
+    let customCSS = document.createElement('style');
+    customCSS.innerHTML = document.getElementById('custom-css').innerText;
 
     function deleteItems() {
       // Clear localStorage items 
@@ -147,6 +156,8 @@
       console.log("SunCo widget ready");
       var user = Smooch.getUser();
       console.log(user);
+      iframe = document.querySelector("iframe");
+      iframe.contentDocument.head.appendChild(customCSS);
     });
 
     function getToken(userData) {
