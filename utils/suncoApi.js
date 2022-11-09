@@ -11,28 +11,6 @@ const suncoEndpoints = {
   passControl: "passControl"
 };
 
-// const actionsQuickReply = [
-//   { text: "Agent", type: "reply", payload: "agent" },
-//   { text: "Bot", type: "reply", payload: "bot" },
-//   { text: "Hi", type: "reply", payload: "hi" },
-//   { text: "Help", type: "reply", payload: "help" },
-//   { text: "Carousel", type: "reply", payload: "carousel" },
-//   {
-//     text: "Compound Message",
-//     type: "reply",
-//     payload: "compound message",
-//   },
-//   { text: "File Message", type: "reply", payload: "file message" },
-//   { text: "Form Message", type: "reply", payload: "form message" },
-//   {
-//     text: "Location Request",
-//     type: "reply",
-//     payload: "location request",
-//   },
-//   { text: "Show me a cat", type: "reply", payload: "cat" },
-// ];
-
-
 const constructBody = (data) => {
   const messageAuthor = {
     type: "business",
@@ -112,16 +90,16 @@ const sendMessage = (data) => {
 const sendResponse = (data) => {
   if (data) {
     sendActivity(data, sendMessage);
-    setTimeout(sendMessage, 1200, data);
+    setTimeout(sendMessage, 1100, data);
   } else {
     throw new Error("No data provided");
   }
 }
 
 const passControl = (data, switchBoardMetadata) => {
-   const passControlBody = {
-    "switchboardIntegration": process.env.NEXT_SWITCHBOARD_INTEGRATION,
-    "metadata": {
+  const passControlBody = Object.assign({
+    switchboardIntegration: process.env.NEXT_SWITCHBOARD_INTEGRATION,
+    metadata: {
       "dataCapture.systemField.requester.name": switchBoardMetadata.givenName,
       "dataCapture.systemField.requester.email": switchBoardMetadata.email,
       "dataCapture.ticketField.360023540498": switchBoardMetadata.externalId,
@@ -130,7 +108,7 @@ const passControl = (data, switchBoardMetadata) => {
       "dataCapture.ticketField.360023540658": switchBoardMetadata.eventSource,
       "dataCapture.ticketField.1900005043913": switchBoardMetadata.conversation
     }
-  };
+  });
   console.log(passControlBody);
   return postRequest(
     passControlBody,

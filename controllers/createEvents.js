@@ -5,7 +5,6 @@ const PassControlMetadata = require("../models/passControlMetadata");
 const createEvents = (req, res, next) => {
 
   const webhookCreate = new ConversationCreate(req);
-
   if (!webhookCreate.isConversationCreate(webhookCreate.webhookEventType)) {
     return next();
   }

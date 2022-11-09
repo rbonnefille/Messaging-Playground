@@ -12,12 +12,6 @@ const messageEvents = (req, res, next) => {
     return next();
   }
 
-  if (webhookMessage.sourceIntegrationId === "61a78b31aff78000eb72d579") {
-    bot.replyToUser("passControl", metadata);
-    res.end();
-    return;
-  }
-
   if (
     !webhookMessage.isAuthenticatedRequest(webhookMessage.webhookEventApiKey)
   ) {
