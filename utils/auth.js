@@ -7,18 +7,18 @@ const jwt = require("jsonwebtoken");
       this.external_id = external_id;
       this.name = name;
       this.email = email;
-      this.expiry_time_in_seconds = 3600
-      this.defaultExpiry = 3600
-      this.nowInSeconds = Math.floor(Date.now() / 1000)
-      this.expiry = parseInt(this.expiry_time_in_seconds, 10) || this.defaultExpiry
-      this.body = {
+      this.expiry_time_in_seconds = 3600;
+      this.defaultExpiry = 3600;
+      this.nowInSeconds = Math.floor(Date.now() / 1000);
+      this.expiry = parseInt(this.expiry_time_in_seconds, 10) || this.defaultExpiry;
+      this.body = Object.assign({
         scope: 'user',
         external_id: this.external_id,
         name: this.name,
         email: this.email,
         iat: this.nowInSeconds,
         exp: this.nowInSeconds + this.expiry,
-      }
+      });
     }
     signJwt() {
       return jwt.sign(this.body, process.env.PASSWORD, {
