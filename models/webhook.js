@@ -90,6 +90,7 @@ class ConversationMessage extends WebhookEvent {
             this._userMessage = req.body.events[0].payload.message.content.payload?.toLowerCase().trim() || req.body.events[0].payload.message.content.text?.toLowerCase().trim();
             this.sourceIntegrationId = req.body.events[0].payload.message.source.integrationId;
             this.sourceType = req.body.events[0].payload.message.source.type;
+            this.recentNotifications = req.body.events[0].payload?.recentNotifications;
         }
     }
     get userMessage(){

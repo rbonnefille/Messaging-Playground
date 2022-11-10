@@ -5,6 +5,7 @@ class PassControlMetadata {
         this._externalId = webhookEvent.userExternalId;
         this._eventSource = webhookEvent.sourceType;
         this._conversation = webhookEvent.conversationId;
+        this._recentNotifications = webhookEvent.recentNotifications;
     }
     get givenName() {
         return this._givenName;
@@ -35,6 +36,12 @@ class PassControlMetadata {
     }
     set conversation(value) {
         throw new Error(`Conversation is read-only. ${value} is ignored.`);
+    }
+    get recentNotifications() {
+        return this._recentNotifications;
+    }
+    set recentNotifications(value) {
+        throw new Error(`RecentNotifications is read-only. ${value} is ignored.`);
     }
 }
 
