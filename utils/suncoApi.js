@@ -50,7 +50,7 @@ const activityBody = (author) =>{
 }
 
 const postRequest = async (body, appId, conversationId, suncoEndpoint) => {
-  const url = `${baseUrl}${appId}/conversations/${conversationId}/${suncoEndpoint}`;
+  const url = `${podBaseUrl}${appId}/conversations/${conversationId}/${suncoEndpoint}`;
   let response;
   try {
     response = await axios.post(url, body, {
@@ -104,9 +104,10 @@ const passControl = (data, switchBoardMetadata) => {
       "dataCapture.systemField.requester.email": switchBoardMetadata.email,
       "dataCapture.ticketField.360023540498": switchBoardMetadata.externalId,
       "dataCapture.systemField.tags":
-        `switchBoardMetadata, ${switchBoardMetadata.eventSource}`,
+        `switchBoardMetadata, ${switchBoardMetadata.eventSource}}`,
       "dataCapture.ticketField.360023540658": switchBoardMetadata.eventSource,
-      "dataCapture.ticketField.1900005043913": switchBoardMetadata.conversation
+      "dataCapture.ticketField.1900005043913": switchBoardMetadata.conversation,
+      "dataCapture.ticketField.10511574896017": !!switchBoardMetadata.recentNotifications
     }
   });
   console.log(passControlBody);
