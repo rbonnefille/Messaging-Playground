@@ -6,6 +6,9 @@ class WebhookEvent {
         this._appId = req.body.app.id;
         this.webhookId = req.body.webhook.id;
         this.webhookVersion = req.body.webhook.version;
+        if(req.body.events.length > 1){
+            throw new Error(`WebhookEvent only supports one event at the moment. ${req.body.events} events are ignored.`);
+        }
         this.eventId = req.body.events[0].id;
         this.eventCreatedAt = req.body.events[0].createdAt;
         this.eventType = req.body.events[0].type;
@@ -87,14 +90,14 @@ class ConversationMessage extends WebhookEvent {
             this.signedUpAt = req.body.events[0].payload.message.author.user?.signedUpAt;
             this.userMetadata = req.body.events[0].payload.message.author.user?.metadata;
             this.contentType = req.body.events[0].payload.message.content.type;
-            this._userMessage = req.body.events[0].payload.message.content.payload?.toLowerCase().trim() || req.body.events[0].payload.message.content.text?.toLowerCase().trim();
+            this._userMessage = req.body.events[0].payload.message.content?.payload || req.body.events[0].payload.message.content?.text;
             this.sourceIntegrationId = req.body.events[0].payload.message.source.integrationId;
             this.sourceType = req.body.events[0].payload.message.source.type;
             this.recentNotifications = req.body.events[0].payload?.recentNotifications;
         }
     }
     get userMessage(){
-        return this._userMessage;
+        return this._userMessage.toLowerCase().trim();
     }
     set userMessage(message){
         throw new Error(`User message is read only; ${message} will be ignored`);
