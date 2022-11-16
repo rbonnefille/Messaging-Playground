@@ -15,7 +15,7 @@ class SunCoClient {
   async sendMessage(payload) {
     const { conversationId, author, message, image, metadata } = payload;
     await this.postActivity(payload);
-    await timeout(1000)
+    await timeout(1500)
     const apiInstance = new SunshineConversationsClient.MessagesApi();
     const messagePost = new SunshineConversationsClient.MessagePost();
     messagePost.setAuthor(author);
