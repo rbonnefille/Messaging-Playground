@@ -3,7 +3,6 @@ const express = require("express");
 const createEvents = require("../controllers/createEvents");
 const messageEvents = require("../controllers/messageEvents");
 const readEvents = require("../controllers/readEvents");
-const postbackEvents = require("../controllers/postbackEvents");
 const router = express.Router();
 
 router.use(logger);
