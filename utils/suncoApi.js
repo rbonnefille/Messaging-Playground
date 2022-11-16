@@ -1,9 +1,6 @@
 require("dotenv").config();
 const SunshineConversationsClient = require('sunshine-conversations-client');
 
-const baseUrl = "https://api.smooch.io/v2/apps/";
-const podBaseUrl = "https://z3nsuncoswitchboard.zendesk.com/sc";
-
 const timeout = ms => new Promise(res => setTimeout(res, ms))
 
 class SunCoClient {
@@ -11,7 +8,7 @@ class SunCoClient {
     const defaultClient = SunshineConversationsClient.ApiClient.instance;
     const bearerAuth = defaultClient.authentications["bearerAuth"];
     bearerAuth.accessToken = process.env.SUNCO_JWT;
-    defaultClient.basePath = podBaseUrl;
+    defaultClient.basePath = process.env.POD_BASE_URL;
     this.appId = process.env.APP_ID;
   }
 
@@ -31,14 +28,13 @@ class SunCoClient {
     } else {
       messagePost.setContent({ type: "text", text: message });
     }
-    apiInstance.postMessage(this.appId, conversationId, messagePost).then(
-      (data) => {
-        console.log("API called successfully. Returned data: " + data);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
+    let response;
+    try {
+      response = await apiInstance.postMessage(this.appId, conversationId, messagePost);
+    } catch (error) {
+      throw new Error(e.message);
+    }
+    return response;
   }
 
   async postActivity(payload) {
@@ -46,17 +42,20 @@ class SunCoClient {
     const apiInstance = new SunshineConversationsClient.ActivitiesApi()
     const activityPost = {
       author: {
-      type: author.type,
-      displayName: author.botName,
-      avatarUrl: author.avatarUrl,
+        type: author.type,
+        displayName: author.botName,
+        avatarUrl: author.avatarUrl,
       },
       type: "typing:start",
     };
-    apiInstance.postActivity(this.appId, conversationId, activityPost).then((data) => {
-      console.log('API called successfully. Returned data: ' + JSON.stringify(data));
-    }, (error) => {
-      console.error(error);
-    });
+    let response;
+    try {
+      response = await apiInstance.postActivity(this.appId, conversationId, activityPost);
+    } catch (e) {
+      // catch error
+      throw new Error(e.message)
+    }
+    return response;
   }
 
   async passControl(payload) {
@@ -68,11 +67,50 @@ class SunCoClient {
       passControlBody.metadata = metadata;
       console.log(passControlBody.metadata);
     }
-    apiInstance.passControl(this.appId, conversationId, passControlBody).then((data) => {
-      console.log('API called successfully. Returned data: ' + JSON.stringify(data));
-    }, (error) => {
-      console.error(error);
-    });
+    let response;
+    try {
+      response = await apiInstance.passControl(this.appId, conversationId, passControlBody);
+    } catch (e) {
+      // catch error
+      throw new Error(e.message)
+    }
+    return response;
+  }
+
+  async offerControl(payload) {
+    const { conversationId, metadata } = payload;
+    const apiInstance = new SunshineConversationsClient.SwitchboardActionsApi();
+    const offerControlBody = new SunshineConversationsClient.OfferControlBody();
+    if(metadata) {
+      offerControlBody.metadata = metadata;
+      console.log(offerControlBody.metadata);
+    }
+    let response;
+    try {
+      response = await apiInstance.offerControl(this.appId, conversationId, offerControlBody);
+    } catch (e) {
+      // catch error
+      throw new Error(e.message)
+    }
+    return response;
+  }
+
+  async releaseControl(payload) {
+    const { conversationId } = payload;
+    const apiInstance = new SunshineConversationsClient.SwitchboardActionsApi();
+    const offerControlBody = new SunshineConversationsClient.OfferControlBody();
+    if(metadata) {
+      offerControlBody.metadata = metadata;
+      console.log(offerControlBody.metadata);
+    }
+    let response;
+    try {
+      response = await apiInstance.releaseControl(this.appId, conversationId);
+    } catch (e) {
+      // catch error
+      throw new Error(e.message)
+    }
+    return response;
   }
 
   async listConversations(webhookData) {

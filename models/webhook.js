@@ -113,7 +113,38 @@ class ConversationMessage extends WebhookEvent {
     }
 }
 
+class ConversationPostback extends WebhookEvent {
+    constructor(req) {
+        super(req);
+        if(this.isConversationMessage()){
+            this.eventId = req.body.events[0].id;
+            this.createdAt = req.body.events[0].createdAt;
+            this.eventType = req.body.events[0].type
+            this._postback = req.body.events[0].payload.postback;
+            this.email = req.body.events[0].payload.author.user?.profile.email;
+            this.locale = req.body.events[0].payload.author.user?.profile.locale;
+            this.signedUpAt = req.body.events[0].payload.author.user?.signedUpAt;
+            this.userMetadata = req.body.events[0].payload.author.user?.metadata;
+            this.sourceIntegrationId = req.body.events[0].payload.source?.integrationId;
+            this.sourceType = req.body.events[0].payload.source?.type;
+        }
+    }
+    get userMessage(){
+        return this._postback.toLowerCase().trim();
+    }
+    set userMessage(message){
+        throw new Error(`User message is read only; ${message} will be ignored`);
+    }
+    isConversationPostback() {
+        return this.eventType === "conversation:postback";
+    }
+    isBusinessMessage() {
+        return this.authorType === "business";
+    }
+}
+
 module.exports = {
     ConversationCreate,
-    ConversationMessage
+    ConversationMessage,
+    ConversationPostback
 };
