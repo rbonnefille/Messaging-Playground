@@ -7,12 +7,13 @@ class WebhookEvent {
         this.webhookId = req.body.webhook.id;
         this.webhookVersion = req.body.webhook.version;
         if(req.body.events.length > 1){
+            console.log(req.body);
             throw new Error(`WebhookEvent only supports one event at the moment. ${req.body.events} events are ignored.`);
         }
         this.eventId = req.body.events[0].id;
         this.eventCreatedAt = req.body.events[0].createdAt;
         this.eventType = req.body.events[0].type;
-        this.messageType = req.body.events[0].payload.message?.source?.type || req.body.events[0].payload.source?.type || req.body.events[0].payload.activity?.source?.type;
+        this.messageType = req.body.events[0].payload.message?.source?.type || req.body.events[0].payload.source?.type || req.body.events[0].payload.activity?.source?.type || req.body.events[0].payload.source?.type;
         this.conversationId = req.body.events[0].payload.conversation.id;
         this.conversationType = req.body.events[0].payload.conversation.type;
         this.activeSwitchboardIntegrationId = req.body.events[0].payload.conversation.activeSwitchboardIntegration?.id;
@@ -20,23 +21,18 @@ class WebhookEvent {
         this.activeSwitchboardIntegrationIntegrationId = req.body.events[0].payload.conversation.activeSwitchboardIntegration?.integrationId;
         this.activeSwitchboardIntegrationIntegrationType = req.body.events[0].payload.conversation.activeSwitchboardIntegration?.integrationType;        
     }
-
     get webhookEventApiKey() {
         return this._webhookEventApiKey;
     }
-
     set webhookEventApiKey(value) {
         throw new Error(`WebhookEventApiKey is read-only. ${value} is ignored.`);
     }
-
     get appId() {
         return this._appId;
     }
-
     set appId(value) {
         throw new Error(`AppId is read-only. ${value} is ignored.`);
     }
-
     isAuthenticatedRequest(webhookSecret) {
         return webhookSecret === process.env.WEBHOOK_SUNCO;
     }
@@ -46,6 +42,7 @@ class WebhookEvent {
     isAllowedChannel(){
         switch (this.eventType) {
             case "conversation:message":
+            case "conversation:postback":
                 return this.messageType !== "api:conversations";
             case "conversation:create":
                 return this.messageType === "android" || this.messageType === "ios";        
@@ -75,35 +72,33 @@ class ConversationCreate extends WebhookEvent {
 class ConversationMessage extends WebhookEvent {
     constructor(req) {
         super(req);
-        if(this.isConversationMessage()){
-            this.messageId = req.body.events[0].payload.message.id;
-            this.receivedAt = req.body.events[0].payload.message.received;
-            this.authorId = req.body.events[0].payload.message.author.userId;
-            this.avatarUrl = req.body.events[0].payload.message.author?.avatarUrl;
-            this.displayName = req.body.events[0].payload.message.author?.displayName;
-            this.authorType = req.body.events[0].payload.message.author?.type;
-            this.userId = req.body.events[0].payload.message.author.user?.id;
-            this.userExternalId = req.body.events[0].payload.message.author.user?.externalId;
-            this.givenName = req.body.events[0].payload.message.author.user?.profile.givenName;
-            this.email = req.body.events[0].payload.message.author.user?.profile.email;
-            this.locale = req.body.events[0].payload.message.author.user?.profile.locale;
-            this.signedUpAt = req.body.events[0].payload.message.author.user?.signedUpAt;
-            this.userMetadata = req.body.events[0].payload.message.author.user?.metadata;
-            this.contentType = req.body.events[0].payload.message.content.type;
-            this._userMessage = req.body.events[0].payload.message.content?.payload || req.body.events[0].payload.message.content?.text;
-            this.sourceIntegrationId = req.body.events[0].payload.message.source.integrationId;
-            this.sourceType = req.body.events[0].payload.message.source.type;
+            this.messageId = req.body.events[0].payload.message?.id;
+            this.receivedAt = req.body.events[0].payload.message?.received;
+            this.authorId = req.body.events[0].payload.message?.author.userId;
+            this.avatarUrl = req.body.events[0].payload.message?.author?.avatarUrl;
+            this.displayName = req.body.events[0].payload.message?.author?.displayName;
+            this.authorType = req.body.events[0].payload.message?.author?.type || "user";
+            this.userId = req.body.events[0].payload.message?.author.user?.id;
+            this.userExternalId = req.body.events[0].payload.message?.author.user?.externalId;
+            this.givenName = req.body.events[0].payload.message?.author.user?.profile.givenName;
+            this.email = req.body.events[0].payload.message?.author.user?.profile.email;
+            this.locale = req.body.events[0].payload.message?.author.user?.profile.locale;
+            this.signedUpAt = req.body.events[0].payload.message?.author.user?.signedUpAt;
+            this.userMetadata = req.body.events[0].payload.message?.author.user?.metadata;
+            this.contentType = req.body.events[0].payload.message?.content.type || "text";
+            this._userMessage = req.body.events[0].payload.message?.content?.payload || req.body.events[0].payload.message?.content?.text || req.body.events[0].payload.postback?.payload;
+            this.sourceIntegrationId = req.body.events[0].payload.message?.source.integrationId;
+            this.sourceType = req.body.events[0].payload.message?.source.type || req.body.events[0].payload.source?.type;
             this.recentNotifications = req.body.events[0].payload?.recentNotifications;
-        }
     }
     get userMessage(){
-        return this._userMessage.toLowerCase().trim();
+        return this._userMessage.toLowerCase().trim();    
     }
     set userMessage(message){
         throw new Error(`User message is read only; ${message} will be ignored`);
     }
     isConversationMessage() {
-        return this.eventType === "conversation:message";
+        return this.eventType === "conversation:message" || this.eventType === "conversation:postback";
     }
     isBusinessMessage() {
         return this.authorType === "business";
@@ -113,38 +108,7 @@ class ConversationMessage extends WebhookEvent {
     }
 }
 
-class ConversationPostback extends WebhookEvent {
-    constructor(req) {
-        super(req);
-        if(this.isConversationMessage()){
-            this.eventId = req.body.events[0].id;
-            this.createdAt = req.body.events[0].createdAt;
-            this.eventType = req.body.events[0].type
-            this._postback = req.body.events[0].payload.postback;
-            this.email = req.body.events[0].payload.author.user?.profile.email;
-            this.locale = req.body.events[0].payload.author.user?.profile.locale;
-            this.signedUpAt = req.body.events[0].payload.author.user?.signedUpAt;
-            this.userMetadata = req.body.events[0].payload.author.user?.metadata;
-            this.sourceIntegrationId = req.body.events[0].payload.source?.integrationId;
-            this.sourceType = req.body.events[0].payload.source?.type;
-        }
-    }
-    get userMessage(){
-        return this._postback.toLowerCase().trim();
-    }
-    set userMessage(message){
-        throw new Error(`User message is read only; ${message} will be ignored`);
-    }
-    isConversationPostback() {
-        return this.eventType === "conversation:postback";
-    }
-    isBusinessMessage() {
-        return this.authorType === "business";
-    }
-}
-
 module.exports = {
     ConversationCreate,
-    ConversationMessage,
-    ConversationPostback
+    ConversationMessage
 };
