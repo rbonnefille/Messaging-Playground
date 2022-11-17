@@ -3,6 +3,7 @@ const { ConversationMessage } = require("../models/webhook");
 const PassControlMetadata = require("../models/passControlMetadata");
 
 const messageEvents = (req, res, next) => {
+
   const webhookMessage = new ConversationMessage(req);
   const metadata = new PassControlMetadata(webhookMessage);
   const bot = new Bot(webhookMessage.appId, webhookMessage.conversationId);
