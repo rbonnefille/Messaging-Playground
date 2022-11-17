@@ -2,6 +2,9 @@ require('dotenv').config();
 
 class WebhookEvent {
     constructor(req) {
+        const {
+            events: [event],
+        } = req.body;
         this._webhookEventApiKey = req.headers["x-api-key"];
         this._appId = req.body.app.id;
         this.webhookId = req.body.webhook.id;
@@ -10,16 +13,16 @@ class WebhookEvent {
             console.log(req.body);
             throw new Error(`WebhookEvent only supports one event at the moment. ${req.body.events} events are ignored.`);
         }
-        this.eventId = req.body.events[0].id;
-        this.eventCreatedAt = req.body.events[0].createdAt;
-        this.eventType = req.body.events[0].type;
-        this.messageType = req.body.events[0].payload.message?.source?.type || req.body.events[0].payload.source?.type || req.body.events[0].payload.activity?.source?.type || req.body.events[0].payload.source?.type;
-        this.conversationId = req.body.events[0].payload.conversation.id;
-        this.conversationType = req.body.events[0].payload.conversation.type;
-        this.activeSwitchboardIntegrationId = req.body.events[0].payload.conversation.activeSwitchboardIntegration?.id;
-        this.activeSwitchboardIntegrationName = req.body.events[0].payload.conversation.activeSwitchboardIntegration?.name;
-        this.activeSwitchboardIntegrationIntegrationId = req.body.events[0].payload.conversation.activeSwitchboardIntegration?.integrationId;
-        this.activeSwitchboardIntegrationIntegrationType = req.body.events[0].payload.conversation.activeSwitchboardIntegration?.integrationType;        
+        this.eventId = event.id;
+        this.eventCreatedAt = event.createdAt;
+        this.eventType = event.type;
+        this.messageType = event.payload.message?.source?.type || event.payload?.source?.type || event.payload?.activity?.source?.type || event.payload?.source?.type;
+        this.conversationId = event.payload?.conversation?.id;
+        this.conversationType = event.payload?.conversation?.type;
+        this.activeSwitchboardIntegrationId = event.payload.conversation.activeSwitchboardIntegration?.id;
+        this.activeSwitchboardIntegrationName = event.payload.conversation.activeSwitchboardIntegration?.name;
+        this.activeSwitchboardIntegrationIntegrationId = event.payload.conversation.activeSwitchboardIntegration?.integrationId;
+        this.activeSwitchboardIntegrationIntegrationType = event.payload.conversation.activeSwitchboardIntegration?.integrationType;        
     }
     get webhookEventApiKey() {
         return this._webhookEventApiKey;
@@ -53,12 +56,15 @@ class WebhookEvent {
 class ConversationCreate extends WebhookEvent {
     constructor(req) {
         super(req);
+        const {
+            events: [event],
+        } = req.body;
         if (this.isConversationCreate()) {
-            this.userId = req.body.events[0].payload.user?.id;
-            this.userExternalId = req.body.events[0].payload.user?.externalId;
-            this.creationReason = req.body.events[0].payload.creationReason;
-            this.sourceType = req.body.events[0].payload.source.type;
-            this.sourceIntegrationId = req.body.events[0].payload.source.integrationId;
+            this.userId = event.payload.user?.id;
+            this.userExternalId = event.payload.user?.externalId;
+            this.creationReason = event.payload.creationReason;
+            this.sourceType = event.payload.source.type;
+            this.sourceIntegrationId = event.payload.source.integrationId;
         }
     }
     isConversationCreate() {
@@ -72,24 +78,27 @@ class ConversationCreate extends WebhookEvent {
 class ConversationMessage extends WebhookEvent {
     constructor(req) {
         super(req);
-            this.messageId = req.body.events[0].payload.message?.id;
-            this.receivedAt = req.body.events[0].payload.message?.received;
-            this.authorId = req.body.events[0].payload.message?.author.userId;
-            this.avatarUrl = req.body.events[0].payload.message?.author?.avatarUrl;
-            this.displayName = req.body.events[0].payload.message?.author?.displayName;
-            this.authorType = req.body.events[0].payload.message?.author?.type || "user";
-            this.userId = req.body.events[0].payload.message?.author.user?.id;
-            this.userExternalId = req.body.events[0].payload.message?.author.user?.externalId;
-            this.givenName = req.body.events[0].payload.message?.author.user?.profile.givenName;
-            this.email = req.body.events[0].payload.message?.author.user?.profile.email;
-            this.locale = req.body.events[0].payload.message?.author.user?.profile.locale;
-            this.signedUpAt = req.body.events[0].payload.message?.author.user?.signedUpAt;
-            this.userMetadata = req.body.events[0].payload.message?.author.user?.metadata;
-            this.contentType = req.body.events[0].payload.message?.content.type || "text";
-            this._userMessage = req.body.events[0].payload.message?.content?.payload || req.body.events[0].payload.message?.content?.text || req.body.events[0].payload.postback?.payload;
-            this.sourceIntegrationId = req.body.events[0].payload.message?.source.integrationId;
-            this.sourceType = req.body.events[0].payload.message?.source.type || req.body.events[0].payload.source?.type;
-            this.recentNotifications = req.body.events[0].payload?.recentNotifications;
+            const {
+                events: [event],
+            } = req.body;
+            this.messageId = event.payload.message?.id;
+            this.receivedAt = event.payload.message?.received;
+            this.authorId = event.payload.message?.author.userId;
+            this.avatarUrl = event.payload.message?.author?.avatarUrl;
+            this.displayName = event.payload.message?.author?.displayName;
+            this.authorType = event.payload.message?.author?.type || "user";
+            this.userId = event.payload.message?.author.user?.id;
+            this.userExternalId = event.payload.message?.author.user?.externalId;
+            this.givenName = event.payload.message?.author.user?.profile.givenName;
+            this.email = event.payload.message?.author.user?.profile.email;
+            this.locale = event.payload.message?.author.user?.profile.locale;
+            this.signedUpAt = event.payload.message?.author.user?.signedUpAt;
+            this.userMetadata = event.payload.message?.author.user?.metadata;
+            this.contentType = event.payload.message?.content.type || "text";
+            this._userMessage = event.payload.message?.content?.payload || event.payload.message?.content?.text || event.payload.postback?.payload;
+            this.sourceIntegrationId = event.payload.message?.source.integrationId;
+            this.sourceType = event.payload.message?.source.type || event.payload.source?.type;
+            this.recentNotifications = event.payload?.recentNotifications;
     }
     get userMessage(){
         return this._userMessage.toLowerCase().trim();    
