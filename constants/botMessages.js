@@ -12,7 +12,7 @@ const botMessages = {
       "I don't know what you mean",
       "I don't know what you're talking about",
       "I don't know what you're saying",
-      "What are you sayig?",
+      "What are you saying?",
       "That's not a valid input",
       "This is not a language I understand",
       "I don't know what you're trying to say",
