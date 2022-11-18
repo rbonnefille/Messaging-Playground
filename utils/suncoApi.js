@@ -58,6 +58,64 @@ class SunCoClient {
     return response;
   }
 
+  async getUser(payload) {
+    const { userId: userIdOrExternalId } = payload;
+    const apiInstance = new SunshineConversationsClient.UsersApi();
+    let response;
+    try {
+      response = await apiInstance.getUser(this.appId, userIdOrExternalId);
+    } catch (e) {
+      // catch error
+      throw new Error(e.message)
+    }
+    return response;
+  }
+
+  async updateUser(payload) {
+    const { userId: userIdOrExternalId } = payload;
+    const apiInstance = new SunshineConversationsClient.UsersApi();
+    const userUpdateBody = new SunshineConversationsClient.UserUpdateBody();
+    userUpdateBody.metadata = {
+      "botDialog": true
+    };
+    let response;
+    try {
+      response = await apiInstance.updateUser(this.appId, userIdOrExternalId, userUpdateBody);
+    } catch (e) {
+      // catch error
+      throw new Error(e.message)
+    }
+    return response;
+  }
+
+  async getConversation(payload) {
+    const { conversationId } = payload;
+    const apiInstance = new SunshineConversationsClient.ConversationsApi();
+    let response;
+    try {
+      response = await apiInstance.getConversation(this.appId, conversationId);
+    } catch (e) {
+      // catch error
+      throw new Error(e.message)
+    }
+    return response;
+  }
+
+  async updateConversation(payload) {
+    const { conversationId } = payload;
+    const apiInstance = new SunshineConversationsClient.ConversationsApi();
+    const conversationUpdateBody = new SunshineConversationsClient.ConversationUpdateBody();
+    conversationUpdateBody.displayName = new Date().toLocaleString('en-us',{day: '2-digit', month:'short', year:'numeric'});
+    let response;
+    try {
+      response = await apiInstance.updateConversation(this.appId, conversationId, conversationUpdateBody);
+    } catch (e) {
+      // catch error
+      throw new Error(e.message)
+    }
+    return response;
+  }
+
   async passControl(payload) {
     const { conversationId, metadata } = payload;
     const apiInstance = new SunshineConversationsClient.SwitchboardActionsApi();
