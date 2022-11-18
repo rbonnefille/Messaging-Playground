@@ -42,6 +42,16 @@ const messageEvents = (req, res, next) => {
           console.log(`Error in message handler ${err}`);
           res.status(500).send(err.message);
         }
+      } else if(webhookMessage.isAllowedChannel(webhookMessage.sourceType) && webhookMessage.ifFormMessage(webhookMessage.contentType)) {
+        try {
+          if (webhookMessage.textFallback) {
+            webhookMessage.userMessage = "form response";
+            bot.replyToUser(webhookMessage, metadata);
+          }
+        } catch (err) {
+          console.log(`Error in message handler ${err}`);
+          res.status(500).send(err.message);
+        }
       }
       res.end();
       return;

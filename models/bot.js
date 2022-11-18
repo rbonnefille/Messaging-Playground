@@ -30,7 +30,7 @@ class Bot {
   }
 
   async replyToUser(eventMessage, switchBoardMetadata) {
-    const userQuery = eventMessage.userMessage;
+    const userQuery = eventMessage?.userMessage;
     switch (userQuery) {
       case "list":
       case "clean":
@@ -148,6 +148,9 @@ class Bot {
       case "form message":
       case "form":
         this.replyData.message = botMessages.form;
+        return this.sunCo.sendMessage(this.replyData);
+      case "form response":
+        this.replyData.message = `Thank you for providing your details. \n ${eventMessage.textFallback}`;
         return this.sunCo.sendMessage(this.replyData);
       case "location request":
       case "location":

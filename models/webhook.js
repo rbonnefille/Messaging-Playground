@@ -95,6 +95,7 @@ class ConversationMessage extends WebhookEvent {
             this.signedUpAt = event.payload.message?.author.user?.signedUpAt;
             this.userMetadata = event.payload.message?.author.user?.metadata;
             this.contentType = event.payload.message?.content?.type || "text";
+            this.textFallback = event.payload.message?.content?.textFallback;
             this._userMessage = event.payload.message?.content?.payload || event.payload.message?.content?.text || event.payload.postback?.payload;
             this.sourceIntegrationId = event.payload.message?.source?.integrationId;
             this.sourceType = event.payload.message?.source?.type || event.payload.source?.type;
@@ -104,7 +105,7 @@ class ConversationMessage extends WebhookEvent {
         return this._userMessage.toLowerCase().trim();    
     }
     set userMessage(message){
-        throw new Error(`User message is read only; ${message} will be ignored`);
+        return this._userMessage = message;
     }
     isConversationMessage() {
         return this.eventType === "conversation:message" || this.eventType === "conversation:postback";
@@ -114,6 +115,9 @@ class ConversationMessage extends WebhookEvent {
     }
     isTextMessage() {
         return this.contentType === "text";
+    }
+    ifFormMessage() {
+        return this.contentType === "formResponse";
     }
 }
 
