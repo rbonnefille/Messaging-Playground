@@ -76,6 +76,14 @@ class Bot {
       case "help":
       case "start":
       case "yo":
+        const getConvoDisplayName = await this.sunCo.getConversation(eventMessage);
+        if (!getConvoDisplayName.conversation.displayName) {
+          this.sunCo.updateConversation(eventMessage);
+        }
+        const userMetadata = await this.sunCo.getUser(eventMessage);
+        if(Object.keys(userMetadata.user.metadata).length === 0){
+          await this.sunCo.updateUser(eventMessage);
+        }
         this.replyData.message = botMessages.default;
         return this.sunCo.sendMessage(this.replyData);
       case "cat":
