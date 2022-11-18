@@ -79,25 +79,25 @@ class ConversationMessage extends WebhookEvent {
     constructor(req) {
         super(req);
             const {
-                events: [event],
+                events: [event]
             } = req.body;
             this.messageId = event.payload.message?.id;
             this.receivedAt = event.payload.message?.received;
-            this.authorId = event.payload.message?.author.userId;
+            this.authorId = event.payload.message?.author?.userId;
             this.avatarUrl = event.payload.message?.author?.avatarUrl;
             this.displayName = event.payload.message?.author?.displayName;
             this.authorType = event.payload.message?.author?.type || "user";
             this.userId = event.payload.message?.author.user?.id;
             this.userExternalId = event.payload.message?.author.user?.externalId;
-            this.givenName = event.payload.message?.author.user?.profile.givenName;
-            this.email = event.payload.message?.author.user?.profile.email;
-            this.locale = event.payload.message?.author.user?.profile.locale;
+            this.givenName = event.payload.message?.author.user?.profile?.givenName;
+            this.email = event.payload.message?.author.user?.profile?.email;
+            this.locale = event.payload.message?.author.user?.profile?.locale;
             this.signedUpAt = event.payload.message?.author.user?.signedUpAt;
             this.userMetadata = event.payload.message?.author.user?.metadata;
-            this.contentType = event.payload.message?.content.type || "text";
+            this.contentType = event.payload.message?.content?.type || "text";
             this._userMessage = event.payload.message?.content?.payload || event.payload.message?.content?.text || event.payload.postback?.payload;
-            this.sourceIntegrationId = event.payload.message?.source.integrationId;
-            this.sourceType = event.payload.message?.source.type || event.payload.source?.type;
+            this.sourceIntegrationId = event.payload.message?.source?.integrationId;
+            this.sourceType = event.payload.message?.source?.type || event.payload.source?.type;
             this.recentNotifications = event.payload?.recentNotifications;
     }
     get userMessage(){
