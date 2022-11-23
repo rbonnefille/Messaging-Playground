@@ -4,14 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="/public/assets/styles.css" />
   <title>SunCo Web SDK</title>
-  <style id="custom-css">
-    /* override the widget depth to not be hidden by mobile fixed header */   
-   #web-messenger-container {
-      z-index: 99999;
-   }
-   </style>
-
-  <script>
+ <script>
     const webSdkVersion = "5";
     const myIntegrationId = "6062e769761a7700d3fbce3f";
     !(function (o, p, s, e, c) {
@@ -123,9 +116,6 @@
   <img
     src="https://mlst3x584ijx.i.optimole.com/J4U7zT4-jtmOnQok/w:auto/h:auto/q:75/https://acmegeneral.com/wp-content/uploads/2020/09/cropped-ACMELogo_Color_WBKND-01.png" />
   <script>
-    let customCSS = document.createElement('style');
-    customCSS.innerHTML = document.getElementById('custom-css').innerText;
-
     function deleteItems() {
       // Clear localStorage items 
       // Destroy SunCo widget
@@ -156,8 +146,11 @@
       console.log("SunCo widget ready");
       var user = Smooch.getUser();
       console.log(user);
-      iframe = document.querySelector("iframe");
-      iframe.contentDocument.head.appendChild(customCSS);
+      var iframe = document.getElementById('web-messenger-container');
+        iframedocument = iframe.contentDocument || iframe.contentWindow.document;
+        iframedocument.addEventListener('click', function (evt) {
+          initializeButton(iframedocument)
+        }, false);
     });
 
     function getToken(userData) {
@@ -202,11 +195,27 @@
       }, 1000);
     }
 
+    function initializeButton(iframedocument) {
+        var conversationFooter = iframedocument.getElementsByClassName('conversation-group-footer')[0];
+        if (conversationFooter) {
+          conversationFooter.innerHTML = '<button onclick=parent.createConversation()>New Conversation</button>';
+        }
+      }
+      function createConversation() {
+        if (Smooch.isOpened()) {
+          Smooch.createConversation().then((conversation) => {
+            Smooch.loadConversation(conversation.id);
+          })
+        }
+      }
+
     Smooch.on('widget:opened', () => {
       const { external_id, token } = getSessionAuth();
-      if (external_id && token) {
-        Smooch.login(external_id, token);
-      }
+      if (!Smooch.getUser() || Smooch.getConversations().length === 0) {
+          Smooch.createConversation();
+        } else if (external_id && token) {
+          Smooch.login(external_id, token);
+        }
     });
 
     // This event triggers when the widget is closed
