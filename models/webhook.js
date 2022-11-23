@@ -48,7 +48,7 @@ class WebhookEvent {
             case "conversation:postback":
                 return this.messageType !== "api:conversations";
             case "conversation:create":
-                return this.messageType === "android" || this.messageType === "ios";        
+                return this.messageType === "android" || this.messageType === "ios" || this.messageType === "web";        
         }
     }
 }
@@ -63,8 +63,8 @@ class ConversationCreate extends WebhookEvent {
             this.userId = event.payload.user?.id;
             this.userExternalId = event.payload.user?.externalId;
             this.creationReason = event.payload.creationReason;
-            this.sourceType = event.payload.source.type;
-            this.sourceIntegrationId = event.payload.source.integrationId;
+            this.sourceType = event.payload.source?.type;
+            this.sourceIntegrationId = event.payload.source?.integrationId;
         }
     }
     isConversationCreate() {
