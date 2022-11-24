@@ -32,44 +32,6 @@ class Bot {
   async replyToUser(eventMessage, switchBoardMetadata) {
     const userQuery = eventMessage?.userMessage;
     switch (userQuery) {
-      case "list":
-      case "clean":
-      case "clean conversations":
-      case "remove":
-      let countDeletedConversations = 0;
-
-        let allConversations = await this.sunCo.listConversations(eventMessage);
-        const userConversations = Object.keys(
-          allConversations.getConversations()
-        ).length;
-        this.replyData.message = `You currently have ${userConversations} conversations opened. I will see if I can close some of them`;
-        await this.sunCo.sendMessage(this.replyData);
-
-        try {
-          allConversations.conversations.forEach((convo) => {
-            const convertToDate = new Date(convo.lastUpdatedAt);
-            const today = new Date();
-            const difference = today - convertToDate;
-            let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
-            if (totalDays > 7) {
-              if (
-                convo.activeSwitchboardIntegration.name === "NodeJsBot" &&
-                !convo.isDefault &&
-                convo.id !== eventMessage.conversationId
-              ) {
-                // no current ticket opened
-                this.sunCo.deleteConversation(convo.id);
-                countDeletedConversations++;
-              }
-            }
-          });
-          this.replyData.message = countDeletedConversations
-            ? `I've deleted ${countDeletedConversations} conversations as they weren't liked to any opened tickets`
-            : `I didn't find any conversation to delete`;
-          return this.sunCo.sendMessage(this.replyData);
-        } catch (error) {
-          throw new Error(e.message);
-        }
       case "hello":
       case "hi":
       case "hey":
@@ -150,7 +112,7 @@ class Bot {
         this.replyData.message = botMessages.form;
         return this.sunCo.sendMessage(this.replyData);
       case "form response":
-        this.replyData.message = `Thank you for providing your details. \n ${eventMessage.textFallback}`;
+        this.replyData.message = `Thank you for providing your details.\n ${eventMessage.textFallback}`;
         return this.sunCo.sendMessage(this.replyData);
       case "location request":
       case "location":
@@ -163,6 +125,44 @@ class Bot {
         const gdf = await executeQueries("Hey there, how are you?");
         this.replyData.message = gdf;
         return this.sunCo.sendMessage(this.replyData);
+      case "list":
+      case "clean":
+      case "clean conversations":
+      case "remove":
+      let countDeletedConversations = 0;
+
+        let allConversations = await this.sunCo.listConversations(eventMessage);
+        const userConversations = Object.keys(
+          allConversations.getConversations()
+        ).length;
+        this.replyData.message = `You currently have ${userConversations} conversations opened. I will see if I can close some of them`;
+        await this.sunCo.sendMessage(this.replyData);
+
+        try {
+          allConversations.conversations.forEach((convo) => {
+            const convertToDate = new Date(convo.lastUpdatedAt);
+            const today = new Date();
+            const difference = today - convertToDate;
+            let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
+            if (totalDays > 7) {
+              if (
+                convo.activeSwitchboardIntegration.name === "NodeJsBot" &&
+                !convo.isDefault &&
+                convo.id !== eventMessage.conversationId
+              ) {
+                // no current ticket opened
+                this.sunCo.deleteConversation(convo.id);
+                countDeletedConversations++;
+              }
+            }
+          });
+          this.replyData.message = countDeletedConversations
+            ? `I've deleted ${countDeletedConversations} conversations as they weren't liked to any opened tickets`
+            : `I didn't find any conversation to delete`;
+          return this.sunCo.sendMessage(this.replyData);
+        } catch (error) {
+          throw new Error(e.message);
+        }
       default:
         this.replyData.message = this.getRandomFallbackMessage();
         return this.sunCo.sendMessage(this.replyData);
