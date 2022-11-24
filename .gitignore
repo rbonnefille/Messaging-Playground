@@ -18,3 +18,5 @@ package-lock.json
 .git
 .eslintrc.js
 *.log
+test.js
+testDestructuring.js
