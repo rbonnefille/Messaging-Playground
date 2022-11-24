@@ -1,6 +1,6 @@
 const fs = require("fs");
 const logger = (req, res, next) => {
-  const authorType = req.body.events[0]?.payload?.message?.author?.type;
+  const authorType = req.body.events[0]?.payload?.message?.author?.type || {};
   if (authorType === "user") {
     const conversationId = req.body.events[0].payload.conversation.id;
     const createdAt = req.body.events[0]?.createdAt;
