@@ -58,6 +58,20 @@ class SunCoClient {
     return response;
   }
 
+  async listClients(payload){
+    let userIdOrExternalId;
+    Object.hasOwnProperty.call(payload, 'userId') ? userIdOrExternalId = payload.userId : userIdOrExternalId = payload;
+    const apiInstance = new SunshineConversationsClient.ClientsApi();
+    let response;
+    try {
+      response = await apiInstance.listClients(this.appId, userIdOrExternalId);
+    } catch (e) {
+      // catch error
+      throw new Error(e.message)
+    }
+    return response;
+  }
+
   async getUser(payload) {
     let userIdOrExternalId;
     Object.hasOwnProperty.call(payload, 'userId') ? userIdOrExternalId = payload.userId : userIdOrExternalId = payload;
