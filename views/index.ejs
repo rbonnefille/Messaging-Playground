@@ -89,6 +89,7 @@
   <h3>
     Click on the icon on the right buttom of the page to start a conversation!
   </h3>
+  <br>
   <div class="center">
     <!-- form to collect externalid, name and email -->
     <form id=suncoData onsubmit="return false">
@@ -107,14 +108,15 @@
       <input type="submit" value="Submit" onclick="authenticateUser()" />
       <br><br>
     </form>
-    <div>
+      <p>Logout the SunCo User</p>
+      <br>
+      <button onclick="Smooch.logout()">Logout</button>
+      <br>
       <p>Clear local storage and destroy SunCo Widget</p>
+      <br>
       <button onclick="deleteItems()">JUST DO IT!</button>
-  </div>
-  </div>
 
-  <img
-    src="https://mlst3x584ijx.i.optimole.com/J4U7zT4-jtmOnQok/w:auto/h:auto/q:75/https://acmegeneral.com/wp-content/uploads/2020/09/cropped-ACMELogo_Color_WBKND-01.png" />
+  </div>
   <script>
     function deleteItems() {
       // Clear localStorage items 
@@ -141,6 +143,7 @@
     Smooch.init({
       integrationId: myIntegrationId,
       canUserSeeConversationList: true,
+      soundNotificationEnabled: true
       // delegate
     }).then(function () {
       console.log("SunCo widget ready");
@@ -167,10 +170,7 @@
           console.log("Success:", data.token);
           const token = data.token;
           const external_id = userData.external_id;
-          console.log(token, external_id)
           setSessionAuth(external_id, token);
-          // Smooch.login('m-scott', data.token);
-          // Smooch.open();
           return data;
         })
         .catch((error) => {

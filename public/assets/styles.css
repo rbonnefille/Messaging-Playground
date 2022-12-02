@@ -16,7 +16,7 @@ img {
   margin-right: auto;
   width: 10%;
 }
-p {
+p, label {
   font-family: "Roboto", serif;
 }
 .button {
@@ -27,12 +27,11 @@ p {
   min-width: 120px;
 }
 .center {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+  margin: auto;
+  text-align: center;
+  width: fit-content;
+  border: 1px solid rgb(0, 0, 0);
+  padding: 10px;
 }
 @font-face {
   font-family: "Roboto";

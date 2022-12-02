@@ -144,7 +144,7 @@ class Bot {
             const today = new Date();
             const difference = today - convertToDate;
             let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
-            if (totalDays > 7) {
+            if (totalDays > 5) {
               if (
                 convo.activeSwitchboardIntegration.name === "NodeJsBot" &&
                 !convo.isDefault &&
@@ -156,9 +156,7 @@ class Bot {
               }
             }
           });
-          this.replyData.message = countDeletedConversations
-            ? `I've deleted ${countDeletedConversations} conversations as they weren't liked to any opened tickets`
-            : `I didn't find any conversation to delete`;
+          this.replyData.message = countDeletedConversations ? `I've deleted ${countDeletedConversations} conversations as ${(countDeletedConversations > 1 ? "they weren't" : "it wasn't")} liked to any opened tickets` : `I didn't find any conversation to delete`;
           return this.sunCo.sendMessage(this.replyData);
         } catch (error) {
           throw new Error(e.message);
