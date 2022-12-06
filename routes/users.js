@@ -1,6 +1,6 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const { SunCoClient } = require("../utils/suncoApi");
+import SunCoClient from "../utils/suncoApi.js";
 
 router.get("/:id", async (req, res) => {
     const userId = req.params.id;    
@@ -24,4 +24,4 @@ router.get("/:id/clients", async (req, res) => {
     res.json(conversations)
 })
 
-module.exports = router;
+export default router;

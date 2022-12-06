@@ -12,4 +12,4 @@ const readEvents = (req, res, next) => {
   }
 }
 
-module.exports = readEvents;
+export default readEvents;

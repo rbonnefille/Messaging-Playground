@@ -30,4 +30,4 @@ const botMessages = {
     handover: "I'm going to transfer you to a human agent.",
     webview: "%((template: webview))%",
   };
-  module.exports =  botMessages;
+  export default  botMessages;

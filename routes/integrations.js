@@ -1,6 +1,6 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const { SunCoClient } = require("../utils/suncoApi");
+import SunCoClient from "../utils/suncoApi.js";
 
 router.get("/", async (req, res) => {
     const sunCo = new SunCoClient();
@@ -14,4 +14,4 @@ router.get("/sbintegrations", async (req, res) => {
     res.json(switchboardIntegrations)
 })
 
-module.exports = router;
+export default router;

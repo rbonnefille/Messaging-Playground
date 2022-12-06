@@ -1,8 +1,9 @@
 /* eslint-disable no-undef */
-const { getCatPicture } = require("../utils/catApi");
-const executeQueries = require("../controllers/gdf");
-const botMessages = require("../constants/botMessages");
-const { SunCoClient } = require("../utils/suncoApi");
+import getCatPicture from "../utils/catApi.js";
+import executeQueries from "../controllers/gdf.js";
+import botMessages from "../constants/botMessages.js";
+import SunCoClient from "../utils/suncoApi.js";
+
 
 class Bot {
   constructor(appId, conversationId) {
@@ -122,7 +123,7 @@ class Bot {
         this.replyData.message = botMessages.webview;
         return this.sunCo.sendMessage(this.replyData);
       case "gdf":
-        const gdf = await executeQueries("Hey there, how are you?");
+        const gdf = await executeQueries("Hey there, how are you?.js");
         this.replyData.message = gdf;
         return this.sunCo.sendMessage(this.replyData);
       case "list":
@@ -168,4 +169,4 @@ class Bot {
   }
 }
 
-module.exports = Bot;
+export default Bot;

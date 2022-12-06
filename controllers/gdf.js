@@ -1,10 +1,10 @@
-const uuid = require('uuid');
-const dialogflow = require('@google-cloud/dialogflow');
+import { v4 as uuidv4 } from 'uuid';
+import dialogflow from '@google-cloud/dialogflow';
 
 // Instantiates a session client
 const sessionClient = new dialogflow.SessionsClient();
 const projectId = 'sunco-bxgh';
-const sessionId = uuid.v4();
+const sessionId = uuidv4;
 const languageCode = 'en-US';
 
 async function detectIntent(
@@ -71,4 +71,4 @@ const executeQueries = async (query) => {
     }
 }
 
-module.exports = executeQueries;
+export default executeQueries;

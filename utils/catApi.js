@@ -1,10 +1,12 @@
-const axios = require("axios");
-require("dotenv").config();
+import axios from "axios";
+import * as dotenv from 'dotenv'
+dotenv.config()
+
 
 const cat_key = process.env.CAT_API_KEY;
 const cat_url = process.env.CAT_API_URL;
 
-exports.getCatPicture = async () => {
+export default async () => {
   let response;
   const config = {
     headers: {

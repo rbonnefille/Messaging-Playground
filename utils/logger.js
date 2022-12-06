@@ -1,4 +1,4 @@
-const fs = require("fs");
+import fs from "fs";
 const logger = (req, res, next) => {
   const authorType = req.body.events[0]?.payload?.message?.author?.type || {};
   if (authorType === "user") {
@@ -24,4 +24,4 @@ const logger = (req, res, next) => {
   next();
 };
 
-module.exports = logger;
+export default logger;

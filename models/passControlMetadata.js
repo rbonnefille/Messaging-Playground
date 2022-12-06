@@ -1,4 +1,4 @@
-class PassControlMetadata {
+export default class PassControlMetadata {
     constructor(webhookEvent) {
         this._givenName = webhookEvent.displayName;
         this._email = webhookEvent.email;
@@ -44,5 +44,3 @@ class PassControlMetadata {
         throw new Error(`RecentNotifications is read-only. ${value} is ignored.`);
     }
 }
-
-module.exports = PassControlMetadata;

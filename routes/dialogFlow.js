@@ -1,4 +1,4 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 const uuid = require('uuid');
 
@@ -104,4 +104,4 @@ router.head("/", (req, res) => {
     }
 });
 
-module.exports = router, executeQueries;
+exports = { router, executeQueries };

@@ -1,5 +1,6 @@
-require("dotenv").config();
-const SunshineConversationsClient = require('sunshine-conversations-client');
+import * as dotenv from 'dotenv'
+dotenv.config()
+import SunshineConversationsClient from "sunshine-conversations-client";
 
 const timeout = ms => new Promise(res => setTimeout(res, ms))
 
@@ -26,7 +27,7 @@ class SunCoClient {
           text: message,
       });
     } else {
-      messagePost.setContent({ type: "text", text: message });
+      messagePost.setContent({ type: "text", text: message , metadata: metadata});
     }
     let response;
     try {
@@ -259,6 +260,4 @@ class SunCoClient {
   }
 }
 
-module.exports = {
-  SunCoClient
-};
+export default SunCoClient

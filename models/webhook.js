@@ -1,4 +1,5 @@
-require('dotenv').config();
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 class WebhookEvent {
     constructor(req) {
@@ -121,7 +122,4 @@ class ConversationMessage extends WebhookEvent {
     }
 }
 
-module.exports = {
-    ConversationCreate,
-    ConversationMessage
-};
+export { ConversationCreate, ConversationMessage };

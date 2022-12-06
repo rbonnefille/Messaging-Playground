@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
-require('dotenv').config();
-const jwt = require("jsonwebtoken");
+import 'dotenv';
+import pkg from 'jsonwebtoken';
+const { sign } = pkg;
 
   class Jwt {
     constructor(external_id, name, email) {
@@ -21,7 +22,7 @@ const jwt = require("jsonwebtoken");
       });
     }
     signJwt() {
-      return jwt.sign(this.body, process.env.PASSWORD, {
+      return sign(this.body, process.env.PASSWORD, {
         header: {
           alg: 'HS256',
           typ: 'JWT',
@@ -31,13 +32,15 @@ const jwt = require("jsonwebtoken");
     }
   }
 
-exports.returnToken = (req, res) => {
+const returnToken = (req, res) => {
     if (req.get('origin') === 'https://romain.ngrok.io') {
       const jwt = new Jwt(req.body.external_id, req.body.name, req.body.email);
-      jwtToken = jwt.signJwt();
+      const jwtToken = jwt.signJwt();
       console.log(`JWT Token generated: ${jwtToken}`);
       res.json({ token: jwtToken });
     } else {
       res.status(403).send('Forbidden');
     }
   }
+
+export default returnToken;

@@ -1,12 +1,13 @@
-const express = require("express");
-const { returnToken } = require("./utils/auth");
-const conversationRouter = require("./routes/conversations");
-const userRouter = require("./routes/users");
-const integrationRouter = require("./routes/integrations");
-const dialogFlow = require("./routes/dialogFlow");
+import * as dotenv from 'dotenv'
+dotenv.config()
+import express from "express";
+import returnToken from "./utils/auth.js"
+import conversationRouter from "./routes/conversations.js";
+import userRouter from "./routes/users.js";
+import integrationRouter from "./routes/integrations.js";
+// import { dialogFlow } from "./routes/dialogFlow.js";
 const { BROWSER_SESSION_STORAGE_KEY: sessionStorageKey } = process.env;
 
-require("dotenv").config();
 const app = express();
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -14,11 +15,11 @@ app.use("/public", express.static("public"));
 
 app.use("/conversations", conversationRouter);
 
-app.use("/gdf", dialogFlow);
+// app.use("/gdf", dialogFlow);
 
 app.use("/integrations", integrationRouter);
 
-app.use("/user", userRouter);
+app.use("/users", userRouter);
 
 app.post("/auth", returnToken);
 

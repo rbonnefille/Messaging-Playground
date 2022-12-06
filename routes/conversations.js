@@ -1,8 +1,8 @@
-const logger = require("../utils/logger");
-const express = require("express");
-const createEvents = require("../controllers/createEvents");
-const messageEvents = require("../controllers/messageEvents");
-const readEvents = require("../controllers/readEvents");
+import logger  from "../utils/logger.js";
+import express from "express";
+import createEvents from "../controllers/createEvents.js";
+import messageEvents from "../controllers/messageEvents.js";
+import readEvents from "../controllers/readEvents.js";
 const router = express.Router();
 
 router.use(logger);
@@ -13,4 +13,4 @@ router.head("/", (req, res) => {
     return res.sendStatus(200);
 });
 
-module.exports = router;
+export default router;

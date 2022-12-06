@@ -1,6 +1,6 @@
-const Bot = require("../models/bot");
-const { ConversationMessage } = require("../models/webhook");
-const PassControlMetadata = require("../models/passControlMetadata");
+import Bot from "../models/bot.js";
+import { ConversationMessage } from "../models/webhook.js";
+import PassControlMetadata  from "../models/passControlMetadata.js";
 
 const messageEvents = (req, res, next) => {
 
@@ -73,4 +73,4 @@ const messageEvents = (req, res, next) => {
   }
 };
 
-module.exports = messageEvents;
+export default messageEvents;
