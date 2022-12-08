@@ -16,7 +16,7 @@ img {
   margin-right: auto;
   width: 10%;
 }
-p, label {
+p, label, ul, li {
   font-family: "Roboto", serif;
 }
 .button {

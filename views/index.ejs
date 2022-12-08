@@ -116,6 +116,13 @@
       <br>
       <button onclick="deleteItems()">JUST DO IT!</button>
 
+      <p>Availble routes to access SunCo data:</p>
+      <ul>
+        <li>/users/:userIdOrExternalId</li>
+        <li>/users/:userIdOrExternalId/conversations</li>
+        <li>/users/:userIdOrExternalId/clients</li>
+        <li><a href="/integrations/sbintegrations">List Switchboard integrations</a></li>
+      </ul>
   </div>
   <script>
     function deleteItems() {
@@ -143,7 +150,7 @@
     Smooch.init({
       integrationId: myIntegrationId,
       canUserSeeConversationList: true,
-      soundNotificationEnabled: true
+      soundNotificationEnabled: false
       // delegate
     }).then(function () {
       console.log("SunCo widget ready");

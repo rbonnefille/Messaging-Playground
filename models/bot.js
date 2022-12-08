@@ -4,8 +4,7 @@ import executeQueries from "../controllers/gdf.js";
 import botMessages from "../constants/botMessages.js";
 import SunCoClient from "../utils/suncoApi.js";
 
-
-class Bot {
+export default class Bot {
   constructor(appId, conversationId) {
     this.sunCo = new SunCoClient();
     this.replyData = {
@@ -168,5 +167,3 @@ class Bot {
     }
   }
 }
-
-export default Bot;
