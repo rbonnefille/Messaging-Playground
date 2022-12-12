@@ -9,7 +9,7 @@ const logger = (req, res, next) => {
     const channel = req.body.events[0]?.payload?.message?.source?.type;
     console.log(`${createdAt} - UserId: ${userId} - ConversationId: ${conversationId} - Message: ${message} - Channel: ${channel}`);
     var stream = fs.createWriteStream(
-      "/Users/rbonnefille/Documents/Testing/SmoochLibs/NodeJSLib/suncoBot/logs/logs.log",
+      "/Users/rbonnefille/Documents/Testing/SmoochLibs/NodeJSLib/suncoBot/server/logs/logs.log",
       { flags: "a" }
     );
     // stream.write(JSON.stringify(req.body, null, 2) + ",\n");

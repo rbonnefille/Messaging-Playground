@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import getCatPicture from "../utils/catApi.js";
+import getChuckNorrisJoke from "../utils/chuckNorrisApi.js";
 import executeQueries from "../controllers/gdf.js";
 import botMessages from "../constants/botMessages.js";
 import SunCoClient from "../utils/suncoApi.js";
@@ -13,9 +14,9 @@ export default class Bot {
       author: {
         type: "business",
         avatarUrl:
-          process.env.BOT_AVATAR_URL ||
+          process.env.BOT_AVATAR_URL ??
           "https://media.smooch.io/apps/6062e4fb75a38000d2988959/UmpgnbGvXG7vxipmVYt-iZ59/acme.png",
-        botName: process.env.BOT_NAME || "Bugs Bunny",
+        botName: process.env.BOT_NAME ?? "Bugs Bunny",
       },
       message: undefined,
       image: undefined,
@@ -81,8 +82,8 @@ export default class Bot {
             switchBoardMetadata.eventSource,
           "dataCapture.ticketField.1900005043913":
             switchBoardMetadata.conversation,
-          "dataCapture.ticketField.10511574896017":
-            !!switchBoardMetadata.recentNotifications,
+          "dataCapture.ticketField.11280496337553":
+            switchBoardMetadata.recentNotifications,
         };
         return this.sunCo.passControl(this.replyData);
       case "bot":
@@ -161,6 +162,13 @@ export default class Bot {
         } catch (error) {
           throw new Error(e.message);
         }
+      case "chuck norris":
+      case "chuck":
+      case "norris":
+      case "joke":
+        const chuckNorrisJoke = await getChuckNorrisJoke();
+        this.replyData.message = chuckNorrisJoke;
+        return this.sunCo.sendMessage(this.replyData);
       default:
         this.replyData.message = this.getRandomFallbackMessage();
         return this.sunCo.sendMessage(this.replyData);

@@ -38,7 +38,7 @@ export default class PassControlMetadata {
         throw new Error(`Conversation is read-only. ${value} is ignored.`);
     }
     get recentNotifications() {
-        return this._recentNotifications;
+        return Array.isArray(this._recentNotifications);
     }
     set recentNotifications(value) {
         throw new Error(`RecentNotifications is read-only. ${value} is ignored.`);
