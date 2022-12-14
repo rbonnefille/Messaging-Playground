@@ -136,7 +136,7 @@ export default class Bot {
         const userConversations = Object.keys(
           allConversations.getConversations()
         ).length;
-        this.replyData.message = `You currently have ${userConversations} conversations opened. I will see if I can close some of them`;
+        this.replyData.message = `You currently have ${userConversations} ${(userConversations > 1 ? "conversations" : "conversation")} opened. I will see if I can close some of them`;
         await this.sunCo.sendMessage(this.replyData);
 
         try {
