@@ -3,7 +3,6 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- <link rel="stylesheet" type="text/css" href="/public/assets/styles.css" /> -->
   <title>SunCo Web SDK</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
@@ -87,21 +86,20 @@
 
 </head>
 
-<body class="p-3 m-0 border-0 bd-example">
+<body class="p-3 m-0 border-0 bd-example bg-light text-dark">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
     crossorigin="anonymous"></script>
-  <h1>Welcome to our support page</h1>
-  <h3>
-    Click on the icon on the right buttom of the page to start a conversation!
-  </h3>
+  <nav class="d-flex justify-content-center navbar bg-secondary text-black rounded-3" style="--bs-bg-opacity: .3;">
+    <div class="p-3 mb-2 h1">Acme corp support</div>
+  </nav>
   <br>
-
+  <h4>Log back in to sync past conversations</h4>
   <div class="grid">
     <form class="row g-3" id=suncoData novalidate>
       <div class="col-md-2">
-        <label for="formGroupExampleInput" class="form-label">User externaldId</label>
-        <input name="externalid" type="text" class="form-control" placeholder="externalId" aria-label="External ID"
+        <label for="formGroupExampleInput" class="form-label">User externald_id</label>
+        <input name="external_id" type="text" class="form-control" placeholder="jane-doe" aria-label="External ID"
           required>
       </div>
       <div class="col-md-2">
@@ -110,11 +108,11 @@
       </div>
       <div class="col-md-2">
         <label for="formGroupExampleInput" class="form-label">Email Address</label>
-        <input name="email" type="text" class="form-control" placeholder="test@test.com" aria-label="Email address"
-          required>
+        <input name="email" type="text" class="form-control" placeholder="jane-doe@example.com"
+          aria-label="Email address" required>
       </div>
       <div class="col-10">
-        <input type="button" class="btn btn-outline-success" type="submit" value="Submit"
+        <input type="button" class="btn btn-outline-success" type="Login" value="Submit"
           onclick="authenticateUser()" />
       </div>
     </form>
@@ -123,32 +121,48 @@
 
   <div class="grid">
 
-    <h3>Below are some other actions for the SunCo Widget</h3>
+    <h4>Sunshine Conversations SDK</h4>
 
-    <div class="p-3 m-0 border-0 btn-group" role="group" aria-label="Actions">
-      <button type="button" class="btn btn-danger" onclick="Smooch.logout()">SunCo Logout</button>
-      <button type="button" class="btn btn-warning" onclick="deleteItems()">Clear localStorage</button>
+    <div class="p-3 m-0 border-0" role="group" aria-label="Actions">
+      <button type="button" class="btn btn-primary" onclick="Smooch.open();">Open Widget</button>
+      <button type="button" class="btn btn-secondary" onclick="Smooch.close();">Close Widget</button>
+      <button type="button" class="btn btn-warning" onclick="Smooch.logout()">Logout User</button>
+      <button type="button" class="btn btn-danger" onclick="deleteItems()">Clear localStorage</button>
+    </div>
+    <h4>Zendesk SDK</h4>
+    <div class="p-3 m-0 border-0" role="group" aria-label="Actions">
+      <button type="button" class="btn btn-primary" onclick="zE('messenger', 'open');">Open Widget</button>
+      <button type="button" class="btn btn-success" onclick="zE('messenger', 'loginUser', function (callback) {callback( getSessionAuth().token);zE('messenger', 'open');});">Login User</button>
+      <button type="button" class="btn btn-warning" onclick="zE('messenger', 'logoutUser');">Logout User</button>
+      <button type="button" class="btn btn-secondary" onclick="zE('messenger', 'close'); ">Close Widget</button>
     </div>
   </div>
 
   <div class="grid">
     <br>
-    <h3>Availble routes to access SunCo data</h3>
+    <h4>Availble routes to access SunCo data</h4>
     <div class="p-3 m-0 border-0 d-inline-flex list-group">
-      <a href="#" class="list-group-item list-group-item-action disabled">/users/:userIdOrExternalId</a>
-      <a href="#" class="list-group-item list-group-item-action disabled">/users/:userIdOrExternalId/conversations</a>
-      <a href="#" class="list-group-item list-group-item-action disabled">/users/:userIdOrExternalId/clients</a>
-      <a href="/integrations/sbintegrations" class="list-group-item list-group-item-action active" aria-current="true">
+      <a id="getUser" href="#" class="list-group-item list-group-item-action disabled">/users/:userIdOrExternalId</a>
+      <a id="getUserConversations" href="#"
+        class="list-group-item list-group-item-action disabled">/users/:userIdOrExternalId/conversations</a>
+      <a id="getUserClients" href="#"
+        class="list-group-item list-group-item-action disabled">/users/:userIdOrExternalId/clients</a>
+      <a href="/integrations/sbintegrations" class="list-group-item list-group-item-action" aria-current="true">
         List Switchboard integrations
       </a>
     </div>
   </div>
 
   <script>
+    //event on page load
+    window.onload = function () {
+      const { external_id, token } = getSessionAuth();
+      if (external_id) {
+        prefillSuncoRoutes(external_id);
+      }
+    };
+
     function deleteItems() {
-      // Clear localStorage items 
-      // Destroy SunCo widget
-      // localStorage.clear();
       clearSessionAuth();
       Smooch.destroy();
     }
@@ -170,7 +184,7 @@
     Smooch.init({
       integrationId: myIntegrationId,
       canUserSeeConversationList: true,
-      soundNotificationEnabled: false
+      soundNotificationEnabled: false,
       // delegate
     }).then(function () {
       console.log("SunCo widget ready");
@@ -208,18 +222,41 @@
 
     function authenticateUser() {
       var x = document.getElementById("suncoData");
-      var externalid = x.elements[0].value;
+      var external_id = x.elements[0].value;
       var name = x.elements[1].value;
       var email = x.elements[2].value;
       const data = {
-        external_id: externalid,
+        external_id: external_id,
         name: name,
         email: email
       };
       getToken(data);
       setTimeout(() => {
+        const { external_id, token } = getSessionAuth();
+        zE('messenger', 'loginUser', function (callback) {
+          callback(token);
+        });
+        Smooch.login(external_id, token);
         Smooch.open();
-      }, 1000);
+      }, 1500);
+      prefillSuncoRoutes(external_id);
+    }
+
+    function prefillSuncoRoutes(external_id) {
+      const getUserLink = document.getElementById("getUser")
+      getUserLink.href = `/users/${external_id}`;
+      getUserLink.textContent = `/users/${external_id}`;
+
+      const getUserConversations = document.getElementById("getUserConversations")
+      getUserConversations.href = `/users/${external_id}/conversations`;
+      getUserConversations.textContent = `/users/${external_id}/conversations`;
+
+      const getUserClients = document.getElementById("getUserClients");
+      getUserClients.href = `/users/${external_id}/clients`;
+      getUserClients.textContent = `/users/${external_id}/clients`;
+
+      const links = document.querySelectorAll('#getUser, #getUserConversations, #getUserClients');
+      links.forEach(link => link.classList.remove("disabled"));
     }
 
     function initializeButton(iframedocument) {
@@ -252,6 +289,7 @@
     });
 
   </script>
+<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=b9b176ae-c123-40a2-b21d-98632fc01aff"> </script>
 </body>
 
 </html>
