@@ -54,7 +54,7 @@ class WebhookEvent {
     }
 }
 
-class ConversationCreate extends WebhookEvent {
+class ConversationEvent extends WebhookEvent {
     constructor(req) {
         super(req);
         const {
@@ -66,22 +66,8 @@ class ConversationCreate extends WebhookEvent {
             this.creationReason = event.payload.creationReason;
             this.sourceType = event.payload.source?.type;
             this.sourceIntegrationId = event.payload.source?.integrationId;
-        }
-    }
-    isConversationCreate() {
-        return this.eventType === "conversation:create";
-    }
-    isCreationReasonStartConversation() {
-        return this.creationReason === "startConversation";
-    }   
-}
-
-class ConversationMessage extends WebhookEvent {
-    constructor(req) {
-        super(req);
-            const {
-                events: [event]
-            } = req.body;
+        } 
+        if (this.isConversationMessage()) {
             this.messageId = event.payload.message?.id;
             this.receivedAt = event.payload.message?.received;
             this.authorId = event.payload.message?.author?.userId;
@@ -101,12 +87,20 @@ class ConversationMessage extends WebhookEvent {
             this.sourceIntegrationId = event.payload.message?.source?.integrationId;
             this.sourceType = event.payload.message?.source?.type || event.payload.source?.type;
             this.recentNotifications = event.payload?.recentNotifications;
+        }
+        if (this.isConversationRead()) {
+            this.userExternalId = event.payload?.activity?.author?.user?.externalId;
+            this.userId = event.payload?.activity?.author?.userId
+        }
     }
-    get userMessage(){
-        return this._userMessage.toLowerCase().trim();    
+    isConversationCreate() {
+        return this.eventType === "conversation:create";
     }
-    set userMessage(message){
-        return this._userMessage = message;
+    isCreationReasonStartConversation() {
+        return this.creationReason === "startConversation";
+    }
+    isConversationRead() {
+        return this.eventType === "conversation:read";
     }
     isConversationMessage() {
         return this.eventType === "conversation:message" || this.eventType === "conversation:postback";
@@ -120,6 +114,12 @@ class ConversationMessage extends WebhookEvent {
     ifFormMessage() {
         return this.contentType === "formResponse";
     }
+    get userMessage(){
+        return this._userMessage.toLowerCase().trim();    
+    }
+    set userMessage(message){
+        return this._userMessage = message;
+    }
 }
 
-export { ConversationCreate, ConversationMessage };
+export default ConversationEvent;

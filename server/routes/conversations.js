@@ -1,13 +1,11 @@
 import logger  from "../utils/logger.js";
 import express from "express";
-import createEvents from "../controllers/createEvents.js";
-import messageEvents from "../controllers/messageEvents.js";
-import readEvents from "../controllers/readEvents.js";
+import conversationEvents from "../controllers/conversationEvents.js";
 const router = express.Router();
 
 router.use(logger);
 
-router.post("/", createEvents, messageEvents, readEvents)
+router.post("/", conversationEvents)
 
 router.head("/", (req, res) => {
     return res.sendStatus(200);
