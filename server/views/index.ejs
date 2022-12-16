@@ -126,8 +126,9 @@
     <div class="p-3 m-0 border-0" role="group" aria-label="Actions">
       <button type="button" class="btn btn-primary" onclick="Smooch.open();">Open Widget</button>
       <button type="button" class="btn btn-secondary" onclick="Smooch.close();">Close Widget</button>
-      <button type="button" class="btn btn-warning" onclick="Smooch.logout()">Logout User</button>
-      <button type="button" class="btn btn-danger" onclick="deleteItems()">Clear localStorage</button>
+      <button type="button" class="btn btn-warning" onclick="Smooch.logout();clearSessionAuth();">Logout User</button>
+      <button type="button" class="btn btn-danger" onclick="deleteItems()">Destroy Widget and clear sessionStorage</button>
+      <button type="button" class="btn btn-danger" onclick="localStorage.clear();">Clear localStorage</button>
     </div>
     <h4>Zendesk SDK</h4>
     <div class="p-3 m-0 border-0" role="group" aria-label="Actions">
@@ -233,9 +234,6 @@
       getToken(data);
       setTimeout(() => {
         const { external_id, token } = getSessionAuth();
-        zE('messenger', 'loginUser', function (callback) {
-          callback(token);
-        });
         Smooch.login(external_id, token);
         Smooch.open();
       }, 1500);
