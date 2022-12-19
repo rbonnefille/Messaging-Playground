@@ -148,6 +148,9 @@
         class="list-group-item list-group-item-action disabled">/users/:userIdOrExternalId/conversations</a>
       <a id="getUserClients" href="#"
         class="list-group-item list-group-item-action disabled">/users/:userIdOrExternalId/clients</a>
+      <a href="/integrations" class="list-group-item list-group-item-action" aria-current="true">
+        List integrations
+      </a>
       <a href="/integrations/sbintegrations" class="list-group-item list-group-item-action" aria-current="true">
         List Switchboard integrations
       </a>
@@ -180,7 +183,7 @@
     };
 
     const getSessionAuth = () =>
-      JSON.parse(window.sessionStorage.getItem('<%= sessionStorageKey %>')) || {};
+      JSON.parse(window.sessionStorage.getItem('<%= sessionStorageKey %>')) ?? {};
 
     Smooch.init({
       integrationId: myIntegrationId,
@@ -192,7 +195,7 @@
       var user = Smooch.getUser();
       console.log(user);
       var iframe = document.getElementById('web-messenger-container');
-      iframedocument = iframe.contentDocument || iframe.contentWindow.document;
+      iframedocument = iframe.contentDocument ?? iframe.contentWindow.document;
       iframedocument.addEventListener('click', function (evt) {
         initializeButton(iframedocument)
       }, false);
@@ -273,7 +276,7 @@
 
     Smooch.on('widget:opened', () => {
       const { external_id, token } = getSessionAuth();
-      if (!Smooch.getUser() || Smooch.getConversations().length === 0) {
+      if ((!Smooch.getUser() ?? Smooch.getConversations().length === 0) && !external_id && !token) {
         Smooch.createConversation();
       } else if (external_id && token) {
         Smooch.login(external_id, token);

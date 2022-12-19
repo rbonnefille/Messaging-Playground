@@ -35,4 +35,4 @@ app.use((req, res) => {
     res.status(404).render("404.ejs");
 });
 
-app.listen(process.env.PORT || 7777);
+app.listen( (process.env.PORT ?? 7777), () => console.log(`Server is running on port ${process.env.PORT ?? 7777}`));

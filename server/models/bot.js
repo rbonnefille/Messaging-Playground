@@ -140,12 +140,17 @@ export default class Bot {
         await this.sunCo.sendMessage(this.replyData);
 
         try {
-          allConversations.conversations.forEach((convo) => {
+          allConversations.conversations.forEach(async (convo) => {
+            const conversationMessages = await this.sunCo.listMessages(convo.id);
             const convertToDate = new Date(convo.lastUpdatedAt);
             const today = new Date();
             const difference = today - convertToDate;
             let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
-            if (totalDays > 5) {
+            if (conversationMessages.messages.length === 0) {
+              this.sunCo.deleteConversation(convo.id);
+              countDeletedConversations++;
+            }
+            if (totalDays > 2) {
               if (
                 convo.activeSwitchboardIntegration.name === "NodeJsBot" &&
                 !convo.isDefault &&

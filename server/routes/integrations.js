@@ -4,7 +4,7 @@ import SunCoClient from "../utils/suncoApi.js";
 
 router.get("/", async (req, res) => {
     const sunCo = new SunCoClient();
-    const integrations = await sunCo.listWebhooks();
+    const integrations = await sunCo.listIntegrations();
     res.json(integrations)
 })
 

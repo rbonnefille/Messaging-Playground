@@ -129,6 +129,50 @@ class SunCoClient {
     return response;
   }
 
+  async listConversations(webhookData) {
+    const apiInstance = new SunshineConversationsClient.ConversationsApi();
+    const filter = new SunshineConversationsClient.ConversationListFilter();
+    if (Object.hasOwnProperty.call(webhookData, 'userId')) {
+      filter.setUserId(webhookData.userId);
+    } else if (Object.keys(webhookData).length === 24) {
+        filter.setUserId(webhookData);
+    } else {
+      filter.setUserExternalId(webhookData);
+    }
+    let response;
+    try {
+      response = await apiInstance.listConversations(this.appId, filter);
+    } catch (e) {
+      // catch error
+      throw new Error(e.message)
+    }
+    return response;
+  }
+
+  async deleteConversation(conversationId) {
+    const apiInstance = new SunshineConversationsClient.ConversationsApi();
+    let response;
+    try {
+      response = await apiInstance.deleteConversation(this.appId, conversationId);
+    } catch (e) {
+      // catch error
+      throw new Error(e.message)
+    }
+    return response;
+  }
+
+  async listMessages(conversationId) {
+    const apiInstance = new SunshineConversationsClient.MessagesApi();
+    let response;
+    try {
+      response = await apiInstance.listMessages(this.appId, conversationId);
+    } catch (e) {
+      // catch error
+      throw new Error(e.message)
+    }
+    return response;
+  }
+
   async passControl(payload) {
     const { conversationId, metadata } = payload;
     const apiInstance = new SunshineConversationsClient.SwitchboardActionsApi();
@@ -184,38 +228,6 @@ class SunCoClient {
     return response;
   }
 
-  async listConversations(webhookData) {
-    const apiInstance = new SunshineConversationsClient.ConversationsApi();
-    const filter = new SunshineConversationsClient.ConversationListFilter();
-    if (Object.hasOwnProperty.call(webhookData, 'userId')) {
-      filter.setUserId(webhookData.userId);
-    } else if (Object.keys(webhookData).length === 24) {
-        filter.setUserId(webhookData);
-    } else {
-      filter.setUserExternalId(webhookData);
-    }
-    let response;
-    try {
-      response = await apiInstance.listConversations(this.appId, filter);
-    } catch (e) {
-      // catch error
-      throw new Error(e.message)
-    }
-    return response;
-  }
-
-  async deleteConversation(conversationId) {
-    const apiInstance = new SunshineConversationsClient.ConversationsApi();
-    let response;
-    try {
-      response = await apiInstance.deleteConversation(this.appId, conversationId);
-    } catch (e) {
-      // catch error
-      throw new Error(e.message)
-    }
-    return response;
-  }
-
   async listSwitchboards(){
     const apiInstance = new SunshineConversationsClient.SwitchboardsApi();
     let response;
@@ -243,7 +255,7 @@ class SunCoClient {
     return response;
   }
 
-  async listWebhooks(){
+  async listIntegrations(){
     const apiInstance = new SunshineConversationsClient.IntegrationsApi();
     let response;
     try {

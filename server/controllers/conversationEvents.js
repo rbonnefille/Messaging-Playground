@@ -29,7 +29,7 @@ const messageEvents = (req, res, next) => {
     }
     if (
       webhookEvent.isTextMessage(webhookEvent.contentType) &&
-      webhookEvent.isAllowedChannel(webhookEvent.sourceType)
+      webhookEvent.isAllowedChannel()
     ) {
       try {
         if (webhookEvent.userMessage) {
@@ -40,7 +40,7 @@ const messageEvents = (req, res, next) => {
         res.status(500).send(err.message);
       }
     } else if (
-      webhookEvent.isAllowedChannel(webhookEvent.sourceType) &&
+      webhookEvent.isAllowedChannel() &&
       webhookEvent.ifFormMessage(webhookEvent.contentType)
     ) {
       try {
@@ -59,7 +59,7 @@ const messageEvents = (req, res, next) => {
       webhookEvent.isCreationReasonStartConversation(
         webhookEvent.creationReason
       ) &&
-      webhookEvent.isAllowedChannel(webhookEvent.sourceType)
+      webhookEvent.isAllowedChannel()
     ) {
       try {
         webhookEvent.userMessage = "start";
@@ -75,7 +75,7 @@ const messageEvents = (req, res, next) => {
     }
   } else if (webhookEvent.isConversationRead()) {
     console.log(`########## Conversation read event ##########`);
-    console.log(`Message in conversationId: ${webhookEvent.conversationId} was read by user: ${webhookEvent.userExternalId || webhookEvent.userId}`);
+    console.log(`Message in conversationId: ${webhookEvent.conversationId} was read by user: ${webhookEvent.userExternalId ?? webhookEvent.userId}`);
     res.end();
   }
 };
