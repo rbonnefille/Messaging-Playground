@@ -43,15 +43,6 @@ class WebhookEvent {
     isCurrentSwitchboardIntegration(activeSwitchboardIntegration){
         return activeSwitchboardIntegration === process.env.BOT_SWITCHBOARD_INTEGRATION_ID;
     }
-    isAllowedChannel(){
-        switch (this.eventType) {
-            case "conversation:message":
-            case "conversation:postback":
-                return this.messageType !== "api:conversations";
-            case "conversation:create":
-                return this.messageType === "android" || this.messageType === "ios" || this.messageType === "web";        
-        }
-    }
 }
 
 class ConversationEvent extends WebhookEvent {
@@ -114,8 +105,15 @@ class ConversationEvent extends WebhookEvent {
     ifFormMessage() {
         return this.contentType === "formResponse";
     }
+    isAllowedChannel(){
+        if (this.isConversationMessage()) {
+            return this.messageType !== "api:conversations";
+        } else if (this.isConversationCreate()) {
+            return this.messageType === "android" || this.messageType === "ios" || this.messageType === "web";
+        }
+    }
     get userMessage(){
-        return this._userMessage.toLowerCase().trim();    
+        return this._userMessage.toLowerCase().trim() ?? this._userMessage;    
     }
     set userMessage(message){
         return this._userMessage = message;
