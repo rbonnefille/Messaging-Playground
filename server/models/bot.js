@@ -13,10 +13,10 @@ export default class Bot {
       conversationId: conversationId,
       author: {
         type: "business",
+        displayName: process.env.BOT_NAME ?? "Bugs Bunny",
         avatarUrl:
           process.env.BOT_AVATAR_URL ??
           "https://media.smooch.io/apps/6062e4fb75a38000d2988959/UmpgnbGvXG7vxipmVYt-iZ59/acme.png",
-        botName: process.env.BOT_NAME ?? "Bugs Bunny",
       },
       message: undefined,
       image: undefined,

@@ -42,11 +42,7 @@ class SunCoClient {
     const { conversationId, author } = payload;
     const apiInstance = new SunshineConversationsClient.ActivitiesApi()
     const activityPost = {
-      author: {
-        type: author.type,
-        displayName: author.botName,
-        avatarUrl: author.avatarUrl,
-      },
+      author: author,
       type: "typing:start",
     };
     let response;
