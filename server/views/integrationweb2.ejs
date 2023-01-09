@@ -1,11 +1,14 @@
 <html>
 
 <head>
-  <link rel="stylesheet" type="text/css" href="/public/assets/styles.css" />
-  <title>SunCo Web SDK</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TEST - SunCo Web SDK</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
   <script>
     const webSdkVersion = "5";
-    const myIntegrationId = "6318a0b4a7bd3800f3591aa1";
+    const myIntegrationId = "6062e769761a7700d3fbce3f";
     !(function (o, p, s, e, c) {
       var i,
         a,
@@ -80,45 +83,90 @@
         n.send();
     })(window, document, "Smooch", myIntegrationId, webSdkVersion);
   </script>
+
 </head>
 
-<body>
-  <h1>Welcome to our support page</h1>
-  <h3>
-    Click on the icon on the right buttom of the page to start a conversation!
-  </h3>
-  <div class="center">
-    <!-- form to collect externalid, name and email -->
-    <form id=suncoData onsubmit="return false">
-      <label for="externalid">External ID</label>
-      <br>
-      <input type="text" id="externalid" name="externalid" />
-      <br>
-      <label for="name">Name</label>
-      <br>
-      <input type="text" id="name" name="name" />
-      <br>
-      <label for="email">Email</label>
-      <br>
-      <input type="text" id="email" name="email" />
-      <br>
-      <input type="submit" value="Submit" onclick="authenticateUser()" />
-      <br>
+<body class="p-3 m-0 border-0 bd-example bg-light text-dark">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+  <nav class="d-flex justify-content-center navbar bg-secondary text-black rounded-3" style="--bs-bg-opacity: .3;">
+    <div class="p-3 mb-2 h1">TEST - Acme corp support</div>
+  </nav>
+  <br>
+  <h4>Log back in to sync past conversations</h4>
+  <div class="grid">
+    <form class="row g-3" id=suncoData novalidate>
+      <div class="col-md-2">
+        <label for="formGroupExampleInput" class="form-label">User externald_id</label>
+        <input name="external_id" type="text" class="form-control" placeholder="jane-doe" aria-label="External ID"
+          required>
+      </div>
+      <div class="col-md-2">
+        <label for="formGroupExampleInput" class="form-label">Full Name</label>
+        <input name="name" type="text" class="form-control" placeholder="Jane Doe" aria-label="Full name" required>
+      </div>
+      <div class="col-md-2">
+        <label for="formGroupExampleInput" class="form-label">Email Address</label>
+        <input name="email" type="text" class="form-control" placeholder="jane-doe@example.com"
+          aria-label="Email address" required>
+      </div>
+      <div class="col-10">
+        <input type="button" class="btn btn-outline-success" type="Login" value="Submit"
+          onclick="authenticateUser()" />
+      </div>
     </form>
-    <div>
-      <p>Clear local storage and destroy SunCo Widget</p>
-      <button onclick="deleteItems()">JUST DO IT!</button>
   </div>
+  <br>
+
+  <div class="grid">
+
+    <h4>Sunshine Conversations SDK</h4>
+
+    <div class="p-3 m-0 border-0" role="group" aria-label="Actions">
+      <button type="button" class="btn btn-primary" onclick="Smooch.open();">Open Widget</button>
+      <button type="button" class="btn btn-secondary" onclick="Smooch.close();">Close Widget</button>
+      <button type="button" class="btn btn-warning" onclick="Smooch.logout();clearSessionAuth();">Logout User</button>
+      <button type="button" class="btn btn-danger" onclick="deleteItems()">Destroy Widget and clear sessionStorage</button>
+      <button type="button" class="btn btn-danger" onclick="localStorage.clear();">Clear localStorage</button>
+    </div>
+    <h4>Zendesk SDK</h4>
+    <div class="p-3 m-0 border-0" role="group" aria-label="Actions">
+      <button type="button" class="btn btn-primary" onclick="zE('messenger', 'open');">Open Widget</button>
+      <button type="button" class="btn btn-success" onclick="zE('messenger', 'loginUser', function (callback) {callback( getSessionAuth().token);zE('messenger', 'open');});">Login User</button>
+      <button type="button" class="btn btn-warning" onclick="zE('messenger', 'logoutUser');">Logout User</button>
+      <button type="button" class="btn btn-secondary" onclick="zE('messenger', 'close'); ">Close Widget</button>
+    </div>
   </div>
 
-  <img
-    src="https://mlst3x584ijx.i.optimole.com/J4U7zT4-jtmOnQok/w:auto/h:auto/q:75/https://acmegeneral.com/wp-content/uploads/2020/09/cropped-ACMELogo_Color_WBKND-01.png" />
+  <div class="grid">
+    <br>
+    <h4>Availble routes to access SunCo data</h4>
+    <div class="p-3 m-0 border-0 d-inline-flex list-group">
+      <a id="getUser" href="#" class="list-group-item list-group-item-action disabled">/users/:userIdOrExternalId</a>
+      <a id="getUserConversations" href="#"
+        class="list-group-item list-group-item-action disabled">/users/:userIdOrExternalId/conversations</a>
+      <a id="getUserClients" href="#"
+        class="list-group-item list-group-item-action disabled">/users/:userIdOrExternalId/clients</a>
+      <a href="/integrations" class="list-group-item list-group-item-action" aria-current="true">
+        List integrations
+      </a>
+      <a href="/integrations/sbintegrations" class="list-group-item list-group-item-action" aria-current="true">
+        List Switchboard integrations
+      </a>
+    </div>
+  </div>
+
   <script>
+    //event on page load
+    window.onload = function () {
+      const { external_id, token } = getSessionAuth();
+      if (external_id) {
+        prefillSuncoRoutes(external_id);
+      }
+    };
 
     function deleteItems() {
-      // Clear localStorage items 
-      // Destroy SunCo widget
-      // localStorage.clear();
       clearSessionAuth();
       Smooch.destroy();
     }
@@ -135,22 +183,26 @@
     };
 
     const getSessionAuth = () =>
-      JSON.parse(window.sessionStorage.getItem('<%= sessionStorageKey %>')) || {};
+      JSON.parse(window.sessionStorage.getItem('<%= sessionStorageKey %>')) ?? {};
 
     Smooch.init({
       integrationId: myIntegrationId,
-      canUserSeeConversationList: false,
-      externalId: "m-scott",
-      jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFwcF82MDY0MzU2ODA4OWRlYzAwZDJjMzZhNDMifQ.eyJzY29wZSI6InVzZXIiLCJleHRlcm5hbF9pZCI6Im0tc2NvdHQiLCJuYW1lIjoiTWljaGFlbCBTY290dCIsImVtYWlsIjoibS1zY290dEBleGFtcGxlLmNvbSIsImlhdCI6MTY2MjU2MDcxMywiZXhwIjoxNjYyNTY0MzEzfQ.PQiL-Q7K6Zhu3rIxzhqtZtTWTVEuckoGZi-WMNYlBtU"
+      canUserSeeConversationList: true,
+      soundNotificationEnabled: false,
       // delegate
     }).then(function () {
       console.log("SunCo widget ready");
       var user = Smooch.getUser();
       console.log(user);
+      var iframe = document.getElementById('web-messenger-container');
+      iframedocument = iframe.contentDocument ?? iframe.contentWindow.document;
+      iframedocument.addEventListener('click', function (evt) {
+        initializeButton(iframedocument)
+      }, false);
     });
 
     function getToken(userData) {
-      fetch("https://romain.ngrok.io/auth", {
+      fetch("auth", {
         method: "POST",
         // mode: "cors",
         headers: {
@@ -158,45 +210,78 @@
         },
         body: JSON.stringify(userData),
       })
-        .then((response) => response.json())
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((data) => {
           console.log("Success:", data.token);
           const token = data.token;
           const external_id = userData.external_id;
-          console.log(token, external_id)
           setSessionAuth(external_id, token);
-          // Smooch.login('m-scott', data.token);
-          // Smooch.open();
           return data;
         })
         .catch((error) => {
           console.error("Error:", error);
-          console.log(error);
+          window.alert(`Error: ${error.statusText}`);
         });
     }
 
     function authenticateUser() {
       var x = document.getElementById("suncoData");
-      var externalid = x.elements[0].value;
+      var external_id = x.elements[0].value;
       var name = x.elements[1].value;
       var email = x.elements[2].value;
       const data = {
-        external_id: externalid,
+        external_id: external_id,
         name: name,
         email: email
       };
       getToken(data);
       setTimeout(() => {
-          Smooch.open();
-      }, 1000);
+        const { external_id, token } = getSessionAuth();
+        Smooch.login(external_id, token);
+        Smooch.open();
+      }, 1500);
+      prefillSuncoRoutes(external_id);
     }
 
-    // Smooch.on('widget:opened', () => {
-    //   const { external_id, token } = getSessionAuth();
-    //   if (external_id && token) {
-    //     Smooch.login(external_id, token);
-    //   }
-    // });
+    function prefillSuncoRoutes(external_id) {
+      const getUserLink = document.getElementById("getUser")
+      getUserLink.href = `/users/${external_id}`;
+      getUserLink.textContent = `/users/${external_id}`;
+
+      const getUserConversations = document.getElementById("getUserConversations")
+      getUserConversations.href = `/users/${external_id}/conversations`;
+      getUserConversations.textContent = `/users/${external_id}/conversations`;
+
+      const getUserClients = document.getElementById("getUserClients");
+      getUserClients.href = `/users/${external_id}/clients`;
+      getUserClients.textContent = `/users/${external_id}/clients`;
+
+      const links = document.querySelectorAll('#getUser, #getUserConversations, #getUserClients');
+      links.forEach(link => link.classList.remove("disabled"));
+    }
+
+    function initializeButton(iframedocument) {
+      var conversationFooter = iframedocument.getElementsByClassName('conversation-group-footer')[0];
+      if (conversationFooter) {
+        conversationFooter.innerHTML = '<button onclick=parent.createConversation()>New Conversation</button>';
+      }
+    }
+    function createConversation() {
+      if (Smooch.isOpened()) {
+        Smooch.createConversation().then((conversation) => {
+          Smooch.loadConversation(conversation.id);
+        })
+      }
+    }
+
+    Smooch.on('widget:opened', () => {
+      const { external_id, token } = getSessionAuth();
+      if ((!Smooch.getUser() ?? Smooch.getConversations().length === 0) && !external_id && !token) {
+        Smooch.createConversation();
+      } else if (external_id && token) {
+        Smooch.login(external_id, token);
+      }
+    });
 
     // This event triggers when the widget is closed
     Smooch.on('widget:closed', function () {
@@ -205,6 +290,7 @@
     });
 
   </script>
+<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=b9b176ae-c123-40a2-b21d-98632fc01aff"> </script>
 </body>
 
 </html>

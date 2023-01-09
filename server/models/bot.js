@@ -5,6 +5,7 @@ import executeQueries from "../controllers/gdf.js";
 import botMessages from "../constants/botMessages.js";
 import SunCoClient from "../utils/suncoApi.js";
 
+
 export default class Bot {
   constructor(appId, conversationId) {
     this.sunCo = new SunCoClient();
