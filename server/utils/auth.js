@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
-import 'dotenv';
+import * as dotenv from 'dotenv'
+dotenv.config()
 import pkg from 'jsonwebtoken';
 const { sign } = pkg;
 
@@ -33,7 +34,7 @@ const { sign } = pkg;
   }
 
 const returnToken = (req, res) => {
-    if (req.get('origin') === 'https://romain.ngrok.io') {
+    if (req.get('origin') === process.env.AUTHORISED_ORIGIN) {
       const jwt = new Jwt(req.body.external_id, req.body.name, req.body.email);
       const jwtToken = jwt.signJwt();
       console.log(`JWT Token generated: ${jwtToken}`);
