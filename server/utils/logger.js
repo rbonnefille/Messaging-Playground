@@ -3,6 +3,10 @@ import ConversationEvent from "../models/webhook.js";
 
 
 const logger = (req, res, next) => {
+  if (req.method === "HEAD"){
+    console.info(`${req.originalUrl} - ${req.method} - ${res.statusCode}`);
+    return next();
+  }
   const webhookEvent = new ConversationEvent(req);
   if (webhookEvent.isConversationMessage() && !webhookEvent.isBusinessMessage()) {
     
