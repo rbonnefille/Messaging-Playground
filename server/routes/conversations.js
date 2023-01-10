@@ -5,10 +5,10 @@ const router = express.Router();
 
 router.use(logger);
 
-router.post("/", conversationEvents)
-
-router.head("/", (req, res) => {
+router.head("/", (res) => {
     return res.sendStatus(200);
 });
+
+router.post("/", conversationEvents)
 
 export default router;
