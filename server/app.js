@@ -1,6 +1,9 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 import express from "express";
+import path from "path";
+import favicon from "serve-favicon";
+import { fileURLToPath } from 'url';
 import returnToken from "./utils/auth.js"
 import conversationRouter from "./routes/conversations.js";
 import userRouter from "./routes/users.js";
@@ -8,10 +11,14 @@ import integrationRouter from "./routes/integrations.js";
 // import { dialogFlow } from "./routes/dialogFlow.js";
 const { BROWSER_SESSION_STORAGE_KEY: sessionStorageKey } = process.env;
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use("/public", express.static("public"));
+app.use(favicon(path.join(__dirname, 'public', 'assets', 'favicon.ico')))
 
 app.use("/conversations", conversationRouter);
 
@@ -35,4 +42,4 @@ app.use((req, res) => {
     res.status(404).render("404.ejs");
 });
 
-app.listen( (process.env.PORT ?? 7777), () => console.log(`Server is running on port ${process.env.PORT ?? 7777}`));
+app.listen( (process.env.PORT ?? 3000), () => console.log(`Server is running on port ${process.env.PORT ?? 3000}`));
