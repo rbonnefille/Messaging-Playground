@@ -30,15 +30,15 @@ app.use("/users", userRouter);
 
 app.post("/auth", returnToken);
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
     res.render("index.ejs", { sessionStorageKey: sessionStorageKey });
 });
 
-app.get("/integrationweb2", (req, res) => {
+app.get("/integrationweb2", (_, res) => {
     res.render("integrationweb2.ejs", { sessionStorageKey: sessionStorageKey });
 });
 
-app.use((req, res) => {
+app.use((_, res) => {
     res.status(404).render("404.ejs");
 });
 

@@ -34,7 +34,7 @@ const { sign } = pkg;
   }
 
 const returnToken = (req, res) => {
-    if (req.get('origin') === process.env.AUTHORISED_ORIGIN) {
+    if (req.get('origin') === process.env.AUTHORISED_ORIGIN || 'http://localhost:3000') {
       const jwt = new Jwt(req.body.external_id, req.body.name, req.body.email);
       const jwtToken = jwt.signJwt();
       console.log(`JWT Token generated: ${jwtToken}`);

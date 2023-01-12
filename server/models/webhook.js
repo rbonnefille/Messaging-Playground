@@ -17,7 +17,7 @@ class WebhookEvent {
         this.eventId = event.id;
         this.eventCreatedAt = event.createdAt;
         this.eventType = event.type;
-        this.messageType = event.payload.message?.source?.type ?? event.payload?.source?.type ?? event.payload?.activity?.source?.type ?? event.payload?.source?.type;
+        this.sourceType = event.payload.message?.source?.type ?? event.payload?.source?.type ?? event.payload?.activity?.source?.type ?? event.payload?.source?.type;
         this.conversationId = event.payload?.conversation?.id;
         this.conversationType = event.payload?.conversation?.type;
         this.activeSwitchboardIntegrationId = event.payload.conversation.activeSwitchboardIntegration?.id;
@@ -94,7 +94,7 @@ class ConversationEvent extends WebhookEvent {
         return this.eventType === "conversation:read";
     }
     isConversationMessage() {
-        return this.eventType === "conversation:message" ?? this.eventType === "conversation:postback";
+        return this.eventType === "conversation:message" || this.eventType === "conversation:postback";
     }
     isBusinessMessage() {
         return this.authorType === "business";
@@ -107,13 +107,13 @@ class ConversationEvent extends WebhookEvent {
     }
     isAllowedChannel(){
         if (this.isConversationMessage()) {
-            return this.messageType !== "api:conversations";
+            return this.sourceType !== "api:conversations";
         } else if (this.isConversationCreate()) {
-            return this.messageType === "android" ?? this.messageType === "ios" ?? this.messageType === "web";
+            return this.sourceType === "android" || this.sourceType === "ios" || this.sourceType === "web";
         }
     }
     get userMessage(){
-        return this._userMessage.toLowerCase().trim() ?? this._userMessage;    
+        return this._userMessage.toLowerCase().trim() || this._userMessage;    
     }
     set userMessage(message){
         return this._userMessage = message;

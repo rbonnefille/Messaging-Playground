@@ -20,7 +20,6 @@ const messageEvents = (req, res, next) => {
     res.sendStatus(200).end();
     return;
   }
-
   //Handle events
   if (webhookEvent.isConversationMessage()) {
     if (webhookEvent.isBusinessMessage(webhookEvent.authorType)) {
@@ -73,10 +72,6 @@ const messageEvents = (req, res, next) => {
     } else {
       res.end();
     }
-  } else if (webhookEvent.isConversationRead()) {
-    console.log(`########## Conversation read event ##########`);
-    console.log(`Message in conversationId: ${webhookEvent.conversationId} was read by user: ${webhookEvent.userExternalId ?? webhookEvent.userId}`);
-    res.end();
   }
 };
 

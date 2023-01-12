@@ -92,10 +92,23 @@ class SunCoClient {
   }
 
   async getConversation(payload) {
-    const { conversationId } = payload;
+    const conversationId = payload.conversationId || payload;
+    console.log(conversationId)
     const apiInstance = new SunshineConversationsClient.ConversationsApi();
     try {
       return await apiInstance.getConversation(this.appId, conversationId);
+    } catch (e) {
+      // catch error
+      throw new Error(e.message)
+    }
+  }
+  
+
+  async listMessages(payload) {
+    const { conversationId } = payload;
+    const apiInstance = new SunshineConversationsClient.MessagesApi();
+    try {
+      return await apiInstance.listMessages(this.appId, conversationId);
     } catch (e) {
       // catch error
       throw new Error(e.message)
