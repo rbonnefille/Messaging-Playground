@@ -77,7 +77,7 @@ export default class Bot {
             switchBoardMetadata.givenName,
           "dataCapture.systemField.requester.email": switchBoardMetadata.email,
           "dataCapture.ticketField.360023540498":
-            switchBoardMetadata.externalId,
+            switchBoardMetadata.userExternalId,
           "dataCapture.systemField.tags": `${switchBoardMetadata.eventSource}`,
           "dataCapture.ticketField.360023540658":
             switchBoardMetadata.eventSource,
