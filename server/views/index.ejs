@@ -229,9 +229,9 @@
       var name = x.elements[1].value;
       var email = x.elements[2].value;
       const data = {
-        external_id: external_id,
-        name: name,
-        email: email
+        external_id: external_id || "m-scott",
+        name: name || "Michael Scott",
+        email: email || "michael-scott@example.com"
       };
       getToken(data);
       setTimeout(() => {
@@ -239,7 +239,7 @@
         Smooch.login(external_id, token);
         Smooch.open();
       }, 1500);
-      prefillSuncoRoutes(external_id);
+      prefillSuncoRoutes(external_id || "m-scott");
     }
 
     function prefillSuncoRoutes(external_id) {
