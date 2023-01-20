@@ -132,7 +132,7 @@
     <h4>Zendesk SDK</h4>
     <div class="p-3 m-0 border-0" role="group" aria-label="Actions">
       <button type="button" class="btn btn-primary" onclick="zE('messenger', 'open');">Open Widget</button>
-      <button type="button" class="btn btn-success" onclick="zE('messenger', 'loginUser', function (callback) {callback( getSessionAuth().token);zE('messenger', 'open');});">Login User</button>
+      <button type="button" class="btn btn-success" onclick="zE('messenger', 'loginUser', function (callback) {callback( getSessionAuth().token);});">Login User</button>
       <button type="button" class="btn btn-warning" onclick="zE('messenger', 'logoutUser');">Logout User</button>
       <button type="button" class="btn btn-secondary" onclick="zE('messenger', 'close'); ">Close Widget</button>
     </div>
@@ -287,6 +287,11 @@
       console.log('Widget is closed!');
       // clearSessionAuth();
     });
+
+    zE('messenger:on', 'unreadMessages', function (count) {
+      console.log(`You have ${count} unread message(s).`);
+      zE('messenger', 'open');
+    })
 
   </script>
 <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=b9b176ae-c123-40a2-b21d-98632fc01aff"> </script>

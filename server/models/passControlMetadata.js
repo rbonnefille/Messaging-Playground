@@ -14,7 +14,7 @@ export default class PassControlMetadata {
         return this._email;
     }
     get userExternalId() {
-        return this.userExternalId;
+        return this._userExternalId;
     }
     get eventSource() {
         return this._eventSource;
