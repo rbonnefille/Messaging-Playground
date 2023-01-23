@@ -48,7 +48,7 @@ class SunCoClient {
     };
     try {
       return await apiInstance.postActivity(this.appId, conversationId, activityPost);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
@@ -59,7 +59,7 @@ class SunCoClient {
     const apiInstance = new SunshineConversationsClient.ClientsApi();
     try {
       return await apiInstance.listClients(this.appId, userIdOrExternalId);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
@@ -70,7 +70,7 @@ class SunCoClient {
     const apiInstance = new SunshineConversationsClient.UsersApi();
     try {
       return await apiInstance.getUser(this.appId, userIdOrExternalId);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
@@ -85,7 +85,7 @@ class SunCoClient {
     };
     try {
       return await apiInstance.updateUser(this.appId, userIdOrExternalId, userUpdateBody);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
@@ -96,7 +96,7 @@ class SunCoClient {
     const apiInstance = new SunshineConversationsClient.ConversationsApi();
     try {
       return await apiInstance.getConversation(this.appId, conversationId);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
@@ -107,7 +107,7 @@ class SunCoClient {
     const apiInstance = new SunshineConversationsClient.MessagesApi();
     try {
       return await apiInstance.listMessages(this.appId, conversationId);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
@@ -120,7 +120,7 @@ class SunCoClient {
     conversationUpdateBody.displayName = new Date().toLocaleString('en-us',{day: '2-digit', month:'short', year:'numeric'});
     try {
       return await apiInstance.updateConversation(this.appId, conversationId, conversationUpdateBody);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
@@ -137,7 +137,7 @@ class SunCoClient {
     }
     try {
       return await apiInstance.listConversations(this.appId, filter);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
@@ -147,7 +147,7 @@ class SunCoClient {
     const apiInstance = new SunshineConversationsClient.ConversationsApi();
     try {
       return await apiInstance.deleteConversation(this.appId, conversationId);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
@@ -157,7 +157,7 @@ class SunCoClient {
     const apiInstance = new SunshineConversationsClient.MessagesApi();
     try {
       return await apiInstance.listMessages(this.appId, conversationId);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
@@ -174,7 +174,7 @@ class SunCoClient {
     }
     try {
       return await apiInstance.passControl(this.appId, conversationId, passControlBody);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
@@ -190,7 +190,7 @@ class SunCoClient {
     }
     try {
       return await apiInstance.offerControl(this.appId, conversationId, offerControlBody);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
@@ -206,7 +206,7 @@ class SunCoClient {
     }
     try {
       return await apiInstance.releaseControl(this.appId, conversationId);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
@@ -216,7 +216,7 @@ class SunCoClient {
     const apiInstance = new SunshineConversationsClient.SwitchboardsApi();
     try {
       return await apiInstance.listSwitchboards(this.appId);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
@@ -228,7 +228,7 @@ class SunCoClient {
     const apiInstance = new SunshineConversationsClient.SwitchboardIntegrationsApi();
     try {
       return await apiInstance.listSwitchboardIntegrations(this.appId, switchboardId);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
@@ -238,7 +238,7 @@ class SunCoClient {
     const apiInstance = new SunshineConversationsClient.IntegrationsApi();
     try {
       return await apiInstance.listIntegrations(this.appId);
-    } catch (e) {
+    } catch (error) {
       // catch error
       this.handleError(error)
     }
