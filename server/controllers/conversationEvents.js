@@ -1,11 +1,10 @@
-import Bot from "../models/bot.js";
-import ConversationEvent from "../models/webhook.js";
-import PassControlMetadata from "../models/passControlMetadata.js";
+import replyToUser from "../models/bot.js";
+import ConversationEvent from "../models/Webhook.js";
+import PassControlMetadata from "../models/PassControlMetadata.js";
 
 const messageEvents = (req, res, next) => {
   const webhookEvent = new ConversationEvent(req);
   const metadata = new PassControlMetadata(webhookEvent);
-  const bot = new Bot(webhookEvent.appId, webhookEvent.conversationId);
 
   if (!webhookEvent.isAuthenticatedRequest(webhookEvent.webhookEventApiKey)) {
     res.sendStatus(401).end();
@@ -32,7 +31,7 @@ const messageEvents = (req, res, next) => {
     ) {
       try {
         if (webhookEvent.userMessage) {
-          bot.replyToUser(webhookEvent, metadata);
+          replyToUser(webhookEvent, metadata);
         }
       } catch (err) {
         console.log(`Error in message handler ${err}`);
@@ -45,7 +44,7 @@ const messageEvents = (req, res, next) => {
       try {
         if (webhookEvent.textFallback) {
           webhookEvent.userMessage = "form response";
-          bot.replyToUser(webhookEvent, metadata);
+          replyToUser(webhookEvent, metadata);
         }
       } catch (err) {
         console.log(`Error in message handler ${err}`);
@@ -62,7 +61,7 @@ const messageEvents = (req, res, next) => {
     ) {
       try {
         webhookEvent.userMessage = "start";
-        bot.replyToUser(webhookEvent, metadata);
+        replyToUser(webhookEvent, metadata);
         res.end();
       } catch (error) {
         console.log(error);
