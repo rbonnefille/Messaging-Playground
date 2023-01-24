@@ -6,6 +6,8 @@ class WebhookEvent {
         const {
             events: [event],
         } = req.body;
+        const { payload } = event;
+        const { conversation } = payload;
         this._webhookEventApiKey = req.headers["x-api-key"];
         this._appId = req.body.app.id;
         this.webhookId = req.body.webhook.id;
@@ -17,13 +19,13 @@ class WebhookEvent {
         this.eventId = event.id;
         this.eventCreatedAt = event.createdAt;
         this.eventType = event.type;
-        this.sourceType = event.payload.message?.source?.type ?? event.payload?.source?.type ?? event.payload?.activity?.source?.type ?? event.payload?.source?.type;
-        this.conversationId = event.payload?.conversation?.id;
-        this.conversationType = event.payload?.conversation?.type;
-        this.activeSwitchboardIntegrationId = event.payload.conversation.activeSwitchboardIntegration?.id;
-        this.activeSwitchboardIntegrationName = event.payload.conversation.activeSwitchboardIntegration?.name;
-        this.activeSwitchboardIntegrationIntegrationId = event.payload.conversation.activeSwitchboardIntegration?.integrationId;
-        this.activeSwitchboardIntegrationIntegrationType = event.payload.conversation.activeSwitchboardIntegration?.integrationType;        
+        this.sourceType = payload.message?.source?.type ?? payload.source?.type ?? payload.activity?.source?.type ?? payload.source?.type;
+        this.conversationId = conversation.id;
+        this.conversationType = conversation.type;
+        this.activeSwitchboardIntegrationId = conversation.activeSwitchboardIntegration?.id;
+        this.activeSwitchboardIntegrationName = conversation.activeSwitchboardIntegration?.name;
+        this.activeSwitchboardIntegrationIntegrationId = conversation.activeSwitchboardIntegration?.integrationId;
+        this.activeSwitchboardIntegrationIntegrationType = conversation.activeSwitchboardIntegration?.integrationType;        
     }
     get webhookEventApiKey() {
         return this._webhookEventApiKey;
@@ -51,37 +53,38 @@ class ConversationEvent extends WebhookEvent {
         const {
             events: [event],
         } = req.body;
+        const { payload } = event;
         if (this.isConversationCreate()) {
-            this.userId = event.payload.user?.id;
-            this.userExternalId = event.payload.user?.externalId;
-            this.creationReason = event.payload.creationReason;
-            this.sourceType = event.payload.source?.type;
-            this.sourceIntegrationId = event.payload.source?.integrationId;
+            this.userId = payload.user?.id;
+            this.userExternalId = payload.user?.externalId;
+            this.creationReason = payload.creationReason;
+            this.sourceType = payload.source?.type;
+            this.sourceIntegrationId = payload.source?.integrationId;
         } 
         if (this.isConversationMessage()) {
-            this.messageId = event.payload.message?.id;
-            this.receivedAt = event.payload.message?.received;
-            this.authorId = event.payload.message?.author?.userId;
-            this.avatarUrl = event.payload.message?.author?.avatarUrl;
-            this.displayName = event.payload.message?.author?.displayName;
-            this.authorType = event.payload.message?.author?.type ?? "user";
-            this.userId = event.payload.message?.author.user?.id;
-            this.userExternalId = event.payload.message?.author.user?.externalId;
-            this.givenName = event.payload.message?.author.user?.profile?.givenName;
-            this.email = event.payload.message?.author.user?.profile?.email;
-            this.locale = event.payload.message?.author.user?.profile?.locale;
-            this.signedUpAt = event.payload.message?.author.user?.signedUpAt;
-            this.userMetadata = event.payload.message?.author.user?.metadata;
-            this.contentType = event.payload.message?.content?.type ?? "text";
-            this.textFallback = event.payload.message?.content?.textFallback;
-            this._userMessage = event.payload.message?.content?.payload ?? event.payload.message?.content?.text ?? event.payload.postback?.payload;
-            this.sourceIntegrationId = event.payload.message?.source?.integrationId;
-            this.sourceType = event.payload.message?.source?.type ?? event.payload.source?.type;
-            this.recentNotifications = event.payload?.recentNotifications;
+            this.messageId = payload.message?.id;
+            this.receivedAt = payload.message?.received;
+            this.authorId = payload.message?.author?.userId;
+            this.avatarUrl = payload.message?.author?.avatarUrl;
+            this.displayName = payload.message?.author?.displayName;
+            this.authorType = payload.message?.author?.type ?? "user";
+            this.userId = payload.message?.author.user?.id;
+            this.userExternalId = payload.message?.author.user?.externalId;
+            this.givenName = payload.message?.author.user?.profile?.givenName;
+            this.email = payload.message?.author.user?.profile?.email;
+            this.locale = payload.message?.author.user?.profile?.locale;
+            this.signedUpAt = payload.message?.author.user?.signedUpAt;
+            this.userMetadata = payload.message?.author.user?.metadata;
+            this.contentType = payload.message?.content?.type ?? "text";
+            this.textFallback = payload.message?.content?.textFallback;
+            this._userMessage = payload.message?.content?.payload ?? payload.message?.content?.text ?? payload.postback?.payload;
+            this.sourceIntegrationId = payload.message?.source?.integrationId;
+            this.sourceType = payload.message?.source?.type ?? payload.source?.type;
+            this.recentNotifications = payload.recentNotifications;
         }
         if (this.isConversationRead()) {
-            this.userExternalId = event.payload?.activity?.author?.user?.externalId;
-            this.userId = event.payload?.activity?.author?.userId
+            this.userExternalId = payload.activity?.author?.user?.externalId;
+            this.userId = payload.activity?.author?.userId
         }
     }
     isConversationCreate() {

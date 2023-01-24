@@ -16,18 +16,39 @@ export const getRandomFallbackMessage = () => {
 };
 
 export const replyToUser = async (eventMessage, switchBoardMetadata) => {
-  const userQuery = eventMessage?.userMessage;
-  replyData.conversationId = eventMessage.conversationId;
-  switch (userQuery) {
+  const {
+    givenName,
+    email,
+    userExternalId,
+    eventSource,
+    conversation,
+    recentNotifications,
+  } = switchBoardMetadata;
+  const { userMessage, conversationId } = eventMessage;
+  const {
+    default: defaultMessage,
+    bot,
+    carousel,
+    compound,
+    file,
+    form,
+    location,
+    tacos,
+    burrito,
+    cat,
+    handover,
+    webview,
+  } = botMessages;
+  replyData.conversationId = conversationId;
+  switch (userMessage) {
     case "hello":
     case "hi":
     case "hey":
     case "help":
     case "start":
     case "yo":
-      const getConvoDisplayName = await sunCo.getConversation(
-        eventMessage
-      );
+    case "hello i need help":
+      const getConvoDisplayName = await sunCo.getConversation(eventMessage);
       if (!getConvoDisplayName.conversation.displayName) {
         sunCo.updateConversation(eventMessage);
       }
@@ -35,7 +56,7 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
       if (Object.keys(userMetadata.user.metadata).length === 0) {
         await sunCo.updateUser(eventMessage);
       }
-      replyData.message = botMessages.default;
+      replyData.message = defaultMessage;
       return sunCo.sendMessage(replyData);
     case "cat":
     case "cats":
@@ -50,74 +71,69 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
     case "😸":
     case "😽":
     case "🐈":
-      const catImage = await getCatPicture();
-      replyData.message = botMessages.cat;
-      replyData.image = catImage;
+      await getCatPicture();
+      replyData.message = cat;
+      replyData.image = await getCatPicture();
       return sunCo.sendMessage(replyData);
     case "agent":
     case "passControl":
     case "human":
-      replyData.message = botMessages.handover;
+      replyData.message = handover;
       sunCo.sendMessage(replyData);
       replyData.metadata = {
-        "dataCapture.systemField.requester.name": switchBoardMetadata.givenName,
-        "dataCapture.systemField.requester.email": switchBoardMetadata.email,
-        "dataCapture.ticketField.360023540498":
-          switchBoardMetadata.userExternalId,
-        "dataCapture.systemField.tags": `${switchBoardMetadata.eventSource}`,
-        "dataCapture.ticketField.360023540658": switchBoardMetadata.eventSource,
-        "dataCapture.ticketField.1900005043913":
-          switchBoardMetadata.conversation,
-        "dataCapture.ticketField.11280496337553":
-          switchBoardMetadata.recentNotifications,
+        "dataCapture.systemField.requester.name": givenName,
+        "dataCapture.systemField.requester.email": email,
+        "dataCapture.ticketField.360023540498": userExternalId,
+        "dataCapture.systemField.tags": `${eventSource}`,
+        "dataCapture.ticketField.360023540658": eventSource,
+        "dataCapture.ticketField.1900005043913": conversation,
+        "dataCapture.ticketField.11280496337553": recentNotifications,
       };
       return sunCo.passControl(replyData);
     case "bot":
-      replyData.message = botMessages.bot;
+      replyData.message = bot;
       return sunCo.sendMessage(replyData);
     case "carousel":
-      replyData.message = botMessages.carousel;
+      replyData.message = carousel;
       return sunCo.sendMessage(replyData);
     case "tacos":
     case "taco":
-      replyData.message = botMessages.tacos;
+      replyData.message = tacos;
       return sunCo.sendMessage(replyData);
     case "burritos":
     case "burrito":
-      replyData.message = botMessages.burrito;
+      replyData.message = burrito;
       return sunCo.sendMessage(replyData);
     case "compound message":
     case "compound":
-      replyData.message = botMessages.compound;
+      replyData.message = compound;
       return sunCo.sendMessage(replyData);
     case "file message":
     case "file":
-      replyData.message = botMessages.file;
+      replyData.message = file;
       return sunCo.sendMessage(replyData);
     case "form message":
     case "form":
-      replyData.message = botMessages.form;
+      replyData.message = form;
       return sunCo.sendMessage(replyData);
     case "form response":
       replyData.message = `Thank you for providing your details.\n ${eventMessage.textFallback}`;
       return sunCo.sendMessage(replyData);
     case "location request":
     case "location":
-      replyData.message = botMessages.location;
+      replyData.message = location;
       return sunCo.sendMessage(replyData);
     case "webview":
-      replyData.message = botMessages.webview;
+      replyData.message = webview;
       return sunCo.sendMessage(replyData);
     case "gdf":
-      const gdf = await executeQueries("Hey there, how are you?.js");
-      replyData.message = gdf;
+      replyData.message = await executeQueries("Hey there, how are you?");
       return sunCo.sendMessage(replyData);
     case "list":
     case "clean":
     case "clean conversations":
     case "remove":
       let countDeletedConversations = 0;
-
       let allConversations = await sunCo.listConversations(eventMessage);
       const userConversations = Object.keys(
         allConversations.getConversations()
@@ -163,8 +179,7 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
     case "chuck":
     case "norris":
     case "joke":
-      const chuckNorrisJoke = await getChuckNorrisJoke();
-      replyData.message = chuckNorrisJoke;
+      replyData.message = await getChuckNorrisJoke();
       return sunCo.sendMessage(replyData);
     default:
       replyData.message = this.getRandomFallbackMessage();
