@@ -182,7 +182,7 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
       replyData.message = await getChuckNorrisJoke();
       return sunCo.sendMessage(replyData);
     default:
-      replyData.message = this.getRandomFallbackMessage();
+      replyData.message = getRandomFallbackMessage();
       return sunCo.sendMessage(replyData);
   }
 };
