@@ -76,21 +76,39 @@ class ConversationEvent extends WebhookEvent {
     }
     if (this.isConversationMessage()) {
       const {
-        message: { id, received, author, content, source },
+        message: {
+          id: messageId,
+          received,
+          author: {
+            userId,
+            avatarUrl,
+            displayName,
+            type,
+            user: {
+              id: userObjectId,
+              externalId,
+              profile = {},
+              signedUpAt,
+              metadata,
+            } = {},
+          },
+          content,
+          source,
+        } = {},
       } = payload;
-      this.messageId = id;
+      this.messageId = messageId;
       this.receivedAt = received;
-      this.authorId = author?.userId;
-      this.avatarUrl = author?.avatarUrl;
-      this.displayName = author?.displayName;
-      this.authorType = author?.type ?? "user";
-      this.userId = author.user?.id;
-      this.userExternalId = author?.user?.externalId;
-      this.givenName = author?.user?.profile?.givenName;
-      this.email = author?.user?.profile?.email;
-      this.locale = author?.user?.profile?.locale;
-      this.signedUpAt = author?.user?.signedUpAt;
-      this.userMetadata = author?.user?.metadata;
+      this.authorId = userId;
+      this.avatarUrl = avatarUrl;
+      this.displayName = displayName;
+      this.authorType = type ?? "user";
+      this.userId = userObjectId;
+      this.userExternalId = externalId;
+      this.givenName = profile.givenName;
+      this.email = profile.email;
+      this.locale = profile.locale;
+      this.signedUpAt = signedUpAt;
+      this.userMetadata = metadata;
       this.contentType = content?.type ?? "text";
       this.textFallback = content?.textFallback;
       this._userMessage =
