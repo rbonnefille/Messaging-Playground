@@ -7,7 +7,6 @@ import SunCoClient from "../utils/suncoApi.js";
 import Reply from "./Reply.js";
 
 const sunCo = new SunCoClient();
-const replyData = new Reply();
 
 export const getRandomFallbackMessage = () => {
   return botMessages.fallback[
@@ -15,7 +14,51 @@ export const getRandomFallbackMessage = () => {
   ];
 };
 
-export const replyToUser = async (eventMessage, switchBoardMetadata) => {
+const cleanConversations = async (event, replyData) => {
+  let countDeletedConversations = 0;
+  let allConversations = await sunCo.listConversations(event);
+  const userConversations = Object.keys(
+    allConversations.getConversations()
+  ).length;
+  replyData.message = `You currently have ${userConversations} ${
+    userConversations > 1 ? "conversations" : "conversation"
+  } opened. I will see if I can close some of them`;
+  await sunCo.sendMessage(replyData);
+  try {
+    allConversations.conversations.forEach(async (convo) => {
+      const conversationMessages = await sunCo.listMessages(convo.id);
+      const convertToDate = new Date(convo.lastUpdatedAt);
+      const today = new Date();
+      const difference = today - convertToDate;
+      let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
+      if (conversationMessages.messages.length === 0) {
+        sunCo.deleteConversation(convo.id);
+        countDeletedConversations++;
+      }
+      if (totalDays > 2) {
+        if (
+          convo.activeSwitchboardIntegration.name === "NodeJsBot" &&
+          !convo.isDefault &&
+          convo.id !== event.conversationId
+        ) {
+          // no current ticket opened
+          sunCo.deleteConversation(convo.id);
+          countDeletedConversations++;
+        }
+      }
+    });
+    replyData.message = countDeletedConversations
+      ? `I've deleted ${countDeletedConversations} conversations as ${
+          countDeletedConversations > 1 ? "they weren't" : "it wasn't"
+        } liked to any opened tickets`
+      : `I didn't find any conversation to delete`;
+    return sunCo.sendMessage(replyData);
+  } catch (error) {
+    throw new Error(e.message);
+  }
+};
+
+const escalateToAgent = async (switchBoardMetadata, replyData, handoverMessage) => {
   const {
     givenName,
     email,
@@ -24,6 +67,43 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
     conversation,
     recentNotifications,
   } = switchBoardMetadata;
+  replyData.message = handoverMessage;
+  sunCo.sendMessage(replyData);
+  replyData.metadata = {
+    "dataCapture.systemField.requester.name": givenName,
+    "dataCapture.systemField.requester.email": email,
+    "dataCapture.ticketField.360023540498": userExternalId,
+    "dataCapture.systemField.tags": `${eventSource}`,
+    "dataCapture.ticketField.360023540658": eventSource,
+    "dataCapture.ticketField.1900005043913": conversation,
+    "dataCapture.ticketField.11280496337553": recentNotifications,
+  };
+  return sunCo.passControl(replyData);
+};
+
+const welcomeUser = async (event, replyData, defaultMessage) => {
+  const getConvoDisplayName = await sunCo.getConversation(event);
+      if (!getConvoDisplayName.conversation.displayName) {
+        sunCo.updateConversation(event);
+      }
+      const userMetadata = await sunCo.getUser(event);
+      if (Object.keys(userMetadata.user.metadata).length === 0) {
+        await sunCo.updateUser(event);
+      }
+      replyData.message = defaultMessage;
+      return sunCo.sendMessage(replyData);
+}
+
+const sendCatPicture = async (eventMessage, replyData, message) => {
+  replyData.conversationId = eventMessage.conversationId;
+  await getCatPicture();
+      replyData.message = message;
+      replyData.image = await getCatPicture();
+      return sunCo.sendMessage(replyData);
+}
+
+export const replyToUser = async (eventMessage, switchBoardMetadata) => {
+  const replyData = new Reply();
   const { userMessage, conversationId } = eventMessage;
   const {
     default: defaultMessage,
@@ -48,16 +128,7 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
     case "start":
     case "yo":
     case "hello i need help":
-      const getConvoDisplayName = await sunCo.getConversation(eventMessage);
-      if (!getConvoDisplayName.conversation.displayName) {
-        sunCo.updateConversation(eventMessage);
-      }
-      const userMetadata = await sunCo.getUser(eventMessage);
-      if (Object.keys(userMetadata.user.metadata).length === 0) {
-        await sunCo.updateUser(eventMessage);
-      }
-      replyData.message = defaultMessage;
-      return sunCo.sendMessage(replyData);
+      return await welcomeUser(eventMessage, replyData, defaultMessage);
     case "cat":
     case "cats":
     case "🐱":
@@ -71,25 +142,11 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
     case "😸":
     case "😽":
     case "🐈":
-      await getCatPicture();
-      replyData.message = cat;
-      replyData.image = await getCatPicture();
-      return sunCo.sendMessage(replyData);
+      return await sendCatPicture(eventMessage, replyData, cat);
     case "agent":
     case "passControl":
     case "human":
-      replyData.message = handover;
-      sunCo.sendMessage(replyData);
-      replyData.metadata = {
-        "dataCapture.systemField.requester.name": givenName,
-        "dataCapture.systemField.requester.email": email,
-        "dataCapture.ticketField.360023540498": userExternalId,
-        "dataCapture.systemField.tags": `${eventSource}`,
-        "dataCapture.ticketField.360023540658": eventSource,
-        "dataCapture.ticketField.1900005043913": conversation,
-        "dataCapture.ticketField.11280496337553": recentNotifications,
-      };
-      return sunCo.passControl(replyData);
+      return await escalateToAgent(switchBoardMetadata, replyData, handover);
     case "bot":
       replyData.message = bot;
       return sunCo.sendMessage(replyData);
@@ -133,48 +190,7 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
     case "clean":
     case "clean conversations":
     case "remove":
-      let countDeletedConversations = 0;
-      let allConversations = await sunCo.listConversations(eventMessage);
-      const userConversations = Object.keys(
-        allConversations.getConversations()
-      ).length;
-      replyData.message = `You currently have ${userConversations} ${
-        userConversations > 1 ? "conversations" : "conversation"
-      } opened. I will see if I can close some of them`;
-      await sunCo.sendMessage(replyData);
-
-      try {
-        allConversations.conversations.forEach(async (convo) => {
-          const conversationMessages = await sunCo.listMessages(convo.id);
-          const convertToDate = new Date(convo.lastUpdatedAt);
-          const today = new Date();
-          const difference = today - convertToDate;
-          let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
-          if (conversationMessages.messages.length === 0) {
-            sunCo.deleteConversation(convo.id);
-            countDeletedConversations++;
-          }
-          if (totalDays > 2) {
-            if (
-              convo.activeSwitchboardIntegration.name === "NodeJsBot" &&
-              !convo.isDefault &&
-              convo.id !== eventMessage.conversationId
-            ) {
-              // no current ticket opened
-              sunCo.deleteConversation(convo.id);
-              countDeletedConversations++;
-            }
-          }
-        });
-        replyData.message = countDeletedConversations
-          ? `I've deleted ${countDeletedConversations} conversations as ${
-              countDeletedConversations > 1 ? "they weren't" : "it wasn't"
-            } liked to any opened tickets`
-          : `I didn't find any conversation to delete`;
-        return sunCo.sendMessage(replyData);
-      } catch (error) {
-        throw new Error(e.message);
-      }
+      return await cleanConversations(eventMessage, replyData);
     case "chuck norris":
     case "chuck":
     case "norris":
