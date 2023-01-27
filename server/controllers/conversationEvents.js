@@ -20,7 +20,10 @@ const messageEvents = (req, res, next) => {
     return;
   }
   //Handle events
-  if (webhookEvent.isConversationMessage() || webhookEvent.isConversationPostback()) {
+  if (
+    webhookEvent.isConversationMessage() ||
+    webhookEvent.isConversationPostback()
+  ) {
     if (webhookEvent.isBusinessMessage(webhookEvent.authorType)) {
       res.sendStatus(200).end();
       return;
@@ -71,7 +74,7 @@ const messageEvents = (req, res, next) => {
     } else {
       res.end();
     }
-  } else if (webhookEvent.isConversationRead()){
+  } else if (webhookEvent.isConversationRead()) {
     res.sendStatus(200).end();
     return;
   }
