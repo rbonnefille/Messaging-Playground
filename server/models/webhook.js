@@ -80,7 +80,7 @@ class ConversationEvent extends WebhookEvent {
           id: messageId,
           received,
           author: {
-            userId,
+            userId = {},
             avatarUrl,
             displayName,
             type,
@@ -91,7 +91,7 @@ class ConversationEvent extends WebhookEvent {
               signedUpAt,
               metadata,
             } = {},
-          },
+          } = {},
           content,
           source,
         } = {},
@@ -112,10 +112,19 @@ class ConversationEvent extends WebhookEvent {
       this.contentType = content?.type ?? "text";
       this.textFallback = content?.textFallback;
       this._userMessage =
-        content?.payload ?? content?.text ?? payload.postback?.payload;
+        content?.payload ?? content?.text;
       this.sourceIntegrationId = source?.integrationId;
-      this.sourceType = source?.type ?? payload.source?.type;
+      this.sourceType = source?.type;
       this.recentNotifications = payload.recentNotifications;
+    }
+    if (this.isConversationPostback()) {
+      this.userId = payload.user?.id;
+      this.userExternalId = payload.user?.externalId;
+      this.contentType = "text";
+      this._userMessage = payload.postback?.payload;
+      this.sourceType = payload.source?.type;
+      this.sourceIntegrationId = payload.source?.integrationId;
+      this.sourceType = payload.source?.type;
     }
     if (this.isConversationRead()) {
       this.userExternalId = payload.activity?.author?.user?.externalId;
@@ -133,7 +142,11 @@ class ConversationEvent extends WebhookEvent {
   }
   isConversationMessage() {
     return (
-      this.eventType === "conversation:message" ||
+      this.eventType === "conversation:message"
+    );
+  }
+  isConversationPostback() {
+    return (
       this.eventType === "conversation:postback"
     );
   }
@@ -147,7 +160,7 @@ class ConversationEvent extends WebhookEvent {
     return this.contentType === "formResponse";
   }
   isAllowedChannel() {
-    if (this.isConversationMessage()) {
+    if (this.isConversationMessage() || this.isConversationPostback()) {
       return this.sourceType !== "api:conversations";
     } else if (this.isConversationCreate()) {
       return (

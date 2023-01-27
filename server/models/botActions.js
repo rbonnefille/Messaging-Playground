@@ -11,6 +11,19 @@ export const getRandomFallbackMessage = () => {
   ];
 };
 
+export const welcomeUser = async (event, replyData, defaultMessage) => {
+  const getConvoDisplayName = await sunCo.getConversation(event);
+      if (!getConvoDisplayName.conversation.displayName) {
+        sunCo.updateConversation(event);
+      }
+      const userMetadata = await sunCo.getUser(event);
+      if (Object.keys(userMetadata.user.metadata).length === 0) {
+        await sunCo.updateUser(event);
+      }
+      replyData.message = defaultMessage;
+      return sunCo.sendMessage(replyData);
+}
+
 export const cleanConversations = async (event, replyData) => {
   let countDeletedConversations = 0;
   let allConversations = await sunCo.listConversations(event);
@@ -77,19 +90,6 @@ export const escalateToAgent = async (switchBoardMetadata, replyData, handoverMe
   };
   return sunCo.passControl(replyData);
 };
-
-export const welcomeUser = async (event, replyData, defaultMessage) => {
-  const getConvoDisplayName = await sunCo.getConversation(event);
-      if (!getConvoDisplayName.conversation.displayName) {
-        sunCo.updateConversation(event);
-      }
-      const userMetadata = await sunCo.getUser(event);
-      if (Object.keys(userMetadata.user.metadata).length === 0) {
-        await sunCo.updateUser(event);
-      }
-      replyData.message = defaultMessage;
-      return sunCo.sendMessage(replyData);
-}
 
 export const sendCatPicture = async (eventMessage, replyData, message) => {
   replyData.conversationId = eventMessage.conversationId;
