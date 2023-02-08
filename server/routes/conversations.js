@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.use(logger);
 
-router.head("/", (res) => {
-  return res.sendStatus(200);
+router.head("/", (_, res) => {
+  return res.sendStatus(200).end();
 });
 
 router.get("/:id", async (req, res) => {

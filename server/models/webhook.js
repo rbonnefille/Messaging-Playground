@@ -7,7 +7,8 @@ class WebhookEvent {
       events: [event],
     } = req.body;
     const { payload } = event;
-    const { conversation: { id, type, activeSwitchboardIntegration } = {} } = payload;
+    const { conversation: { id, type, activeSwitchboardIntegration } = {} } =
+      payload;
     this._webhookEventApiKey = req.headers["x-api-key"];
     this._appId = req.body.app.id;
     this.webhookId = req.body.webhook.id;
@@ -28,10 +29,8 @@ class WebhookEvent {
       payload.source?.type;
     this.conversationId = id;
     this.conversationType = type;
-    this.activeSwitchboardIntegrationId =
-      activeSwitchboardIntegration?.id;
-    this.activeSwitchboardIntegrationName =
-      activeSwitchboardIntegration?.name;
+    this.activeSwitchboardIntegrationId = activeSwitchboardIntegration?.id;
+    this.activeSwitchboardIntegrationName = activeSwitchboardIntegration?.name;
     this.activeSwitchboardIntegrationIntegrationId =
       activeSwitchboardIntegration?.integrationId;
     this.activeSwitchboardIntegrationIntegrationType =
@@ -72,6 +71,7 @@ class ConversationEvent extends WebhookEvent {
       this.userExternalId = payload.user?.externalId;
       this.creationReason = payload.creationReason;
       this.sourceType = payload.source?.type;
+      this.sourceDevice = payload.source?.device;
       this.sourceIntegrationId = payload.source?.integrationId;
     }
     if (this.isConversationMessage()) {
@@ -111,10 +111,10 @@ class ConversationEvent extends WebhookEvent {
       this.userMetadata = metadata;
       this.contentType = content?.type ?? "text";
       this.textFallback = content?.textFallback;
-      this._userMessage =
-        content?.payload ?? content?.text;
+      this._userMessage = content?.payload ?? content?.text;
       this.sourceIntegrationId = source?.integrationId;
       this.sourceType = source?.type;
+      this.sourceDevice = source?.device;
       this.recentNotifications = payload.recentNotifications;
     }
     if (this.isConversationPostback()) {
@@ -125,10 +125,12 @@ class ConversationEvent extends WebhookEvent {
       this.sourceType = payload.source?.type;
       this.sourceIntegrationId = payload.source?.integrationId;
       this.sourceType = payload.source?.type;
+      this.sourceDevice = payload.source?.device;
     }
     if (this.isConversationRead()) {
       this.userExternalId = payload.activity?.author?.user?.externalId;
       this.userId = payload.activity?.author?.userId;
+      this.sourceDevice = payload.activity?.source?.device;
     }
   }
   isConversationCreate() {
@@ -141,14 +143,10 @@ class ConversationEvent extends WebhookEvent {
     return this.eventType === "conversation:read";
   }
   isConversationMessage() {
-    return (
-      this.eventType === "conversation:message"
-    );
+    return this.eventType === "conversation:message";
   }
   isConversationPostback() {
-    return (
-      this.eventType === "conversation:postback"
-    );
+    return this.eventType === "conversation:postback";
   }
   isBusinessMessage() {
     return this.authorType === "business";
