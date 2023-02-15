@@ -25,7 +25,6 @@ export const welcomeUser = async (event, replyData, defaultMessage) => {
 }
 
 export const cleanConversations = async (event, replyData) => {
-  let countDeletedConversations = 0;
   let allConversations = await sunCo.listConversations(event);
   const userConversations = Object.keys(
     allConversations.getConversations()
@@ -35,34 +34,26 @@ export const cleanConversations = async (event, replyData) => {
   } opened. I will see if I can close some of them`;
   await sunCo.sendMessage(replyData);
   try {
+    let countDeletedConversations = 0;
     allConversations.conversations.forEach(async (convo) => {
-      const conversationMessages = await sunCo.listMessages(convo.id);
       const convertToDate = new Date(convo.lastUpdatedAt);
       const today = new Date();
       const difference = today - convertToDate;
       let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
-      if (conversationMessages.messages.length === 0) {
-        sunCo.deleteConversation(convo.id);
-        countDeletedConversations++;
-      }
-      if (totalDays > 2) {
+      if (totalDays > 0) {
         if (
           convo.activeSwitchboardIntegration.name === "NodeJsBot" &&
           !convo.isDefault &&
           convo.id !== event.conversationId
         ) {
           // no current ticket opened
-          sunCo.deleteConversation(convo.id);
           countDeletedConversations++;
+          sunCo.deleteConversation(convo.id);
         }
       }
     });
-    replyData.message = countDeletedConversations
-      ? `I've deleted ${countDeletedConversations} conversations as ${
-          countDeletedConversations > 1 ? "they weren't" : "it wasn't"
-        } liked to any opened tickets`
-      : `I didn't find any conversation to delete`;
-    return sunCo.sendMessage(replyData);
+    replyData.message = countDeletedConversations ? `I've deleted ${countDeletedConversations} conversations as ${countDeletedConversations > 1 ? "they weren't" : "it wasn't" } liked to any opened tickets` : `I didn't find any conversation to delete`;
+    return await sunCo.sendMessage(replyData);
   } catch (error) {
     throw new Error(e.message);
   }
