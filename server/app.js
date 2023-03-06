@@ -9,12 +9,16 @@ import conversationRouter from "./routes/conversations.js";
 import userRouter from "./routes/users.js";
 import integrationRouter from "./routes/integrations.js";
 // import { dialogFlow } from "./routes/dialogFlow.js";
+import * as helmet from "helmet";
 const { BROWSER_SESSION_STORAGE_KEY: sessionStorageKey } = process.env;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.use(helmet.hidePoweredBy());
+app.use(helmet.xssFilter());
+
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use("/public", express.static("public"));
