@@ -38,7 +38,7 @@ const messageEvents = (req, res, next) => {
         }
       } catch (err) {
         console.log(`Error in message handler ${err}`);
-        res.status(500).send(err.message);
+        res.status(500).send({ error: 'Something failed!' })
       }
     } else if (
       webhookEvent.isAllowedChannel() &&
@@ -51,7 +51,7 @@ const messageEvents = (req, res, next) => {
         }
       } catch (err) {
         console.log(`Error in message handler ${err}`);
-        res.status(500).send(err.message);
+        res.status(500).send({ error: 'Something failed!' })
       }
     }
     res.end();
@@ -68,7 +68,7 @@ const messageEvents = (req, res, next) => {
         res.end();
       } catch (error) {
         console.log(error);
-        res.status(500).send(err.message);
+        res.status(500).send({ error: 'Something failed!' })
       }
       res.end();
     } else {
