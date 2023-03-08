@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SunCo Web SDK</title>
-  <link rel="stylesheet" href="../public/css/bootstrap.min.css"></link>
+  <link rel="stylesheet" href="../public/css/bootstrap.min.css">
+  </link>
   <script>
     const webSdkVersion = "5";
     const myIntegrationId = "6062e769761a7700d3fbce3f";
@@ -111,8 +112,7 @@
           aria-label="Email address" required>
       </div>
       <div class="col-10">
-        <input type="button" class="btn btn-outline-success" type="Login" value="Submit"
-          onclick="authenticateUser()" />
+        <input type="button" class="btn btn-outline-success" type="Login" value="Submit" onclick="authenticateUser()" />
       </div>
     </form>
   </div>
@@ -126,13 +126,16 @@
       <button type="button" class="btn btn-primary" onclick="Smooch.open();">Open Widget</button>
       <button type="button" class="btn btn-secondary" onclick="Smooch.close();">Close Widget</button>
       <button type="button" class="btn btn-warning" onclick="Smooch.logout();clearSessionAuth();">Logout User</button>
-      <button type="button" class="btn btn-danger" onclick="deleteItems()">Destroy Widget and clear sessionStorage</button>
+      <button type="button" class="btn btn-danger" onclick="deleteItems()">Destroy Widget and clear
+        sessionStorage</button>
       <button type="button" class="btn btn-danger" onclick="localStorage.clear();">Clear localStorage</button>
     </div>
     <h4>Zendesk SDK</h4>
     <div class="p-3 m-0 border-0" role="group" aria-label="Actions">
       <button type="button" class="btn btn-primary" onclick="zE('messenger', 'open');">Open Widget</button>
-      <button type="button" class="btn btn-success" onclick="zE('messenger', 'loginUser', function (callback) {callback( getSessionAuth().token);});">Login User</button>
+      <button type="button" class="btn btn-success"
+        onclick="zE('messenger', 'loginUser', function (callback) {callback( getSessionAuth().token);});">Login
+        User</button>
       <button type="button" class="btn btn-warning" onclick="zE('messenger', 'logoutUser');">Logout User</button>
       <button type="button" class="btn btn-secondary" onclick="zE('messenger', 'close'); ">Close Widget</button>
     </div>
@@ -165,7 +168,7 @@
       }
     };
 
-    function deleteItems() {
+    const deleteItems = () => {
       clearSessionAuth();
       Smooch.destroy();
     }
@@ -200,30 +203,25 @@
       }, false);
     });
 
-    function getToken(userData) {
-      fetch("auth", {
-        method: "POST",
-        // mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      })
-        .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then((data) => {
-          console.log("Success:", data.token);
-          const token = data.token;
-          const external_id = userData.external_id;
-          setSessionAuth(external_id, token);
-          return data;
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          window.alert(`Error: ${error.statusText}`);
-        });
+    const getToken = async (userData) => {
+      const response = await fetch(
+        'auth',
+        {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData)
+        }
+      );
+      if (!response.ok) {
+        window.alert(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
     }
 
-    function authenticateUser() {
+    const authenticateUser = async () => {
       var x = document.getElementById("suncoData");
       var external_id = x.elements[0].value;
       var name = x.elements[1].value;
@@ -233,7 +231,9 @@
         name: name || "Michael Scott",
         email: email || "michael-scott@example.com"
       };
-      getToken(data);
+      const userJwt = await getToken(data);
+      const token = userJwt.token;
+      setSessionAuth(data.external_id, token);
       setTimeout(() => {
         const { external_id, token } = getSessionAuth();
         Smooch.login(external_id, token);
@@ -242,7 +242,7 @@
       prefillSuncoRoutes(external_id || "m-scott");
     }
 
-    function prefillSuncoRoutes(external_id) {
+    const prefillSuncoRoutes = (external_id) => {
       const getUserLink = document.getElementById("getUser")
       getUserLink.href = `/users/${external_id}`;
       getUserLink.textContent = `/users/${external_id}`;
@@ -265,7 +265,7 @@
         conversationFooter.innerHTML = '<button onclick=parent.createConversation()>New Conversation</button>';
       }
     }
-    function createConversation() {
+    const createConversation = () => {
       if (Smooch.isOpened()) {
         Smooch.createConversation().then((conversation) => {
           Smooch.loadConversation(conversation.id);
@@ -294,7 +294,8 @@
     })
 
   </script>
-<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=b9b176ae-c123-40a2-b21d-98632fc01aff"> </script>
+  <script id="ze-snippet"
+    src="https://static.zdassets.com/ekr/snippet.js?key=b9b176ae-c123-40a2-b21d-98632fc01aff"> </script>
 </body>
 
 </html>
