@@ -10,7 +10,7 @@ import userRouter from "./routes/users.js";
 import integrationRouter from "./routes/integrations.js";
 // import { dialogFlow } from "./routes/dialogFlow.js";
 import * as helmet from "helmet";
-const { BROWSER_SESSION_STORAGE_KEY: sessionStorageKey } = process.env;
+const { BROWSER_SESSION_STORAGE_KEY: sessionStorageKey, MESSAGING_WIDGET_KEY: messagingWidgetKey, SUNCO_INTEGRATION_ID: suncoIntegrationId } = process.env;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,7 +35,7 @@ app.use("/users", userRouter);
 app.post("/auth", returnToken);
 
 app.get("/", (_, res) => {
-    res.render("index.ejs", { sessionStorageKey: sessionStorageKey });
+    res.render("index.ejs", { sessionStorageKey: sessionStorageKey, messagingWidgetKey: messagingWidgetKey, suncoIntegrationId: suncoIntegrationId });
 });
 
 app.get("/integrationweb2", (_, res) => {
@@ -46,4 +46,4 @@ app.use((_, res) => {
     res.status(404).render("404.ejs");
 });
 
-app.listen( (process.env.PORT ?? 3000), () => console.log(`Server is running on port ${process.env.PORT ?? 3000}`));
+app.listen((process.env.PORT ?? 3000), () => console.log(`Server is running on port ${process.env.PORT ?? 3000}`));
