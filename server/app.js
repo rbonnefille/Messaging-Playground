@@ -10,7 +10,11 @@ import userRouter from "./routes/users.js";
 import integrationRouter from "./routes/integrations.js";
 // import { dialogFlow } from "./routes/dialogFlow.js";
 import * as helmet from "helmet";
-const { BROWSER_SESSION_STORAGE_KEY: sessionStorageKey, MESSAGING_WIDGET_KEY: messagingWidgetKey, SUNCO_INTEGRATION_ID: suncoIntegrationId } = process.env;
+const { 
+        BROWSER_SESSION_STORAGE_KEY: sessionStorageKey,
+        MESSAGING_WIDGET_KEY: messagingWidgetKey,
+        SUNCO_INTEGRATION_ID: suncoIntegrationId 
+    } = process.env;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

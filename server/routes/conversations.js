@@ -11,14 +11,14 @@ router.head("/", (_, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const conversationId = req.params.id;
+  const { id: conversationId } = req.params;
   const sunCo = new SunCoClient();
   const conversation = await sunCo.getConversation(conversationId);
   res.json(conversation.conversation);
 });
 
 router.get("/:id/messages", async (req, res) => {
-  const conversationId = req.params.id;
+  const { id: conversationId } = req.params;
   const sunCo = new SunCoClient();
   const conversationMessages = await sunCo.listMessages(conversationId);
   res.json(conversationMessages);

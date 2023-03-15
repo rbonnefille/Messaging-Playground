@@ -11,14 +11,14 @@ router.get("/:id", async (req, res) => {
 })
 
 router.get("/:id/conversations", async (req, res) => {  
-    const userId = req.params.id;    
+    const { id: userId } = req.params;   
     const sunCo = new SunCoClient();
     const conversations = await sunCo.listConversations(userId);
     res.json(conversations)
 })
 
 router.get("/:id/clients", async (req, res) => {  
-    const userId = req.params.id;    
+    const { id: userId } = req.params;
     const sunCo = new SunCoClient();
     const conversations = await sunCo.listClients(userId);
     res.json(conversations)
