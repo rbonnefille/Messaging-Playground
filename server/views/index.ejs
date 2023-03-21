@@ -194,9 +194,9 @@
       // delegate
     }).then(function () {
       console.log("SunCo widget ready");
-      var user = Smooch.getUser();
+      const user = Smooch.getUser();
       console.log(user);
-      var iframe = document.getElementById('web-messenger-container');
+      const iframe = document.getElementById('web-messenger-container');
       iframedocument = iframe.contentDocument ?? iframe.contentWindow.document;
       iframedocument.addEventListener('click', function (evt) {
         initializeButton(iframedocument)
@@ -222,10 +222,10 @@
     }
 
     const authenticateUser = async () => {
-      var x = document.getElementById("suncoData");
-      var external_id = x.elements[0].value;
-      var name = x.elements[1].value;
-      var email = x.elements[2].value;
+      const x = document.getElementById("suncoData");
+      const external_id = x.elements[0].value;
+      const name = x.elements[1].value;
+      const email = x.elements[2].value;
       const data = {
         external_id: external_id || "m-scott",
         name: name || "Michael Scott",
@@ -260,7 +260,7 @@
     }
 
     const initializeButton = (iframedocument) => {
-      var conversationFooter = iframedocument.getElementsByClassName('conversation-group-footer')[0];
+      const conversationFooter = iframedocument.getElementsByClassName('conversation-group-footer')[0];
       if (conversationFooter) {
         conversationFooter.innerHTML = '<button onclick=parent.createConversation()>New Conversation</button>';
       }
