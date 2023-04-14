@@ -1,90 +1,4 @@
-<html>
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SunCo Web SDK</title>
-  <link rel="stylesheet" href="../public/css/bootstrap.min.css">
-  </link>
-  <script>
-    const webSdkVersion = "5";
-    const myIntegrationId = "<%= suncoIntegrationId %>";
-    !(function (o, p, s, e, c) {
-      var i,
-        a,
-        h,
-        u = [],
-        d = [];
-      function t() {
-        var t = webSdkVersion;
-        try {
-          if (!c) throw new Error(t);
-          var e,
-            n = "https://cdn.smooch.io/",
-            r = "smooch";
-          if (
-            (e =
-              "string" == typeof this.response
-                ? JSON.parse(this.response)
-                : this.response).url
-          ) {
-            var o = p.getElementsByTagName("script")[0],
-              s = p.createElement("script");
-            s.async = !0;
-            var i = c.match(/([0-9]+)\.?([0-9]+)?\.?([0-9]+)?/),
-              a = i && i[1];
-            if (i && i[3]) s.src = n + r + "." + c + ".min.js";
-            else {
-              if (!(4 <= a && e["v" + a])) throw new Error(t);
-              s.src = e["v" + a];
-            }
-            o.parentNode.insertBefore(s, o);
-          }
-        } catch (e) {
-          e.message === t && console.error(e);
-        }
-      }
-      (o[s] = {
-        init: function () {
-          i = arguments;
-          var t = {
-            then: function (e) {
-              return d.push({ type: "t", next: e }), t;
-            },
-            catch: function (e) {
-              return d.push({ type: "c", next: e }), t;
-            },
-          };
-          return t;
-        },
-        on: function () {
-          u.push(arguments);
-        },
-        render: function () {
-          a = arguments;
-        },
-        destroy: function () {
-          h = arguments;
-        },
-      }),
-        (o.__onWebMessengerHostReady__ = function (e) {
-          if ((delete o.__onWebMessengerHostReady__, (o[s] = e), i))
-            for (var t = e.init.apply(e, i), n = 0; n < d.length; n++) {
-              var r = d[n];
-              t = "t" === r.type ? t.then(r.next) : t.catch(r.next);
-            }
-          a && e.render.apply(e, a), h && e.destroy.apply(e, h);
-          for (n = 0; n < u.length; n++) e.on.apply(e, u[n]);
-        });
-      var n = new XMLHttpRequest();
-      n.addEventListener("load", t),
-        n.open("GET", "https://" + e + ".webloader.smooch.io/", !0),
-        (n.responseType = "json"),
-        n.send();
-    })(window, document, "Smooch", myIntegrationId, webSdkVersion);
-  </script>
-
-</head>
+<%- include('./partials/head') %>
 
 <body class="p-3 m-0 border-0 bd-example bg-light text-dark">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
@@ -102,7 +16,7 @@
         <input name="external_id" type="text" class="form-control" placeholder="jane-doe" aria-label="External ID"
           required>
       </div>
-      <div class="col-md-2">
+      <div class="col-md-2 p-3 m-0 border-0">
         <label for="formGroupExampleInput" class="form-label">Full Name</label>
         <input name="name" type="text" class="form-control" placeholder="Jane Doe" aria-label="Full name" required>
       </div>
@@ -112,7 +26,7 @@
           aria-label="Email address" required>
       </div>
       <div class="col-10">
-        <input type="button" class="btn btn-outline-success" type="Login" value="Submit" onclick="authenticateUser()" />
+        <input type="button" class="btn btn-outline-success" value="Submit" onclick="authenticateUser()" />
       </div>
     </form>
   </div>
@@ -187,17 +101,30 @@
     const getSessionAuth = () =>
       JSON.parse(window.sessionStorage.getItem('<%= sessionStorageKey %>')) ?? {};
 
+      // const delegate = {
+      //   beforeDisplay(message, data) {
+      //     const { source: { type: messageSource }, role, type: messageType, text } = message;
+      //     if (messageSource === "zd:agentWorkspace" && role === 'business' && messageType === "text" ) {
+      //       //apply same logic for all the language you support
+      //       message.text = text.replace("(traducido)", "");
+      //       return message
+      //     }
+      //       return message;
+      //   }
+      // };
+
     Smooch.init({
       integrationId: myIntegrationId,
+      // delegate,
       canUserSeeConversationList: true,
-      soundNotificationEnabled: false,
+      soundNotificationEnabled: false
       // delegate
     }).then(function () {
       console.log("SunCo widget ready");
       const user = Smooch.getUser();
       console.log(user);
       const iframe = document.getElementById('web-messenger-container');
-      iframedocument = iframe.contentDocument ?? iframe.contentWindow.document;
+      const iframedocument = iframe.contentDocument ?? iframe.contentWindow.document;
       iframedocument.addEventListener('click', function (evt) {
         initializeButton(iframedocument)
       }, false);
@@ -297,5 +224,4 @@
   <script id="ze-snippet"
     src="https://static.zdassets.com/ekr/snippet.js?key=<%= messagingWidgetKey %>"> </script>
 </body>
-
-</html>
+<%- include('./partials/footer') %>
