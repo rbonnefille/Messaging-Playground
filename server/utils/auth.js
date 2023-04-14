@@ -38,7 +38,11 @@ const returnToken = (req, res) => {
       const { external_id, name, email } = req.body;
       const jwt = new Jwt(external_id, name, email);
       const jwtToken = jwt.signJwt();
+      const parts = jwtToken.split('.');
+      console.log(`----------------------------------------Encoded JWT---------------------------------------- \n`);
       console.log(`JWT Token generated: ${jwtToken}`);
+      console.log(`----------------------------------------Decoded JWT---------------------------------------- \n`);
+      console.log(`${Buffer.from(parts[1], 'base64').toString()} \n`);
       res.json({ token: jwtToken });
     } else {
       res.status(403).send('Forbidden');
