@@ -61,7 +61,7 @@ export const cleanConversations = async (event, replyData) => {
 
 export const escalateToAgent = async (switchBoardMetadata, replyData, handoverMessage) => {
   const {
-    givenName,
+    displayName,
     email,
     userExternalId,
     eventSource,
@@ -71,7 +71,7 @@ export const escalateToAgent = async (switchBoardMetadata, replyData, handoverMe
   replyData.message = handoverMessage;
   sunCo.sendMessage(replyData);
   replyData.metadata = {
-    "dataCapture.systemField.requester.name": givenName,
+    "dataCapture.systemField.requester.name": displayName,
     "dataCapture.systemField.requester.email": email,
     "dataCapture.ticketField.360023540498": userExternalId,
     "dataCapture.systemField.tags": `${eventSource}`,
