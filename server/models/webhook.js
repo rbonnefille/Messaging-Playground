@@ -108,13 +108,14 @@ class ConversationEvent extends WebhookEvent {
         this.userId = userObjectId;
         this.userExternalId = externalId;
         this.givenName = profile.givenName;
+        this.surname = profile.surname;
         this.email = profile.email;
         this.locale = profile.locale;
         this.signedUpAt = signedUpAt;
         this.userMetadata = metadata;
         this.contentType = content?.type ?? "text";
         this.textFallback = content?.textFallback;
-        this._userMessage = content?.payload ?? content?.text;
+        this._userMessage = content?.payload ?? content?.text ?? this.textFallback;
         this.sourceIntegrationId = source?.integrationId;
         this.sourceType = source?.type;
         this.sourceDevice = source?.device;
@@ -173,7 +174,7 @@ class ConversationEvent extends WebhookEvent {
     }
   }
   get userMessage() {
-    return this._userMessage.toLowerCase().trim() || this._userMessage;
+    return this._userMessage.toLowerCase().trim() ?? this._userMessage ?? null;
   }
   set userMessage(message) {
     return (this._userMessage = message);
