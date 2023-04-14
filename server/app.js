@@ -10,6 +10,8 @@ import userRouter from "./routes/users.js";
 import integrationRouter from "./routes/integrations.js";
 // import { dialogFlow } from "./routes/dialogFlow.js";
 import * as helmet from "helmet";
+import cors from 'cors';
+
 const { 
         BROWSER_SESSION_STORAGE_KEY: sessionStorageKey,
         MESSAGING_WIDGET_KEY: messagingWidgetKey,
@@ -20,9 +22,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.use(cors());
 app.use(helmet.hidePoweredBy());
 app.use(helmet.xssFilter());
-
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use("/public", express.static("public"));
@@ -44,6 +46,10 @@ app.get("/", (_, res) => {
 
 app.get("/integrationweb2", (_, res) => {
     res.render("integrationweb2.ejs", { sessionStorageKey: sessionStorageKey });
+});
+
+app.get("/testvideo", (_, res) => {
+    res.render("test.ejs");
 });
 
 app.use((_, res) => {
