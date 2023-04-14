@@ -1,14 +1,14 @@
 export default class PassControlMetadata {
     constructor(webhookEvent) {
-        this._givenName = webhookEvent.displayName;
+        this._displayName = webhookEvent.displayName;
         this._email = webhookEvent.email;
         this._userExternalId = webhookEvent.userExternalId;
         this._eventSource = webhookEvent.sourceType;
         this._conversation = webhookEvent.conversationId;
         this._recentNotifications = webhookEvent.recentNotifications;
     }
-    get givenName() {
-        return this._givenName;
+    get displayName() {
+        return this._displayName;
     }
     get email() {
         return this._email;
@@ -22,8 +22,8 @@ export default class PassControlMetadata {
     get conversation() {
         return this._conversation;
     }
-    set givenName(value) {
-        throw new Error(`GivenName is read-only. ${value} is ignored.`);
+    set displayName(value) {
+        throw new Error(`displayName is read-only. ${value} is ignored.`);
     }
     set email(value) {
         throw new Error(`Email is read-only. ${value} is ignored.`);
