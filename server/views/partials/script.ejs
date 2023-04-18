@@ -1,0 +1,153 @@
+<script>
+    //event on page load
+    window.onload = function () {
+      const { external_id, token } = getSessionAuth();
+      if (external_id) {
+        prefillSuncoRoutes(external_id);
+      }
+    };
+
+    const deleteItems = () => {
+      clearSessionAuth();
+      Smooch.destroy();
+    }
+
+    const clearSessionAuth = () =>
+      window.sessionStorage.removeItem("<%= sessionStorageKey %>");
+
+    const setSessionAuth = (external_id, token) => {
+      clearSessionAuth();
+      window.sessionStorage.setItem(
+        "<%= sessionStorageKey %>",
+        JSON.stringify({ external_id, token })
+      );
+    };
+
+    const getSessionAuth = () =>
+      JSON.parse(window.sessionStorage.getItem('<%= sessionStorageKey %>')) ?? {};
+
+    // const delegate = {
+    //   beforeDisplay(message, data) {
+    //     const { source: { type: messageSource }, role, type: messageType, text } = message;
+    //     if (messageSource === "zd:agentWorkspace" && role === 'business' && messageType === "text" ) {
+    //       //apply same logic for all the language you support
+    //       message.text = text.replace("(traducido)", "");
+    //       return message
+    //     }
+    //       return message;
+    //   }
+    // };
+
+    Smooch.init({
+      integrationId: myIntegrationId,
+      // delegate,
+      canUserSeeConversationList: true,
+      soundNotificationEnabled: false
+      // delegate
+    }).then(function () {
+      console.log("SunCo widget ready");
+      const user = Smooch.getUser();
+      console.log(user);
+      const iframe = document.getElementById('web-messenger-container');
+      const iframedocument = iframe.contentDocument ?? iframe.contentWindow.document;
+      iframedocument.addEventListener('click', function (evt) {
+        initializeButton(iframedocument)
+      }, false);
+    });
+
+    const getToken = async (userData) => {
+      const response = await fetch(
+        'auth',
+        {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData)
+        }
+      );
+      if (!response.ok) {
+        window.alert(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    }
+
+    const authenticateUser = async () => {
+      const x = document.getElementById("suncoData");
+      const external_id = x.elements[0].value;
+      const name = x.elements[1].value;
+      const email = x.elements[2].value;
+      const data = {
+        external_id: external_id || "m-scott",
+        name: name || "Michael Scott",
+        email: email || "michael-scott@example.com"
+      };
+      const { token } = await getToken(data);
+      setSessionAuth(data.external_id, token);
+      setTimeout(() => {
+        const { external_id, token } = getSessionAuth();
+        Smooch.login(external_id, token);
+        changeNavbarText(`Welcome back ${external_id}`);
+        Smooch.open();
+      }, 1500);
+      prefillSuncoRoutes(external_id || "m-scott");
+    }
+
+    const prefillSuncoRoutes = (external_id) => {
+      const getUserLink = document.getElementById("getUser")
+      getUserLink.href = `/users/${external_id}`;
+      getUserLink.textContent = `/users/${external_id}`;
+
+      const getUserConversations = document.getElementById("getUserConversations")
+      getUserConversations.href = `/users/${external_id}/conversations`;
+      getUserConversations.textContent = `/users/${external_id}/conversations`;
+
+      const getUserClients = document.getElementById("getUserClients");
+      getUserClients.href = `/users/${external_id}/clients`;
+      getUserClients.textContent = `/users/${external_id}/clients`;
+
+      const links = document.querySelectorAll('#getUser, #getUserConversations, #getUserClients');
+      links.forEach(link => link.classList.remove("disabled"));
+    }
+
+    const changeNavbarText = (text) => {
+      document.getElementById("navbar").textContent = text;
+    }
+
+    const initializeButton = (iframedocument) => {
+      const conversationFooter = iframedocument.getElementsByClassName('conversation-group-footer')[0];
+      if (conversationFooter) {
+        conversationFooter.innerHTML = '<button onclick=parent.createConversation()>New Conversation</button>';
+      }
+    }
+    function createConversation() {
+      if (Smooch.isOpened()) {
+        Smooch.createConversation().then((conversation) => {
+          Smooch.loadConversation(conversation.id);
+        })
+      }
+    }
+
+    Smooch.on('widget:opened', () => {
+      const { external_id, token } = getSessionAuth();
+      if ((!Smooch.getUser() ?? Smooch.getConversations().length === 0) && !external_id && !token) {
+        Smooch.createConversation();
+      } else if (external_id && token) {
+        Smooch.login(external_id, token);
+        changeNavbarText(`Welcome back ${external_id}`);
+      }
+    });
+
+    Smooch.on('widget:closed', function () {
+      console.log('Widget is closed!');
+      // clearSessionAuth();
+    });
+
+    zE('messenger:on', 'unreadMessages', function (count) {
+      console.log(`You have ${count} unread message(s).`);
+      zE('messenger', 'open');
+    })
+
+  </script>
+  <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=<%= messagingWidgetKey %>"> </script>
