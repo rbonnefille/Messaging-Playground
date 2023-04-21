@@ -12,8 +12,10 @@
       Smooch.destroy();
     }
 
-    const clearSessionAuth = () =>
+    const clearSessionAuth = () => {
       window.sessionStorage.removeItem("<%= sessionStorageKey %>");
+      changeNavbarText('Log back in to sync past conversations');
+    }
 
     const setSessionAuth = (external_id, token) => {
       clearSessionAuth();
@@ -74,10 +76,11 @@
     }
 
     const authenticateUser = async () => {
-      const x = document.getElementById("suncoData");
-      const external_id = x.elements[0].value;
-      const name = x.elements[1].value;
-      const email = x.elements[2].value;
+      const {
+        0: {value: external_id}, 
+        1: {value: name}, 
+        2: {value: email}
+      } = document.getElementById("suncoData").elements;
       const data = {
         external_id: external_id || "m-scott",
         name: name || "Michael Scott",
@@ -90,7 +93,7 @@
         Smooch.login(external_id, token);
         changeNavbarText(`Welcome back ${external_id}`);
         Smooch.open();
-      }, 1500);
+      }, 1000);
       prefillSuncoRoutes(external_id || "m-scott");
     }
 
@@ -131,7 +134,7 @@
 
     Smooch.on('widget:opened', () => {
       const { external_id, token } = getSessionAuth();
-      if ((!Smooch.getUser() ?? Smooch.getConversations().length === 0) && !external_id && !token) {
+      if ((!Smooch.getUser() || Smooch.getConversations().length === 0) && !external_id && !token) {
         Smooch.createConversation();
       } else if (external_id && token) {
         Smooch.login(external_id, token);
