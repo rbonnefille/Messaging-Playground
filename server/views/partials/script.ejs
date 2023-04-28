@@ -5,6 +5,7 @@
       if (external_id) {
         prefillSuncoRoutes(external_id);
       }
+      detectBrowser();
     };
 
     const deleteItems = () => {
@@ -151,6 +152,11 @@
       console.log(`You have ${count} unread message(s).`);
       zE('messenger', 'open');
     })
+
+    function detectBrowser() {
+      let { mobile, platform } = navigator.userAgentData; 
+      document.querySelector("div.form-style h3").innerText = `Mobile: ${mobile} - Platform: ${platform}`;
+  }
 
   </script>
   <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=<%= messagingWidgetKey %>"> </script>
