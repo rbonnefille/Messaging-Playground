@@ -18,8 +18,9 @@ const { sign } = pkg;
         external_id: this.external_id,
         name: this.name,
         email: this.email,
+        email_verified: true,
         iat: this.nowInSeconds,
-        exp: this.nowInSeconds + this.expiry,
+        // exp: this.nowInSeconds + this.expiry,
       });
     }
     signJwt() {
