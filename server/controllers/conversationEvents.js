@@ -1,21 +1,29 @@
 import replyToUser from "../models/bot.js";
 import ConversationEvent from "../models/Webhook.js";
 import PassControlMetadata from "../models/PassControlMetadata.js";
+import SunCoClient from "../utils/suncoApi.js";
 
-const messageEvents = (req, res, next) => {
+const sunCo = new SunCoClient();
+
+const messageEvents = async (req, res, next) => {
+
   const webhookEvent = new ConversationEvent(req);
+  const {
+    webhookEventApiKey,
+    activeSwitchboardIntegrationId,
+    authorType,
+    contentType,
+    textFallback,
+    creationReason,
+  } = webhookEvent;
   const metadata = new PassControlMetadata(webhookEvent);
 
-  if (!webhookEvent.isAuthenticatedRequest(webhookEvent.webhookEventApiKey)) {
+  if (!webhookEvent.isAuthenticatedRequest(webhookEventApiKey)) {
     res.sendStatus(401).end();
     return;
   }
 
-  if (
-    !webhookEvent.isCurrentSwitchboardIntegration(
-      webhookEvent.activeSwitchboardIntegrationId
-    )
-  ) {
+  if (!webhookEvent.isCurrentSwitchboardIntegration(activeSwitchboardIntegrationId)) {
     res.sendStatus(200).end();
     return;
   }
@@ -24,14 +32,35 @@ const messageEvents = (req, res, next) => {
     webhookEvent.isConversationMessage() ||
     webhookEvent.isConversationPostback()
   ) {
-    if (webhookEvent.isBusinessMessage(webhookEvent.authorType)) {
+    if (webhookEvent.isBusinessMessage(authorType)) {
       res.sendStatus(200).end();
       return;
     }
-    if (
-      webhookEvent.isTextMessage(webhookEvent.contentType) &&
-      webhookEvent.isAllowedChannel()
-    ) {
+
+
+    // temporary test
+
+    // if (webhookEvent.isTextMessage(contentType) && webhookEvent.isSocialChannel() && webhookEvent.isCurrentSwitchboardIntegration(activeSwitchboardIntegrationId)) {
+    //   console.log("handling social channel message and handover to Answer Bot")
+    //   const payload = {
+    //     conversationId: webhookEvent.conversationId
+    //   }
+    //   await sunCo.passControl(payload, "635aa5aa8f3bb100ff197efe");
+    //   const messagePayload = {
+    //     conversationId: webhookEvent.conversationId,
+    //     author: {
+    //       type: "user",
+    //       userId: webhookEvent.userId,
+    //       displayName: webhookEvent.displayName
+    //     },
+    //     message: "Answer Bot",
+    //     metadata: metadata
+    //   }
+    //   return await sunCo.sendMessage(messagePayload);
+    // }
+
+
+    if (webhookEvent.isTextMessage(contentType) && webhookEvent.isAllowedChannel()) {
       try {
         if (webhookEvent.userMessage) {
           replyToUser(webhookEvent, metadata);
@@ -40,12 +69,9 @@ const messageEvents = (req, res, next) => {
         console.log(`Error in message handler ${err}`);
         res.status(500).send({ error: 'Something failed!' })
       }
-    } else if (
-      webhookEvent.isAllowedChannel() &&
-      webhookEvent.ifFormMessage(webhookEvent.contentType)
-    ) {
+    } else if (webhookEvent.isAllowedChannel() && webhookEvent.ifFormMessage(contentType)) {
       try {
-        if (webhookEvent.textFallback) {
+        if (textFallback) {
           webhookEvent.userMessage = "form response";
           replyToUser(webhookEvent, metadata);
         }
@@ -57,11 +83,7 @@ const messageEvents = (req, res, next) => {
     res.end();
   } else if (webhookEvent.isConversationCreate()) {
     if (
-      webhookEvent.isCreationReasonStartConversation(
-        webhookEvent.creationReason
-      ) &&
-      webhookEvent.isAllowedChannel()
-    ) {
+      webhookEvent.isCreationReasonStartConversation(creationReason) && webhookEvent.isAllowedChannel()) {
       try {
         webhookEvent.userMessage = "start";
         replyToUser(webhookEvent, metadata);

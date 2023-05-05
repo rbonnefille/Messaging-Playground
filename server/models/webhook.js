@@ -173,8 +173,12 @@ class ConversationEvent extends WebhookEvent {
       );
     }
   }
+  isSocialChannel() {
+    const sources = ["whatsapp", "telegram", "messenger", "line"];
+    return sources.includes(this.sourceType);
+  }
   get userMessage() {
-    return this._userMessage.toLowerCase().trim() ?? this._userMessage ?? null;
+    return this._userMessage ? this._userMessage.toLowerCase().trim() : undefined;
   }
   set userMessage(message) {
     return (this._userMessage = message);
