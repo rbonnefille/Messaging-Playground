@@ -50,6 +50,10 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
     case "🐈":
       return await sendCatPicture(eventMessage, replyData, cat);
     case "agent":
+    case "speak to an agent":
+    case "speak with an agent":
+    case "speak to agent":
+    case "talk to agent":
     case "passControl":
     case "human":
       return await escalateToAgent(switchBoardMetadata, replyData, handover);
