@@ -41,21 +41,59 @@
     //   }
     // };
 
+    // TESTING Norauto
+    // const delegate = {
+    //   beforeDisplay(message, data) {
+    //     if(message && message.source){
+    //       const {source: { type: sourceType }, role, metadata} = message;
+    //       if (sourceType === 'web' && role === 'user' && metadata.firstMessage) {
+    //         console.log(message);
+    //         return null
+    //       }
+    //     }
+    //       return message;
+    //   }
+    // };
+
     Smooch.init({
       integrationId: myIntegrationId,
       // delegate,
       canUserSeeConversationList: true,
-      soundNotificationEnabled: false
-      // delegate
+      soundNotificationEnabled: false,
+      // locale: 'ru-RU'
     }).then(function () {
       console.log("SunCo widget ready");
       const user = Smooch.getUser();
       console.log(user);
+
+      // TESTING Norauto
+    //   if ((!Smooch.getUser() || Smooch.getConversations().length === 0)) {
+    //     Smooch.createConversation({
+    //         messages: [
+    //             {
+    //                 text: 'Hi',
+    //                 type: 'text',
+    //                 metadata: {
+    //                   firstMessage: true
+    //                 }
+    //             },
+    //         ],
+    //     }).then((conversation) => {
+    //         console.log(`Conversation object: ${conversation}`);
+    //     });
+
+    // } 
+
       const iframe = document.getElementById('web-messenger-container');
       const iframedocument = iframe.contentDocument ?? iframe.contentWindow.document;
       iframedocument.addEventListener('click', function (evt) {
         initializeButton(iframedocument)
       }, false);
+
+      // --- RTL support ---
+      // iframedocument.addEventListener('click', function (evt) {
+      //   initializeButton(iframedocument)
+      // }, false);
     });
 
     const getToken = async (userData) => {
