@@ -12,11 +12,11 @@ import integrationRouter from "./routes/integrations.js";
 import * as helmet from "helmet";
 import cors from 'cors';
 
-const { 
-        BROWSER_SESSION_STORAGE_KEY: sessionStorageKey,
-        MESSAGING_WIDGET_KEY: messagingWidgetKey,
-        SUNCO_INTEGRATION_ID: suncoIntegrationId 
-    } = process.env;
+const {
+    BROWSER_SESSION_STORAGE_KEY: sessionStorageKey,
+    MESSAGING_WIDGET_KEY: messagingWidgetKey,
+    SUNCO_INTEGRATION_ID: suncoIntegrationId
+} = process.env;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
