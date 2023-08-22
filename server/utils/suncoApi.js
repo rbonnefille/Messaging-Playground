@@ -16,6 +16,21 @@ class SunCoClient {
     defaultClient.basePath = process.env.POD_BASE_URL || process.env.BASE_URL;
   }
 
+  async postActivity(payload) {
+    const { conversationId, author } = payload;
+    const apiInstance = new SunshineConversationsClient.ActivitiesApi()
+    const activityPost = {
+      author: author,
+      type: "typing:start",
+    };
+    try {
+      return await apiInstance.postActivity(this.appId, conversationId, activityPost);
+    } catch (error) {
+      // catch error
+      this.handleError(error)
+    }
+  }
+
   async sendMessage(payload) {
     const { conversationId, author, message, image, metadata } = payload;
     await this.postActivity(payload);
@@ -39,20 +54,6 @@ class SunCoClient {
     }
   }
 
-  async postActivity(payload) {
-    const { conversationId, author } = payload;
-    const apiInstance = new SunshineConversationsClient.ActivitiesApi()
-    const activityPost = {
-      author: author,
-      type: "typing:start",
-    };
-    try {
-      return await apiInstance.postActivity(this.appId, conversationId, activityPost);
-    } catch (error) {
-      // catch error
-      this.handleError(error)
-    }
-  }
 
   async listClients(payload) {
     const userIdOrExternalId = this.getUserIdOrExternalId(payload);
