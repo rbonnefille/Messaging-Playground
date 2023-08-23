@@ -55,46 +55,38 @@
     //   }
     // };
 
-    Smooch.init({
-      integrationId: myIntegrationId,
-      // delegate,
-      canUserSeeConversationList: true,
+      Smooch.init({
+        integrationId: myIntegrationId,
+        // delegate,
+        canUserSeeConversationList: true,
       soundNotificationEnabled: false,
       // locale: 'ru-RU'
     }).then(function () {
       console.log("SunCo widget ready");
       const user = Smooch.getUser();
       console.log(user);
-
+      
+      
       // TESTING Norauto
-    //   if ((!Smooch.getUser() || Smooch.getConversations().length === 0)) {
-    //     Smooch.createConversation({
-    //         messages: [
-    //             {
-    //                 text: 'Hi',
-    //                 type: 'text',
-    //                 metadata: {
-    //                   firstMessage: true
-    //                 }
-    //             },
-    //         ],
-    //     }).then((conversation) => {
-    //         console.log(`Conversation object: ${conversation}`);
-    //     });
-
-    // } 
-
-      const iframe = document.getElementById('web-messenger-container');
-      const iframedocument = iframe.contentDocument ?? iframe.contentWindow.document;
-      iframedocument.addEventListener('click', function (evt) {
-        initializeButton(iframedocument)
-      }, false);
-
-      // --- RTL support ---
-      // iframedocument.addEventListener('click', function (evt) {
-      //   initializeButton(iframedocument)
-      // }, false);
-    });
+      // if ((!Smooch.getUser() || Smooch.getConversations().length === 0)) {
+      //   Smooch.createConversation().then((conversation) => {
+      //       console.log(`Conversation object: ${conversation}`);
+      //       Smooch.open();
+      //     });
+          
+      //   } 
+        
+      //   const iframe = document.getElementById('web-messenger-container');
+      //   const iframedocument = iframe.contentDocument ?? iframe.contentWindow.document;
+      //   iframedocument.addEventListener('click', function (evt) {
+      //     initializeButton(iframedocument)
+      //   }, false);
+        
+        // --- RTL support ---
+        // iframedocument.addEventListener('click', function (evt) {
+          //   initializeButton(iframedocument)
+          // }, false);
+        });
 
     const getToken = async (userData) => {
       const response = await fetch(
@@ -170,6 +162,11 @@
         })
       }
     }
+
+    Smooch.on('connected') // triggered when the widget is ready to be used
+      .then(() => {
+        console.log('Widget is ready for use!');
+      });
 
     Smooch.on('widget:opened', () => {
       const { external_id, token } = getSessionAuth();
