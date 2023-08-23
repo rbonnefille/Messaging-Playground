@@ -1,9 +1,9 @@
 import replyToUser from "../models/bot.js";
 import ConversationEvent from "../models/Webhook.js";
 import PassControlMetadata from "../models/PassControlMetadata.js";
-import SunCoClient from "../utils/suncoApi.js";
+// import SunCoClient from "../utils/suncoApi.js";
 
-const sunCo = new SunCoClient();
+// const sunCo = new SunCoClient();
 
 const messageEvents = async (req, res, next) => {
 
