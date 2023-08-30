@@ -76,11 +76,11 @@
           
       //   } 
         
-      //   const iframe = document.getElementById('web-messenger-container');
-      //   const iframedocument = iframe.contentDocument ?? iframe.contentWindow.document;
-      //   iframedocument.addEventListener('click', function (evt) {
-      //     initializeButton(iframedocument)
-      //   }, false);
+        const iframe = document.getElementById('web-messenger-container');
+        const iframedocument = iframe.contentDocument ?? iframe.contentWindow.document;
+        iframedocument.addEventListener('click', function (evt) {
+          initializeButton(iframedocument)
+        }, false);
         
         // --- RTL support ---
         // iframedocument.addEventListener('click', function (evt) {
