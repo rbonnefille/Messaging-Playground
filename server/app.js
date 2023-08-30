@@ -9,6 +9,8 @@ import conversationRouter from "./routes/conversations.js";
 import userRouter from "./routes/users.js";
 import integrationRouter from "./routes/integrations.js";
 // import { dialogFlow } from "./routes/dialogFlow.js";
+import zdEvents from "./controllers/zdEvents.js";
+
 import * as helmet from "helmet";
 import cors from 'cors';
 
@@ -39,6 +41,8 @@ app.use("/integrations", integrationRouter);
 app.use("/users", userRouter);
 
 app.post("/auth", returnToken);
+
+app.post("/zendesk-webhooks" ,zdEvents);
 
 app.get("/", (_, res) => {
     res.render("index.ejs", { sessionStorageKey: sessionStorageKey, messagingWidgetKey: messagingWidgetKey, suncoIntegrationId: suncoIntegrationId });
