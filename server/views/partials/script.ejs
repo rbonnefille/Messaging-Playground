@@ -163,8 +163,7 @@
       }
     }
 
-    Smooch.on('connected') // triggered when the widget is ready to be used
-      .then(() => {
+    Smooch.on('connected' , () => {
         console.log('Widget is ready for use!');
       });
 
