@@ -17,7 +17,7 @@ const auth = {
 
 const zdEvents = async (req, res, next) => {
     console.log(req.body)
-    const { type: eventType, detail: { external_id } } = req.body;
+    const { type: eventType, detail: { external_id, email } } = req.body;
     if (external_id) {
         console.log("nothing to process")    
         res.sendStatus(200).end()
@@ -48,7 +48,7 @@ const zdEvents = async (req, res, next) => {
             // catch error
             throw new Error(e)
         }
-    } else if (eventType.startsWith('zen:event-type:user') && !external_id) {
+    } else if (eventType.startsWith('zen:event-type:user') && !external_id && eventType !== 'zen:event-type:user.name_changed' && email) {
         const { detail: { id: userId, email } } = req.body;
         const config = {
             method: 'PUT',
