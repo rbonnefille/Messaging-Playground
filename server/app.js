@@ -52,6 +52,11 @@ app.get("/integrationweb2", (_, res) => {
     res.render("integrationweb2.ejs", { sessionStorageKey: sessionStorageKey });
 });
 
+app.post("/webhooks", (req, res) => {
+   console.log(req.body);
+    res.sendStatus(200);
+});
+
 app.get("/testvideo", (_, res) => {
     res.render("test.ejs");
 });
