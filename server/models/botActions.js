@@ -13,16 +13,16 @@ export const getRandomFallbackMessage = () => {
 
 export const welcomeUser = async (event, replyData, defaultMessage) => {
   const getConvoDisplayName = await sunCo.getConversation(event);
-      if (!getConvoDisplayName.conversation.displayName) {
-        sunCo.updateConversation(event);
-      }
-      const userMetadata = await sunCo.getUser(event);
-      if (Object.keys(userMetadata.user.metadata).length === 0) {
-        await sunCo.updateUser(event);
-      }
-      replyData.message = defaultMessage;
-      return sunCo.sendMessage(replyData);
-}
+  if (!getConvoDisplayName.conversation.displayName) {
+    sunCo.updateConversation(event);
+  }
+  const userMetadata = await sunCo.getUser(event);
+  if (Object.keys(userMetadata.user.metadata).length === 0) {
+    await sunCo.updateUser(event);
+  }
+  replyData.message = defaultMessage;
+  return sunCo.sendMessage(replyData);
+};
 
 export const cleanConversations = async (event, replyData) => {
   let allConversations = await sunCo.listConversations(event);
@@ -52,14 +52,22 @@ export const cleanConversations = async (event, replyData) => {
         }
       }
     });
-    replyData.message = countDeletedConversations ? `I've deleted ${countDeletedConversations} conversations as ${countDeletedConversations > 1 ? "they weren't" : "it wasn't" } liked to any opened tickets` : `I didn't find any conversation to delete`;
+    replyData.message = countDeletedConversations
+      ? `I've deleted ${countDeletedConversations} conversations as ${
+          countDeletedConversations > 1 ? "they weren't" : "it wasn't"
+        } liked to any opened tickets`
+      : `I didn't find any conversation to delete`;
     return await sunCo.sendMessage(replyData);
   } catch (error) {
     throw new Error(e.message);
   }
 };
 
-export const escalateToAgent = async (switchBoardMetadata, replyData, handoverMessage) => {
+export const escalateToAgent = async (
+  switchBoardMetadata,
+  replyData,
+  handoverMessage
+) => {
   const {
     displayName,
     email,
@@ -85,7 +93,7 @@ export const escalateToAgent = async (switchBoardMetadata, replyData, handoverMe
 export const sendCatPicture = async (eventMessage, replyData, message) => {
   replyData.conversationId = eventMessage.conversationId;
   await getCatPicture();
-      replyData.message = message;
-      replyData.image = await getCatPicture();
-      return sunCo.sendMessage(replyData);
-}
+  replyData.message = message;
+  replyData.image = await getCatPicture();
+  return sunCo.sendMessage(replyData);
+};

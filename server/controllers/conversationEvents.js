@@ -6,7 +6,6 @@ import PassControlMetadata from "../models/PassControlMetadata.js";
 // const sunCo = new SunCoClient();
 
 const messageEvents = async (req, res, next) => {
-
   const webhookEvent = new ConversationEvent(req);
   const {
     webhookEventApiKey,
@@ -23,7 +22,11 @@ const messageEvents = async (req, res, next) => {
     return;
   }
 
-  if (!webhookEvent.isCurrentSwitchboardIntegration(activeSwitchboardIntegrationId)) {
+  if (
+    !webhookEvent.isCurrentSwitchboardIntegration(
+      activeSwitchboardIntegrationId
+    )
+  ) {
     res.sendStatus(200).end();
     return;
   }
@@ -36,7 +39,6 @@ const messageEvents = async (req, res, next) => {
       res.sendStatus(200).end();
       return;
     }
-
 
     // temporary test
 
@@ -59,17 +61,22 @@ const messageEvents = async (req, res, next) => {
     //   return await sunCo.sendMessage(messagePayload);
     // }
 
-
-    if (webhookEvent.isTextMessage(contentType) && webhookEvent.isAllowedChannel()) {
+    if (
+      webhookEvent.isTextMessage(contentType) &&
+      webhookEvent.isAllowedChannel()
+    ) {
       try {
         if (webhookEvent.userMessage) {
           replyToUser(webhookEvent, metadata);
         }
       } catch (err) {
         console.log(`Error in message handler ${err}`);
-        res.status(500).send({ error: 'Something failed!' })
+        res.status(500).send({ error: "Something failed!" });
       }
-    } else if (webhookEvent.isAllowedChannel() && webhookEvent.ifFormMessage(contentType)) {
+    } else if (
+      webhookEvent.isAllowedChannel() &&
+      webhookEvent.ifFormMessage(contentType)
+    ) {
       try {
         if (textFallback) {
           webhookEvent.userMessage = "form response";
@@ -77,20 +84,22 @@ const messageEvents = async (req, res, next) => {
         }
       } catch (err) {
         console.log(`Error in message handler ${err}`);
-        res.status(500).send({ error: 'Something failed!' })
+        res.status(500).send({ error: "Something failed!" });
       }
     }
     res.end();
   } else if (webhookEvent.isConversationCreate()) {
     if (
-      webhookEvent.isCreationReasonStartConversation(creationReason) && webhookEvent.isAllowedChannel()) {
+      webhookEvent.isCreationReasonStartConversation(creationReason) &&
+      webhookEvent.isAllowedChannel()
+    ) {
       try {
         webhookEvent.userMessage = "start";
         replyToUser(webhookEvent, metadata);
         res.end();
       } catch (error) {
         console.log(error);
-        res.status(500).send({ error: 'Something failed!' })
+        res.status(500).send({ error: "Something failed!" });
       }
       res.end();
     } else {

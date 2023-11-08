@@ -23,8 +23,13 @@ const logger = (req, res, next) => {
       return next();
     case "POST":
       const webhookEvent = new ConversationEvent(req);
-      if (webhookEvent.isConversationMessage() && !webhookEvent.isBusinessMessage()) {
-        console.info(`${webhookEvent.eventCreatedAt} - UserId: ${webhookEvent.userId} - ConversationId: ${webhookEvent.conversationId} - Message: ${webhookEvent.userMessage} - Channel: ${webhookEvent.sourceType}`);
+      if (
+        webhookEvent.isConversationMessage() &&
+        !webhookEvent.isBusinessMessage()
+      ) {
+        console.info(
+          `${webhookEvent.eventCreatedAt} - UserId: ${webhookEvent.userId} - ConversationId: ${webhookEvent.conversationId} - Message: ${webhookEvent.userMessage} - Channel: ${webhookEvent.sourceType}`
+        );
         writeToFile(webhookEvent);
       }
       return next();

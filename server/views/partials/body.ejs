@@ -36,27 +36,28 @@
             <!-- <button type="button" class="btn mb-1 btn-primary" onclick="initSunCo()">init SunCo</button> -->
             <button type="button" class="btn mb-1 btn-primary" onclick="Smooch.open();">Open Widget</button>
             <button type="button" class="btn mb-1 btn-secondary" onclick="Smooch.close();">Close Widget</button>
-            <button type="button" class="btn mb-1 btn-warning"
-                onclick="Smooch.logout();clearSessionAuth();">Logout
+            <button type="button" class="btn mb-1 btn-warning" onclick="Smooch.logout();clearSessionAuth();">Logout
                 User</button>
             <button type="button" class="btn mb-1 btn-danger" onclick="deleteItems()">Destroy Widget and clear
                 sessionStorage</button>
-            <button type="button" class="btn mb-1 btn-danger" onclick="localStorage.clear();">Clear localStorage</button>
+            <button type="button" class="btn mb-1 btn-danger" onclick="localStorage.clear();">Clear
+                localStorage</button>
         </div>
         <h4 class="h4">Zendesk SDK</h4>
         <div class="p-3 m-0 border-0" role="group" aria-label="Actions">
             <button type="button" class="btn btn-primary" onclick="zE('messenger', 'open');">Open Widget</button>
-            <button type="button" class="btn btn-success"
-                onclick="zE('messenger', 'loginUser', function (callback) {callback( getSessionAuth().token);
+            <button type="button" class="btn btn-success" onclick="zE('messenger', 'loginUser', function (callback) {callback( getSessionAuth().token);
                 
                 });">Login
                 User</button>
             <button type="button" class="btn btn-warning" onclick="zE('messenger', 'logoutUser');">Logout User</button>
             <button type="button" class="btn btn-secondary" onclick="zE('messenger', 'close'); ">Close Widget</button>
         </div>
-            <div class="p-3 m-0 border-0" role="group" aria-label="Actions">
-                
-            <button type="button" class="btn btn-secondary" onclick="zE('messenger:set', 'conversationFields', [{ id: 17826865089553, value: 'test'}]);">Set example metadata</button>
+        <div class="p-3 m-0 border-0" role="group" aria-label="Actions">
+
+            <button type="button" class="btn btn-secondary"
+                onclick="zE('messenger:set', 'conversationFields', [{ id: 17826865089553, value: 'test'}]);">Set example
+                metadata</button>
             <code>zE('messenger:set', 'conversationFields', [{ id: 17826865089553, value: 'test'}]);</code>
         </div>
     </div>
@@ -74,10 +75,11 @@
             <a target="_blank" href="/integrations" class="list-group-item list-group-item-action" aria-current="true">
                 List integrations
             </a>
-            <a target="_blank" href="/integrations/sbintegrations" class="list-group-item list-group-item-action" aria-current="true">
+            <a target="_blank" href="/integrations/sbintegrations" class="list-group-item list-group-item-action"
+                aria-current="true">
                 List Switchboard integrations
             </a>
         </div>
     </div>
-<%- include('./script') %>
+    <%- include('./script') %>
 </body>

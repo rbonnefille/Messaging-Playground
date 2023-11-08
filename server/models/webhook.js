@@ -31,7 +31,8 @@ class WebhookEvent {
       this.conversationId = id;
       this.conversationType = type;
       this.activeSwitchboardIntegrationId = activeSwitchboardIntegration?.id;
-      this.activeSwitchboardIntegrationName = activeSwitchboardIntegration?.name;
+      this.activeSwitchboardIntegrationName =
+        activeSwitchboardIntegration?.name;
       this.activeSwitchboardIntegrationIntegrationId =
         activeSwitchboardIntegration?.integrationId;
       this.activeSwitchboardIntegrationIntegrationType =
@@ -115,7 +116,8 @@ class ConversationEvent extends WebhookEvent {
         this.userMetadata = metadata;
         this.contentType = content?.type ?? "text";
         this.textFallback = content?.textFallback;
-        this._userMessage = content?.payload ?? content?.text ?? this.textFallback;
+        this._userMessage =
+          content?.payload ?? content?.text ?? this.textFallback;
         this.sourceIntegrationId = source?.integrationId;
         this.sourceType = source?.type;
         this.sourceDevice = source?.device;
@@ -178,7 +180,9 @@ class ConversationEvent extends WebhookEvent {
     return sources.includes(this.sourceType);
   }
   get userMessage() {
-    return this._userMessage ? this._userMessage.toLowerCase().trim() : undefined;
+    return this._userMessage
+      ? this._userMessage.toLowerCase().trim()
+      : undefined;
   }
   set userMessage(message) {
     return (this._userMessage = message);

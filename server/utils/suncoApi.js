@@ -1,8 +1,8 @@
-import * as dotenv from 'dotenv'
-dotenv.config()
+import * as dotenv from "dotenv";
+dotenv.config();
 import SunshineConversationsClient from "sunshine-conversations-client";
 
-const timeout = ms => new Promise(res => setTimeout(res, ms))
+const timeout = (ms) => new Promise((res) => setTimeout(res, ms));
 
 class SunCoClient {
   constructor() {
@@ -18,23 +18,27 @@ class SunCoClient {
 
   async postActivity(payload) {
     const { conversationId, author } = payload;
-    const apiInstance = new SunshineConversationsClient.ActivitiesApi()
+    const apiInstance = new SunshineConversationsClient.ActivitiesApi();
     const activityPost = {
       author: author,
       type: "typing:start",
     };
     try {
-      return await apiInstance.postActivity(this.appId, conversationId, activityPost);
+      return await apiInstance.postActivity(
+        this.appId,
+        conversationId,
+        activityPost
+      );
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
   async sendMessage(payload) {
     const { conversationId, author, message, image, metadata } = payload;
     await this.postActivity(payload);
-    await timeout(300)
+    await timeout(300);
     const apiInstance = new SunshineConversationsClient.MessagesApi();
     const messagePost = new SunshineConversationsClient.MessagePost();
     messagePost.setAuthor(author);
@@ -45,15 +49,22 @@ class SunCoClient {
         text: message,
       });
     } else {
-      messagePost.setContent({ type: "text", text: message, metadata: metadata });
+      messagePost.setContent({
+        type: "text",
+        text: message,
+        metadata: metadata,
+      });
     }
     try {
-      return await apiInstance.postMessage(this.appId, conversationId, messagePost);
+      return await apiInstance.postMessage(
+        this.appId,
+        conversationId,
+        messagePost
+      );
     } catch (error) {
       this.handleError(error.response?.text);
     }
   }
-
 
   async listClients(payload) {
     const userIdOrExternalId = this.getUserIdOrExternalId(payload);
@@ -62,7 +73,7 @@ class SunCoClient {
       return await apiInstance.listClients(this.appId, userIdOrExternalId);
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
@@ -73,7 +84,7 @@ class SunCoClient {
       return await apiInstance.getUser(this.appId, userIdOrExternalId);
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
@@ -82,13 +93,17 @@ class SunCoClient {
     const apiInstance = new SunshineConversationsClient.UsersApi();
     const userUpdateBody = new SunshineConversationsClient.UserUpdateBody();
     userUpdateBody.metadata = {
-      "botDialog": true
+      botDialog: true,
     };
     try {
-      return await apiInstance.updateUser(this.appId, userIdOrExternalId, userUpdateBody);
+      return await apiInstance.updateUser(
+        this.appId,
+        userIdOrExternalId,
+        userUpdateBody
+      );
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
@@ -99,7 +114,7 @@ class SunCoClient {
       return await apiInstance.getConversation(this.appId, conversationId);
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
@@ -110,20 +125,29 @@ class SunCoClient {
       return await apiInstance.listMessages(this.appId, conversationId);
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
   async updateConversation(payload) {
     const { conversationId } = payload;
     const apiInstance = new SunshineConversationsClient.ConversationsApi();
-    const conversationUpdateBody = new SunshineConversationsClient.ConversationUpdateBody();
-    conversationUpdateBody.displayName = new Date().toLocaleString('en-us', { day: '2-digit', month: 'short', year: 'numeric' });
+    const conversationUpdateBody =
+      new SunshineConversationsClient.ConversationUpdateBody();
+    conversationUpdateBody.displayName = new Date().toLocaleString("en-us", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
     try {
-      return await apiInstance.updateConversation(this.appId, conversationId, conversationUpdateBody);
+      return await apiInstance.updateConversation(
+        this.appId,
+        conversationId,
+        conversationUpdateBody
+      );
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
@@ -140,7 +164,7 @@ class SunCoClient {
       return await apiInstance.listConversations(this.appId, filter);
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
@@ -150,7 +174,7 @@ class SunCoClient {
       return await apiInstance.deleteConversation(this.appId, conversationId);
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
@@ -160,25 +184,32 @@ class SunCoClient {
       return await apiInstance.listMessages(this.appId, conversationId);
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
-  async passControl(payload, switchboardIntegration = process.env.NEXT_SWITCHBOARD_INTEGRATION) {
+  async passControl(
+    payload,
+    switchboardIntegration = process.env.NEXT_SWITCHBOARD_INTEGRATION
+  ) {
     const { conversationId, metadata } = payload;
     const apiInstance = new SunshineConversationsClient.SwitchboardActionsApi();
     const passControlBody = new SunshineConversationsClient.PassControlBody();
     passControlBody.switchboardIntegration = switchboardIntegration;
-    console.log(switchboardIntegration)
+    console.log(switchboardIntegration);
     if (metadata) {
       passControlBody.metadata = metadata;
       console.log(passControlBody.metadata);
     }
     try {
-      return await apiInstance.passControl(this.appId, conversationId, passControlBody);
+      return await apiInstance.passControl(
+        this.appId,
+        conversationId,
+        passControlBody
+      );
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
@@ -191,10 +222,14 @@ class SunCoClient {
       console.log(offerControlBody.metadata);
     }
     try {
-      return await apiInstance.offerControl(this.appId, conversationId, offerControlBody);
+      return await apiInstance.offerControl(
+        this.appId,
+        conversationId,
+        offerControlBody
+      );
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
@@ -210,7 +245,7 @@ class SunCoClient {
       return await apiInstance.releaseControl(this.appId, conversationId);
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
@@ -220,19 +255,23 @@ class SunCoClient {
       return await apiInstance.listSwitchboards(this.appId);
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
   async listSwitchboardIntegrations() {
     const switchboardsPresent = await this.listSwitchboards();
     const switchboardId = switchboardsPresent.switchboards[0].id;
-    const apiInstance = new SunshineConversationsClient.SwitchboardIntegrationsApi();
+    const apiInstance =
+      new SunshineConversationsClient.SwitchboardIntegrationsApi();
     try {
-      return await apiInstance.listSwitchboardIntegrations(this.appId, switchboardId);
+      return await apiInstance.listSwitchboardIntegrations(
+        this.appId,
+        switchboardId
+      );
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
@@ -242,12 +281,14 @@ class SunCoClient {
       return await apiInstance.listIntegrations(this.appId);
     } catch (error) {
       // catch error
-      this.handleError(error)
+      this.handleError(error);
     }
   }
 
   handleError(error) {
-    throw new Error(`An error occurred while interacting with the Sunshine Conversations API: ${error}`);
+    throw new Error(
+      `An error occurred while interacting with the Sunshine Conversations API: ${error}`
+    );
   }
 
   getUserIdOrExternalId(payload) {
@@ -260,4 +301,4 @@ class SunCoClient {
   }
 }
 
-export default SunCoClient
+export default SunCoClient;

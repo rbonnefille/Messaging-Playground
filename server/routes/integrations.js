@@ -3,15 +3,15 @@ const router = express.Router();
 import SunCoClient from "../utils/suncoApi.js";
 
 router.get("/", async (_, res) => {
-    const sunCo = new SunCoClient();
-    const integrations = await sunCo.listIntegrations();
-    res.json(integrations)
-})
+  const sunCo = new SunCoClient();
+  const integrations = await sunCo.listIntegrations();
+  res.json(integrations);
+});
 
 router.get("/sbintegrations", async (_, res) => {
-    const sunCo = new SunCoClient();
-    const switchboardIntegrations = await sunCo.listSwitchboardIntegrations();
-    res.json(switchboardIntegrations)
-})
+  const sunCo = new SunCoClient();
+  const switchboardIntegrations = await sunCo.listSwitchboardIntegrations();
+  res.json(switchboardIntegrations);
+});
 
 export default router;

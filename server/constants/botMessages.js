@@ -17,7 +17,7 @@ const botMessages = {
     "This is not a language I understand",
     "I don't know what you're trying to say",
     "Ask differently",
-    "Are you sure you're talking to me?"
+    "Are you sure you're talking to me?",
   ],
   bot: "I'm a bot, I'm not a real person. I'm just a bot that can help you with your problems.",
   carousel: "%((template:mexican_carousel))%",
