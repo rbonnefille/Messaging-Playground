@@ -3,7 +3,13 @@ import getChuckNorrisJoke from "../utils/chuckNorrisApi.js";
 import executeQueries from "../controllers/gdf.js";
 import botMessages from "../constants/botMessages.js";
 import SunCoClient from "../utils/suncoApi.js";
-import { getRandomFallbackMessage, cleanConversations, escalateToAgent, welcomeUser, sendCatPicture } from "./botActions.js"
+import {
+  getRandomFallbackMessage,
+  cleanConversations,
+  escalateToAgent,
+  welcomeUser,
+  sendCatPicture,
+} from "./botActions.js";
 import Reply from "./Reply.js";
 
 const sunCo = new SunCoClient();

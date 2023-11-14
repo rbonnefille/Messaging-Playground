@@ -24,7 +24,7 @@ const messageEvents = async (req, res, next) => {
 
   if (
     !webhookEvent.isCurrentSwitchboardIntegration(
-      activeSwitchboardIntegrationId
+      activeSwitchboardIntegrationId,
     )
   ) {
     res.sendStatus(200).end();

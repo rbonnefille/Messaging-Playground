@@ -17,7 +17,7 @@ class WebhookEvent {
       if (req.body.events.length > 1) {
         console.log(req.body);
         throw new Error(
-          `WebhookEvent only supports one event at the moment. ${req.body.events} events are ignored.`
+          `WebhookEvent only supports one event at the moment. ${req.body.events} events are ignored.`,
         );
       }
       this.eventId = event.id;

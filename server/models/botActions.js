@@ -27,7 +27,7 @@ export const welcomeUser = async (event, replyData, defaultMessage) => {
 export const cleanConversations = async (event, replyData) => {
   let allConversations = await sunCo.listConversations(event);
   const userConversations = Object.keys(
-    allConversations.getConversations()
+    allConversations.getConversations(),
   ).length;
   replyData.message = `You currently have ${userConversations} ${
     userConversations > 1 ? "conversations" : "conversation"
@@ -66,7 +66,7 @@ export const cleanConversations = async (event, replyData) => {
 export const escalateToAgent = async (
   switchBoardMetadata,
   replyData,
-  handoverMessage
+  handoverMessage,
 ) => {
   const {
     displayName,

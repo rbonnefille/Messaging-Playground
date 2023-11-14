@@ -4,10 +4,10 @@ import ConversationEvent from "../models/webhook.js";
 const writeToFile = (webhookEvent) => {
   var stream = fs.createWriteStream(
     "/Users/rbonnefille/Documents/Testing/SmoochLibs/NodeJSLib/suncoBot/server/logs/logs.log",
-    { flags: "a" }
+    { flags: "a" },
   );
   stream.write(
-    `${webhookEvent.eventCreatedAt} - UserId: ${webhookEvent.userId} - ConversationId: ${webhookEvent.conversationId} - Message: ${webhookEvent.userMessage} - Channel: ${webhookEvent.sourceType}\n`
+    `${webhookEvent.eventCreatedAt} - UserId: ${webhookEvent.userId} - ConversationId: ${webhookEvent.conversationId} - Message: ${webhookEvent.userMessage} - Channel: ${webhookEvent.sourceType}\n`,
   );
   stream.on("error", (err) => {
     console.log(`Error in read stream... ${err}`);
@@ -28,7 +28,7 @@ const logger = (req, res, next) => {
         !webhookEvent.isBusinessMessage()
       ) {
         console.info(
-          `${webhookEvent.eventCreatedAt} - UserId: ${webhookEvent.userId} - ConversationId: ${webhookEvent.conversationId} - Message: ${webhookEvent.userMessage} - Channel: ${webhookEvent.sourceType}`
+          `${webhookEvent.eventCreatedAt} - UserId: ${webhookEvent.userId} - ConversationId: ${webhookEvent.conversationId} - Message: ${webhookEvent.userMessage} - Channel: ${webhookEvent.sourceType}`,
         );
         writeToFile(webhookEvent);
       }

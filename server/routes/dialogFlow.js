@@ -15,12 +15,12 @@ async function detectIntent(
   sessionId,
   query,
   contexts,
-  languageCode
+  languageCode,
 ) {
   // The path to identify the agent that owns the created intent.
   const sessionPath = sessionClient.projectAgentSessionPath(
     projectId,
-    sessionId
+    sessionId,
   );
 
   // The text query request.
@@ -60,11 +60,11 @@ async function executeQueries(query) {
       sessionId,
       query,
       context,
-      languageCode
+      languageCode,
     );
     console.log("Detected intent");
     console.log(
-      `Fulfillment Text: ${intentResponse.queryResult.fulfillmentText}`
+      `Fulfillment Text: ${intentResponse.queryResult.fulfillmentText}`,
     );
     // Use the context from this response for next queries
     context = intentResponse.queryResult.outputContexts;
