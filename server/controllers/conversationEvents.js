@@ -1,4 +1,4 @@
-import replyToUser from "../models/bot.js";
+import replyToUser from "../models/Bot.js";
 import ConversationEvent from "../models/Webhook.js";
 import PassControlMetadata from "../models/PassControlMetadata.js";
 // import SunCoClient from "../utils/suncoApi.js";
@@ -24,7 +24,7 @@ const messageEvents = async (req, res, next) => {
 
   if (
     !webhookEvent.isCurrentSwitchboardIntegration(
-      activeSwitchboardIntegrationId,
+      activeSwitchboardIntegrationId
     )
   ) {
     res.sendStatus(200).end();

@@ -9,7 +9,7 @@ import {
   escalateToAgent,
   welcomeUser,
   sendCatPicture,
-} from "./botActions.js";
+} from "./BotActions.js";
 import Reply from "./Reply.js";
 
 const sunCo = new SunCoClient();
