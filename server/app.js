@@ -61,14 +61,10 @@ app.post("/webhooks", (req, res) => {
   res.sendStatus(200);
 });
 
-app.get("/testvideo", (_, res) => {
-  res.render("test.ejs");
-});
-
 app.use((_, res) => {
   res.status(404).render("404.ejs");
 });
 
 app.listen(process.env.PORT ?? 3000, () =>
-  console.log(`Server is running on port ${process.env.PORT ?? 3000}`),
+  console.log(`Server is running on port ${process.env.PORT ?? 3000}`)
 );
