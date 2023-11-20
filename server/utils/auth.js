@@ -1,7 +1,8 @@
 /* eslint-disable no-undef */
 import Jwt from "../models/Jwt.js";
+import { syncUser } from "./zdApi.js";
 
-const returnToken = (req, res) => {
+const returnToken = async (req, res) => {
   if (
     req.get("origin") === process.env.AUTHORISED_ORIGIN ||
     "http://localhost"
@@ -22,6 +23,7 @@ const returnToken = (req, res) => {
       `----------------------------------------Decoded JWT---------------------------------------- \n`
     );
     console.log(JSON.parse(`${Buffer.from(parts[1], "base64").toString()} \n`));
+    // await syncUser(email, external_id, name);
     res.json({ token: jwtToken });
   } else {
     res.status(403).send("Forbidden");
