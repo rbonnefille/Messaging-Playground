@@ -8,6 +8,7 @@ class SunCoClient {
   constructor() {
     this.setApiClient();
     this.appId = process.env.APP_ID;
+    this.switchboardId = process.env.SWITCHBOARD_ID;
   }
   setApiClient() {
     const defaultClient = SunshineConversationsClient.ApiClient.instance;
@@ -250,14 +251,35 @@ class SunCoClient {
   }
 
   async listSwitchboardIntegrations() {
-    const switchboardsPresent = await this.listSwitchboards();
-    const switchboardId = switchboardsPresent.switchboards[0].id;
     const apiInstance =
       new SunshineConversationsClient.SwitchboardIntegrationsApi();
     try {
       return await apiInstance.listSwitchboardIntegrations(
         this.appId,
-        switchboardId
+        this.switchboardId
+      );
+    } catch (error) {
+      // catch error
+      this.handleError(error);
+    }
+  }
+
+  async updateSwitchboard(enabled = true, defaultSwitchboardIntegrationId) {
+    const apiInstance = new SunshineConversationsClient.SwitchboardsApi();
+    let switchboardUpdateBody =
+      new SunshineConversationsClient.SwitchboardUpdateBody();
+
+    switchboardUpdateBody.enabled = Boolean(enabled);
+
+    if (defaultSwitchboardIntegrationId) {
+      switchboardUpdateBody.defaultSwitchboardIntegrationId =
+        defaultSwitchboardIntegrationId;
+    }
+    try {
+      return await apiInstance.updateSwitchboard(
+        this.appId,
+        this.switchboardId,
+        switchboardUpdateBody
       );
     } catch (error) {
       // catch error
