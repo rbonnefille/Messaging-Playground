@@ -20,4 +20,14 @@ router.get("/switchboards", async (_, res) => {
   res.json(switchboards);
 });
 
+router.patch("/switchboards", async (req, res) => {
+  const sunCo = new SunCoClient();
+  const { enabled, defaultSwitchboardIntegrationId } = req.body;
+  const switchboards = await sunCo.updateSwitchboard(
+    enabled,
+    defaultSwitchboardIntegrationId
+  );
+  res.json(switchboards);
+});
+
 export default router;
