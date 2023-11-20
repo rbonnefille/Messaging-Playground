@@ -17,7 +17,7 @@ class WebhookEvent {
       if (req.body.events.length > 1) {
         console.log(req.body);
         throw new Error(
-          `WebhookEvent only supports one event at the moment. ${req.body.events} events are ignored.`,
+          `WebhookEvent only supports one event at the moment. ${req.body.events} events are ignored.`
         );
       }
       this.eventId = event.id;
@@ -171,12 +171,21 @@ class ConversationEvent extends WebhookEvent {
       return (
         this.sourceType === "android" ||
         this.sourceType === "ios" ||
-        this.sourceType === "web"
+        this.sourceType === "web" ||
+        this.sourceType === "messenger"
       );
     }
   }
   isSocialChannel() {
-    const sources = ["whatsapp", "telegram", "messenger", "line"];
+    const sources = [
+      "whatsapp",
+      "telegram",
+      "messenger",
+      "line",
+      "viber",
+      "gbm",
+      "wechat",
+    ];
     return sources.includes(this.sourceType);
   }
   get userMessage() {
