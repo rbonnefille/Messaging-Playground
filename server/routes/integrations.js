@@ -1,6 +1,9 @@
 import express from "express";
 const router = express.Router();
 import SunCoClient from "../utils/suncoApi.js";
+import checkOrigin from "../middleware/validateOrigin.js";
+
+router.use(checkOrigin); // Register the checkOrigin middleware globally
 
 router.get("/", async (_, res) => {
   const sunCo = new SunCoClient();
