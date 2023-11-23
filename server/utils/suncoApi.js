@@ -32,7 +32,7 @@ class SunCoClient {
       );
     } catch (error) {
       // catch error
-      this.handleError(error);
+      return error.body?.errors[0]?.title || error.status;
     }
   }
 
@@ -63,7 +63,7 @@ class SunCoClient {
         messagePost
       );
     } catch (error) {
-      this.handleError(error.response?.text);
+      return error.response?.text;
     }
   }
 
@@ -74,7 +74,7 @@ class SunCoClient {
       return await apiInstance.listClients(this.appId, userIdOrExternalId);
     } catch (error) {
       // catch error
-      this.handleError(error);
+      return error.body?.errors[0]?.title || error.status;
     }
   }
 
@@ -85,7 +85,9 @@ class SunCoClient {
       return await apiInstance.getUser(this.appId, userIdOrExternalId);
     } catch (error) {
       // catch error
-      this.handleError(error);
+
+      // return error.body?.errors[0]?.title || error.status;
+      return error.body?.errors[0]?.title || error.status;
     }
   }
 
@@ -104,7 +106,7 @@ class SunCoClient {
       );
     } catch (error) {
       // catch error
-      this.handleError(error);
+      return error.body?.errors[0]?.title || error.status;
     }
   }
 
@@ -115,7 +117,7 @@ class SunCoClient {
       return await apiInstance.getConversation(this.appId, conversationId);
     } catch (error) {
       // catch error
-      this.handleError(error);
+      return error.body?.errors[0]?.title || error.status;
     }
   }
 
@@ -126,7 +128,7 @@ class SunCoClient {
       return await apiInstance.listMessages(this.appId, conversationId);
     } catch (error) {
       // catch error
-      this.handleError(error);
+      return error.body?.errors[0]?.title || error.status;
     }
   }
 
@@ -148,7 +150,7 @@ class SunCoClient {
       );
     } catch (error) {
       // catch error
-      this.handleError(error);
+      return error.body?.errors[0]?.title || error.status;
     }
   }
 
@@ -165,7 +167,7 @@ class SunCoClient {
       return await apiInstance.listConversations(this.appId, filter);
     } catch (error) {
       // catch error
-      this.handleError(error);
+      return error.body?.errors[0]?.title || error.status;
     }
   }
 
@@ -175,7 +177,7 @@ class SunCoClient {
       return await apiInstance.deleteConversation(this.appId, conversationId);
     } catch (error) {
       // catch error
-      this.handleError(error);
+      return error.body?.errors[0]?.title || error.status;
     }
   }
 
@@ -200,7 +202,7 @@ class SunCoClient {
       );
     } catch (error) {
       // catch error
-      this.handleError(error);
+      return error.body?.errors[0]?.title || error.status;
     }
   }
 
@@ -220,7 +222,7 @@ class SunCoClient {
       );
     } catch (error) {
       // catch error
-      this.handleError(error);
+      return error.body?.errors[0]?.title || error.status;
     }
   }
 
@@ -236,7 +238,7 @@ class SunCoClient {
       return await apiInstance.releaseControl(this.appId, conversationId);
     } catch (error) {
       // catch error
-      this.handleError(error);
+      return error.body?.errors[0]?.title || error.status;
     }
   }
 
@@ -246,7 +248,7 @@ class SunCoClient {
       return await apiInstance.listSwitchboards(this.appId);
     } catch (error) {
       // catch error
-      this.handleError(error);
+      return error.body?.errors[0]?.title || error.status;
     }
   }
 
@@ -260,7 +262,7 @@ class SunCoClient {
       );
     } catch (error) {
       // catch error
-      this.handleError(error);
+      return error.body?.errors[0]?.title || error.status;
     }
   }
 
@@ -283,7 +285,7 @@ class SunCoClient {
       );
     } catch (error) {
       // catch error
-      this.handleError(error);
+      return error.body?.errors[0]?.title || error.status;
     }
   }
 
@@ -293,16 +295,8 @@ class SunCoClient {
       return await apiInstance.listIntegrations(this.appId);
     } catch (error) {
       // catch error
-      this.handleError(error);
+      return error.body?.errors[0]?.title || error.status;
     }
-  }
-
-  handleError(error) {
-    throw new Error(
-      `An error occurred while interacting with the Sunshine Conversations API: ${JSON.stringify(
-        error
-      )}`
-    );
   }
 
   getUserIdOrExternalId(payload) {
