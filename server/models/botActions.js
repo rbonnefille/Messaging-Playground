@@ -27,7 +27,7 @@ export const welcomeUser = async (event, replyData, defaultMessage) => {
 export const cleanConversations = async (event, replyData) => {
   let allConversations = await sunCo.listConversations(event);
   const userConversations = Object.keys(
-    allConversations.getConversations(),
+    allConversations.getConversations()
   ).length;
   replyData.message = `You currently have ${userConversations} ${
     userConversations > 1 ? "conversations" : "conversation"
@@ -42,7 +42,8 @@ export const cleanConversations = async (event, replyData) => {
       let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
       if (totalDays > 0) {
         if (
-          convo.activeSwitchboardIntegration.name === "NodeJsBot" &&
+          convo.activeSwitchboardIntegration?.id ===
+            process.env.BOT_SWITCHBOARD_INTEGRATION_ID &&
           !convo.isDefault &&
           convo.id !== event.conversationId
         ) {
@@ -66,7 +67,7 @@ export const cleanConversations = async (event, replyData) => {
 export const escalateToAgent = async (
   switchBoardMetadata,
   replyData,
-  handoverMessage,
+  handoverMessage
 ) => {
   const {
     displayName,
