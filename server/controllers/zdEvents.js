@@ -15,6 +15,7 @@ const auth = {
 
 const zdEvents = async (req, res, next) => {
   console.log(req.body);
+  return res.sendStatus(200).end();
   const {
     type: eventType,
     detail: { external_id, email },
