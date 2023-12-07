@@ -8,8 +8,8 @@ import returnToken from "./utils/auth.js";
 import conversationRouter from "./routes/conversations.js";
 import userRouter from "./routes/users.js";
 import integrationRouter from "./routes/integrations.js";
+import zendeskRouter from "./routes/zendesk.js";
 // import { dialogFlow } from "./routes/dialogFlow.js";
-import zdEvents from "./controllers/zdEvents.js";
 
 import * as helmet from "helmet";
 import cors from "cors";
@@ -33,37 +33,32 @@ app.use("/public", express.static("public"));
 app.use(favicon(path.join(__dirname, "public", "assets", "favicon.ico")));
 
 app.use("/conversations", conversationRouter);
-
 // app.use("/gdf", dialogFlow);
-
 app.use("/integrations", integrationRouter);
-
 app.use("/users", userRouter);
-
 app.post("/auth", returnToken);
+app.use("/zendesk", zendeskRouter);
 
-app.post("/zendesk-webhooks", zdEvents);
-
-app.get("/", (_, res) => {
-  res.render("index.ejs", {
-    sessionStorageKey: sessionStorageKey,
-    messagingWidgetKey: messagingWidgetKey,
-    suncoIntegrationId: suncoIntegrationId,
-  });
-});
+// app.get("/", (_, res) => {
+//   res.render("index.ejs", {
+//     sessionStorageKey: sessionStorageKey,
+//     messagingWidgetKey: messagingWidgetKey,
+//     suncoIntegrationId: suncoIntegrationId,
+//   });
+// });
 
 app.get("/integrationweb2", (_, res) => {
   res.render("integrationweb2.ejs", { sessionStorageKey: sessionStorageKey });
 });
 
-app.post("/webhooks", (req, res) => {
-  console.log(req.body);
-  res.sendStatus(200);
-});
+// app.post("/webhooks", (req, res) => {
+//   console.log(req.body);
+//   res.sendStatus(200);
+// });
 
-app.use((_, res) => {
-  res.status(404).render("404.ejs");
-});
+// app.use((_, res) => {
+//   res.status(404).render("404.ejs");
+// });
 
 app.listen(process.env.PORT ?? 3000, () =>
   console.log(`Server is running on port ${process.env.PORT ?? 3000}`)
