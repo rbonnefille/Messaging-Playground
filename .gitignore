@@ -24,6 +24,3 @@ server/package-lock.json
 test.js
 testDestructuring.js
 npm-debug.log*
-
-# ignore client for now
-/client
