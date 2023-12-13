@@ -18,6 +18,8 @@ const {
   BROWSER_SESSION_STORAGE_KEY: sessionStorageKey,
   MESSAGING_WIDGET_KEY: messagingWidgetKey,
   SUNCO_INTEGRATION_ID: suncoIntegrationId,
+  ZD_SUBDOMAIN: zdSubdomain,
+  ZD_APP_GUID: zdAppGuid,
 } = process.env;
 
 const __filename = fileURLToPath(import.meta.url);
@@ -39,13 +41,23 @@ app.use("/users", userRouter);
 app.post("/auth", returnToken);
 app.use("/zendesk", zendeskRouter);
 
-// app.get("/", (_, res) => {
-//   res.render("index.ejs", {
-//     sessionStorageKey: sessionStorageKey,
-//     messagingWidgetKey: messagingWidgetKey,
-//     suncoIntegrationId: suncoIntegrationId,
-//   });
-// });
+app.get("/custom-app", (req, res) => {
+  const { origin, app_guid } = req.query;
+  if (origin !== `https://${zdSubdomain}.zendesk.com` && app_guid !== zdAppGuid)
+    return res
+      .status(401)
+      .send("Unauthorized - Page only visible within Zendesk Iframe app");
+  app.use(express.static(path.join(__dirname, "../client/assets")));
+  res.sendFile(path.join(__dirname, "../client/assets/index.html"));
+});
+
+app.get("/", (_, res) => {
+  res.render("index.ejs", {
+    sessionStorageKey: sessionStorageKey,
+    messagingWidgetKey: messagingWidgetKey,
+    suncoIntegrationId: suncoIntegrationId,
+  });
+});
 
 app.get("/integrationweb2", (_, res) => {
   res.render("integrationweb2.ejs", { sessionStorageKey: sessionStorageKey });
@@ -56,9 +68,9 @@ app.get("/integrationweb2", (_, res) => {
 //   res.sendStatus(200);
 // });
 
-// app.use((_, res) => {
-//   res.status(404).render("404.ejs");
-// });
+app.use((_, res) => {
+  res.status(404).render("404.ejs");
+});
 
 app.listen(process.env.PORT ?? 3000, () =>
   console.log(`Server is running on port ${process.env.PORT ?? 3000}`)
