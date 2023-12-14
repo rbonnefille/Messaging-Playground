@@ -1,54 +1,36 @@
-import fs from "fs";
-import ConversationEvent from "../models/webhook.js";
+import ConversationEvent from "../models/Webhook.js";
+import winston from "winston";
 import path from "path";
 
 const serverDir = path.join(process.cwd());
-const date = new Date().toISOString();
 
-const writeToFile = (event, conversationLogs = true) => {
-  let stream;
-  if (!fs.existsSync(path.join(serverDir, "./logs"))) {
-    fs.mkdirSync(path.join(serverDir, "./logs"));
-  }
-  if (conversationLogs) {
-    if (!fs.existsSync(path.join(serverDir, "./logs/conversations.log"))) {
-      fs.writeFileSync(path.join(serverDir, "./logs/conversations.log"), "");
-    }
-    stream = fs.createWriteStream(
-      path.join(serverDir, "./logs/conversations.log"),
-      {
-        flags: "a",
-      }
-    );
-  } else {
-    if (!fs.existsSync(path.join(serverDir, "./logs/events.log"))) {
-      fs.writeFileSync(path.join(serverDir, "./logs/events.log"), "");
-    }
-    stream = fs.createWriteStream(path.join(serverDir, "./logs/events.log"), {
-      flags: "a",
-    });
-  }
-  stream.write(event + "\n");
-  stream.on("error", (err) => {
-    console.log(`Error in read stream... ${err}`);
-  });
-  stream.end();
-};
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.File({
+      filename: path.join(serverDir, "./logs/events.log"),
+      level: "info",
+    }),
+  ],
+});
 
-const logger = (req, res, next) => {
+const loggerMiddleware = (req, res, next) => {
   let event;
   switch (req.method) {
     case "HEAD":
     case "GET":
-      console.info(`${req.originalUrl} - ${req.method} - ${res.statusCode}`);
+      logger.info(`${req.originalUrl} - ${req.method} - ${res.statusCode}`);
       return next();
     case "POST":
       if (req.originalUrl.includes("/zendesk")) {
-        event = `${date} - ${req.originalUrl} - ${req.get("User-Agent")} - ${
+        event = `${req.originalUrl} - ${req.get("User-Agent")} - ${
           req.method
-        } - ${res.statusCode}`;
-        console.info(event);
-        writeToFile(event, false);
+        } - ${res.statusCode} - Body: ${JSON.stringify(req.body)}`;
+        logger.info(event);
         return next();
       }
       const webhookEvent = new ConversationEvent(req);
@@ -56,9 +38,8 @@ const logger = (req, res, next) => {
         webhookEvent.isConversationMessage() &&
         !webhookEvent.isBusinessMessage()
       ) {
-        event = `${webhookEvent.eventCreatedAt} - UserId: ${webhookEvent.userId} - ConversationId: ${webhookEvent.conversationId} - Message: ${webhookEvent.userMessage} - Channel: ${webhookEvent.sourceType}`;
-        console.info(event);
-        writeToFile(event, true);
+        event = `UserId: ${webhookEvent.userId} - ConversationId: ${webhookEvent.conversationId} - Message: ${webhookEvent.userMessage} - Channel: ${webhookEvent.sourceType}`;
+        logger.info(event);
       }
       return next();
     default:
@@ -66,4 +47,4 @@ const logger = (req, res, next) => {
   }
 };
 
-export default logger;
+export default loggerMiddleware;
