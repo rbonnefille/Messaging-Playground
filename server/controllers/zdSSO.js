@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const brandURLs = {
   "z3nsuncoswitchboard.zendesk.com":
-    "https://romain-sunco.eu.ngrok.io/zendesk/login?name=john&email=john@test.com&role=agent",
+    "https://romain-sunco.eu.ngrok.io/zendesk/login?name=john&email=john@test.com&role=end-user",
   "emeaz3nsuncoswitchboard.zendesk.com":
     "https://romain-sunco.eu.ngrok.io/zendesk/login?name=jojo&email=jojo@test.com&role=end-user",
   "z3nsuncoswitchboardapac.zendesk.com":
@@ -17,19 +17,21 @@ const brandURLs = {
 };
 
 export const zdJwt = (req, res) => {
-  const returnTo = req.query.return_to;
-  if (!returnTo) {
-    res.send("No return_to query parameter found");
-    return;
-  }
-  for (const [key, value] of Object.entries(brandURLs)) {
-    if (returnTo.includes(key)) {
-      res.redirect(value);
-      return;
-    }
-  }
+  // const returnTo = req.query.return_to;
+  // if (!returnTo) {
+  //   res.send("No return_to query parameter found");
+  //   return;
+  // }
+  // for (const [key, value] of Object.entries(brandURLs)) {
+  //   if (returnTo.includes(key)) {
+  //     res.redirect(value);
+  //     return;
+  //   }
+  // }
 
-  res.send("No matching brand URL found");
+  // res.send("No matching brand URL found");
+  res.redirect(302, "http://192.168.1.99:5173/zendesk");
+  // res.redirect(302, "http://localhost:5173/zendesk");
 };
 
 export const zdLogin = (req, res) => {
