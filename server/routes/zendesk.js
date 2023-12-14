@@ -1,11 +1,18 @@
 import express from "express";
 import zdEvents from "../controllers/zdEvents.js";
 import { zdLogin, zdJwt } from "../controllers/zdSSO.js";
+import { zdSDKJwt } from "../controllers/zdSDKJwt.js";
+import logger from "../utils/logger.js";
+
 const router = express.Router();
+
+router.use(logger);
 
 router.head("/", (_, res) => {
   return res.sendStatus(200).end();
 });
+
+router.post("/sdk-jwt", zdSDKJwt);
 
 router.get("/webhooks", zdEvents);
 
