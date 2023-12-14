@@ -13,7 +13,7 @@ const auth = {
   password: password,
 };
 
-const zdEvents = async (req, res, next) => {
+const zdEvents = async (req, res) => {
   console.log(req.body);
   return res.sendStatus(200).end();
   const {
