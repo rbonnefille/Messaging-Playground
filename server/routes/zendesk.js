@@ -2,11 +2,11 @@ import express from "express";
 import zdEvents from "../controllers/zdEvents.js";
 import { zdLogin, zdJwt } from "../controllers/zdSSO.js";
 import { zdSDKJwt } from "../controllers/zdSDKJwt.js";
-import logger from "../utils/logger.js";
+import loggerMiddleware from "../utils/logger.js";
 
 const router = express.Router();
 
-router.use(logger);
+router.use(loggerMiddleware);
 
 router.head("/", (_, res) => {
   return res.sendStatus(200).end();
@@ -14,7 +14,7 @@ router.head("/", (_, res) => {
 
 router.post("/sdk-jwt", zdSDKJwt);
 
-router.get("/webhooks", zdEvents);
+router.post("/webhooks", zdEvents);
 
 // Zendesk SSO Routes
 router.get("/jwt", zdJwt);

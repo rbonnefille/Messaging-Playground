@@ -1,10 +1,10 @@
-import logger from "../utils/logger.js";
+import loggerMiddleware from "../utils/logger.js";
 import express from "express";
 import conversationEvents from "../controllers/conversationEvents.js";
 import SunCoClient from "../utils/suncoApi.js";
 const router = express.Router();
 
-router.use(logger);
+router.use(loggerMiddleware);
 
 router.head("/", (_, res) => {
   return res.sendStatus(200).end();
