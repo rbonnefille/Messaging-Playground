@@ -1,50 +1,48 @@
-import ConversationEvent from "../models/Webhook.js";
 import winston from "winston";
 import path from "path";
+import morgan from "morgan";
 
 const serverDir = path.join(process.cwd());
 
+const { combine, timestamp, json } = winston.format;
+
 const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
+  level: "http",
+  format: combine(
+    timestamp({
+      format: "YYYY-MM-DD hh:mm:ss.SSS A",
+    }),
+    json()
   ),
   transports: [
     new winston.transports.File({
       filename: path.join(serverDir, "./logs/events.log"),
-      level: "info",
+      level: "http",
     }),
+    // new winston.transports.Console({
+    //   level: "http",
+    // }),
   ],
 });
 
-const loggerMiddleware = (req, res, next) => {
-  let event;
-  switch (req.method) {
-    case "HEAD":
-    case "GET":
-      logger.info(`${req.originalUrl} - ${req.method} - ${res.statusCode}`);
-      return next();
-    case "POST":
-      if (req.originalUrl.includes("/zendesk")) {
-        event = `${req.originalUrl} - ${req.get("User-Agent")} - ${
-          req.method
-        } - ${res.statusCode} - Body: ${JSON.stringify(req.body)}`;
-        logger.info(event);
-        return next();
-      }
-      const webhookEvent = new ConversationEvent(req);
-      if (
-        webhookEvent.isConversationMessage() &&
-        !webhookEvent.isBusinessMessage()
-      ) {
-        event = `UserId: ${webhookEvent.userId} - ConversationId: ${webhookEvent.conversationId} - Message: ${webhookEvent.userMessage} - Channel: ${webhookEvent.sourceType}`;
-        logger.info(event);
-      }
-      return next();
-    default:
-      return next();
+const loggerMiddleware = morgan(
+  function (tokens, req, res) {
+    return JSON.stringify({
+      url: tokens.url(req, res),
+      method: tokens.method(req, res),
+      status: Number.parseFloat(tokens.status(req, res)),
+      response_time: Number.parseFloat(tokens["response-time"](req, res)),
+      body: req.body,
+    });
+  },
+  {
+    stream: {
+      write: (message) => {
+        const data = JSON.parse(message);
+        logger.http(`incoming-req`, data);
+      },
+    },
   }
-};
+);
 
 export default loggerMiddleware;

@@ -9,6 +9,7 @@ import conversationRouter from "./routes/conversations.js";
 import userRouter from "./routes/users.js";
 import integrationRouter from "./routes/integrations.js";
 import zendeskRouter from "./routes/zendesk.js";
+import loggerMiddleware from "./utils/logger.js";
 // import { dialogFlow } from "./routes/dialogFlow.js";
 
 import * as helmet from "helmet";
@@ -26,6 +27,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.use(loggerMiddleware);
 app.use(cors());
 app.use(helmet.hidePoweredBy());
 app.use(helmet.xssFilter());

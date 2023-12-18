@@ -2,11 +2,8 @@ import express from "express";
 import zdEvents from "../controllers/zdEvents.js";
 import { zdLogin, zdJwt } from "../controllers/zdSSO.js";
 import { zdSDKJwt } from "../controllers/zdSDKJwt.js";
-import loggerMiddleware from "../utils/logger.js";
 
 const router = express.Router();
-
-router.use(loggerMiddleware);
 
 router.head("/", (_, res) => {
   return res.sendStatus(200).end();
