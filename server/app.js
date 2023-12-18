@@ -37,7 +37,6 @@ app.use(express.json());
 // app.use("/public", express.static("public"));
 // app.use(favicon(path.join(__dirname, "public", "assets", "favicon.ico")));
 
-app.use(express.static(path.join(__dirname, "../client/assets")));
 app.use(express.urlencoded({ extended: false }));
 
 // FOR GOOGLE DIALOGFLOW //
@@ -49,13 +48,17 @@ app.use("/users", userRouter);
 app.post("/auth", returnToken);
 app.use("/zendesk", zendeskRouter);
 
-app.get("/custom-app", (req, res) => {
+app.get(["/", "/custom-app"], (req, res) => {
   const { origin, app_guid } = req.query;
   if (origin !== `https://${zdSubdomain}.zendesk.com` && app_guid !== zdAppGuid)
     return res
       .status(401)
       .send("Unauthorized - Page only visible within Zendesk Iframe app");
-  res.sendFile(path.join(__dirname, "../client/assets/index.html"));
+  if (req.path === "/custom-app") {
+    app.use(express.static(path.join(__dirname, "../client/assets")));
+    return res.sendFile(path.join(__dirname, "../client/assets/index.html"));
+  }
+  res.redirect("/custom-app");
 });
 
 // FOR EJS //
