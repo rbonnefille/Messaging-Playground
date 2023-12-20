@@ -2,8 +2,7 @@ import axios from "axios";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const cat_key = process.env.CAT_API_KEY;
-const cat_url = process.env.CAT_API_URL;
+const { CAT_API_KEY: cat_key, CAT_API_URL: cat_url } = process.env;
 
 export default async () => {
   const config = {
