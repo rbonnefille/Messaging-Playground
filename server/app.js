@@ -9,6 +9,7 @@ import conversationRouter from "./routes/conversations.js";
 import userRouter from "./routes/users.js";
 import integrationRouter from "./routes/integrations.js";
 import zendeskRouter from "./routes/zendesk.js";
+import notififactionRouter from "./routes/notifications.js";
 import loggerMiddleware from "./utils/logger.js";
 // import { dialogFlow } from "./routes/dialogFlow.js";
 
@@ -49,6 +50,7 @@ app.use("/integrations", integrationRouter);
 app.use("/users", userRouter);
 app.post("/auth", returnToken);
 app.use("/zendesk", zendeskRouter);
+app.use("/notifications", notififactionRouter);
 
 app.get(["/", "/custom-app"], (req, res) => {
   const { origin, app_guid } = req.query;
