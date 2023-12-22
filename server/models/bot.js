@@ -11,9 +11,7 @@ import {
   sendCatPicture,
 } from "./BotActions.js";
 import Reply from "./Reply.js";
-
 import axios from "axios";
-
 const sunCo = new SunCoClient();
 
 export const replyToUser = async (eventMessage, switchBoardMetadata) => {
@@ -117,6 +115,7 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
       return sunCo.sendMessage(replyData);
     default:
       try {
+        await sunCo.postActivity(replyData);
         const response = await axios.post(
           process.env.ZD_OPENAI_URL,
           {
