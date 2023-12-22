@@ -12,6 +12,8 @@ import {
 } from "./BotActions.js";
 import Reply from "./Reply.js";
 
+import axios from "axios";
+
 const sunCo = new SunCoClient();
 
 export const replyToUser = async (eventMessage, switchBoardMetadata) => {
@@ -114,8 +116,29 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
       replyData.message = await getChuckNorrisJoke();
       return sunCo.sendMessage(replyData);
     default:
-      replyData.message = getRandomFallbackMessage();
-      return sunCo.sendMessage(replyData);
+      try {
+        const response = await axios.post(
+          process.env.ZD_OPENAI_URL,
+          {
+            model: "gpt-4",
+            messages: [{ role: "user", content: userMessage }],
+            temperature: 0.7,
+          },
+          {
+            headers: {
+              "User-Agent": "sunco-bot-chat-robot",
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+            },
+          }
+        );
+
+        const replyText = response.data?.choices[0]?.message?.content;
+        replyData.message = replyText;
+        return sunCo.sendMessage(replyData);
+      } catch (error) {
+        console.error(error);
+      }
   }
 };
 
