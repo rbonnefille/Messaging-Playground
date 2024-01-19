@@ -7,6 +7,7 @@ import {
   getRandomFallbackMessage,
   cleanConversations,
   escalateToAgent,
+  escalateToAnswerBot,
   welcomeUser,
   sendCatPicture,
 } from "./BotActions.js";
@@ -66,6 +67,13 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
     case "bot":
       replyData.message = bot;
       return sunCo.sendMessage(replyData);
+    case "ab":
+    case "Answer Bot":
+    case "answer bot":
+    case "zendesk bot":
+    case "zd bot":
+    case "ZD bot":
+      return await escalateToAnswerBot(eventMessage);
     case "carousel":
       replyData.message = carousel;
       return sunCo.sendMessage(replyData);

@@ -93,6 +93,17 @@ export const escalateToAgent = async (
   return sunCo.passControl(replyData);
 };
 
+export const escalateToAnswerBot = async (eventMessage) => {
+  const { integrationId, conversationId } = eventMessage;
+  const payload = {
+    conversationId: conversationId,
+    metadata: {
+      "zen:answerbot:execute_flow": `channel=${integrationId}`,
+    },
+  };
+  return sunCo.passControl(payload, "zd-answerBot");
+};
+
 export const sendCatPicture = async (eventMessage, replyData, message) => {
   replyData.conversationId = eventMessage.conversationId;
   await getCatPicture();
