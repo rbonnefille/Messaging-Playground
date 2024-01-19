@@ -76,7 +76,7 @@ class ConversationEvent extends WebhookEvent {
         this.creationReason = payload.creationReason;
         this.sourceType = payload.source?.type;
         this.sourceDevice = payload.source?.device;
-        this.sourceIntegrationId = payload.source?.integrationId;
+        this.integrationId = payload.source?.integrationId;
       }
       if (this.isConversationMessage()) {
         const {
@@ -118,7 +118,7 @@ class ConversationEvent extends WebhookEvent {
         this.textFallback = content?.textFallback;
         this._userMessage =
           content?.payload ?? content?.text ?? this.textFallback;
-        this.sourceIntegrationId = source?.integrationId;
+        this.integrationId = source?.integrationId;
         this.sourceType = source?.type;
         this.sourceDevice = source?.device;
         this.recentNotifications = payload.recentNotifications;
@@ -129,7 +129,7 @@ class ConversationEvent extends WebhookEvent {
         this.contentType = "text";
         this._userMessage = payload.postback?.payload;
         this.sourceType = payload.source?.type;
-        this.sourceIntegrationId = payload.source?.integrationId;
+        this.integrationId = payload.source?.integrationId;
         this.sourceType = payload.source?.type;
         this.sourceDevice = payload.source?.device;
       }
