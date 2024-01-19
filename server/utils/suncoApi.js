@@ -189,10 +189,11 @@ class SunCoClient {
     const apiInstance = new SunshineConversationsClient.SwitchboardActionsApi();
     const passControlBody = new SunshineConversationsClient.PassControlBody();
     passControlBody.switchboardIntegration = switchboardIntegration;
-    console.log(switchboardIntegration);
     if (metadata) {
       passControlBody.metadata = metadata;
-      console.log(passControlBody.metadata);
+      console.log(
+        `Switchboard metadata sent ${JSON.stringify(passControlBody, null, 2)}`
+      );
     }
     try {
       return await apiInstance.passControl(
