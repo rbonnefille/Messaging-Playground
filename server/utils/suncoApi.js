@@ -1,6 +1,6 @@
-import * as dotenv from "dotenv";
+import * as dotenv from 'dotenv';
 dotenv.config();
-import SunshineConversationsClient from "sunshine-conversations-client";
+import SunshineConversationsClient from 'sunshine-conversations-client';
 
 const timeout = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -12,7 +12,7 @@ class SunCoClient {
   }
   setApiClient() {
     const defaultClient = SunshineConversationsClient.ApiClient.instance;
-    const bearerAuth = defaultClient.authentications["bearerAuth"];
+    const bearerAuth = defaultClient.authentications['bearerAuth'];
     bearerAuth.accessToken = process.env.SUNCO_JWT;
     defaultClient.basePath = process.env.POD_BASE_URL || process.env.BASE_URL;
   }
@@ -22,7 +22,7 @@ class SunCoClient {
     const apiInstance = new SunshineConversationsClient.ActivitiesApi();
     const activityPost = {
       author: author,
-      type: "typing:start",
+      type: 'typing:start',
     };
     try {
       return await apiInstance.postActivity(
@@ -45,13 +45,13 @@ class SunCoClient {
     messagePost.setAuthor(author);
     if (image) {
       messagePost.setContent({
-        type: "image",
+        type: 'image',
         mediaUrl: image,
         text: message,
       });
     } else {
       messagePost.setContent({
-        type: "text",
+        type: 'text',
         text: message,
         metadata: metadata,
       });
@@ -137,10 +137,10 @@ class SunCoClient {
     const apiInstance = new SunshineConversationsClient.ConversationsApi();
     const conversationUpdateBody =
       new SunshineConversationsClient.ConversationUpdateBody();
-    conversationUpdateBody.displayName = new Date().toLocaleString("en-us", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
+    conversationUpdateBody.displayName = new Date().toLocaleString('en-us', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
     });
     try {
       return await apiInstance.updateConversation(
@@ -290,6 +290,29 @@ class SunCoClient {
     }
   }
 
+  async updateSwitchboardIntegration(
+    switchboardIntegrationId,
+    nextSwitchboardIntegrationId
+  ) {
+    const apiInstance =
+      new SunshineConversationsClient.SwitchboardIntegrationsApi();
+    const switchboardIntegrationUpdateBody =
+      new SunshineConversationsClient.SwitchboardIntegrationUpdateBody();
+    switchboardIntegrationUpdateBody.nextSwitchboardIntegrationId =
+      nextSwitchboardIntegrationId;
+    try {
+      return await apiInstance.updateSwitchboardIntegration(
+        this.appId,
+        this.switchboardId,
+        switchboardIntegrationId,
+        switchboardIntegrationUpdateBody
+      );
+    } catch (error) {
+      // catch error
+      return error.body?.errors[0]?.title || error.status;
+    }
+  }
+
   async listIntegrations() {
     const apiInstance = new SunshineConversationsClient.IntegrationsApi();
     try {
@@ -301,9 +324,9 @@ class SunCoClient {
   }
 
   getUserIdOrExternalId(payload) {
-    if (payload.hasOwnProperty("userId")) {
+    if (payload.hasOwnProperty('userId')) {
       return payload.userId;
-    } else if (payload.hasOwnProperty("externalId")) {
+    } else if (payload.hasOwnProperty('externalId')) {
       return payload.externalId;
     }
     return payload;
