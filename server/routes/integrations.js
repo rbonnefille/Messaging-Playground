@@ -43,4 +43,25 @@ router.patch('/switchboardIntegration', async (req, res) => {
   res.json(switchboardIntegration);
 });
 
+router.post('/switchboardIntegration', async (req, res) => {
+  console.log(req.body);
+  const sunCo = new SunCoClient();
+  const {
+    integrationName,
+    integrationId,
+    deliverStandbyEvents,
+    nextSwitchboardIntegrationId,
+    messageHistoryCount,
+  } = req.body;
+  const newSwitchboardIntegration = await sunCo.createSwitchboardIntegration(
+    integrationName,
+    integrationId,
+    deliverStandbyEvents,
+    nextSwitchboardIntegrationId,
+    messageHistoryCount
+  );
+  console.log(newSwitchboardIntegration);
+  res.json(newSwitchboardIntegration);
+});
+
 export default router;
