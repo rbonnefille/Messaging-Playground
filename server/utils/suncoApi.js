@@ -1,4 +1,5 @@
 import * as dotenv from 'dotenv';
+import { json } from 'stream/consumers';
 dotenv.config();
 import SunshineConversationsClient from 'sunshine-conversations-client';
 
@@ -310,6 +311,37 @@ class SunCoClient {
     } catch (error) {
       // catch error
       return error.body?.errors[0]?.title || error.status;
+    }
+  }
+
+  async createSwitchboardIntegration(
+    integrationName,
+    integrationId,
+    deliverStandbyEvents,
+    nextSwitchboardIntegrationId,
+    messageHistoryCount = 10
+  ) {
+    const apiInstance =
+      new SunshineConversationsClient.SwitchboardIntegrationsApi();
+    let switchboardIntegrationCreateBody =
+      new SunshineConversationsClient.SwitchboardIntegrationCreateBody();
+    switchboardIntegrationCreateBody.name = integrationName;
+    switchboardIntegrationCreateBody.integrationId = integrationId;
+    switchboardIntegrationCreateBody.deliverStandbyEvents =
+      deliverStandbyEvents;
+    switchboardIntegrationCreateBody.nextSwitchboardIntegrationId =
+      nextSwitchboardIntegrationId;
+    switchboardIntegrationCreateBody.messageHistoryCount = messageHistoryCount;
+    try {
+      return await apiInstance.createSwitchboardIntegration(
+        this.appId,
+        this.switchboardId,
+        switchboardIntegrationCreateBody
+      );
+    } catch (error) {
+      // catch error
+      console.log(error.body?.errors[0]?.title);
+      return { error: error.body?.errors[0]?.title };
     }
   }
 
