@@ -9,7 +9,7 @@ router.get('/:id', async (req, res) => {
   const userId = req.params.id;
   const sunCo = new SunCoClient();
   const user = await sunCo.getUser(userId);
-  if (user.hasOwnProperty('user')) {
+  if (user?.hasOwnProperty('user')) {
     res.json(user);
   } else {
     res.status(404).json({ error: 'User not found' });
