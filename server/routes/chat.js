@@ -17,10 +17,16 @@ router.post('/', async (req, res) => {
   } = decode(token, { complete: true });
   console.log(name, email, external_id);
 
+  // const payload = {
+  //   name: 'Romain B',
+  //   email: 'romdb+zendesk@example.com',
+  //   external_id: uuidv4(),
+  // };
+
   const payload = {
     name: name,
     email: email,
-    external_id: external_id ?? `${uuidv4()}`,
+    external_id: external_id ?? uuidv4(),
   };
   console.log(payload);
   const jwt = sign(payload, chatSharedSecret);
