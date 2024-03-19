@@ -85,7 +85,7 @@ app.get(['/', '/custom-app'], (req, res) => {
 //   res.status(404).render("404.ejs");
 // });
 
-app.post('/webhooks', (req, res) => {
+app.all('/webhooks', (req, res) => {
   console.log(req.body);
   res.sendStatus(200);
 });
