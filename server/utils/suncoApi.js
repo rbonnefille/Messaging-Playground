@@ -84,9 +84,6 @@ class SunCoClient {
     try {
       return await apiInstance.getUser(this.appId, userIdOrExternalId);
     } catch (error) {
-      // catch error
-
-      // return error.body?.errors[0]?.title || error.status;
       return error.body?.errors[0]?.title || error.status;
     }
   }
