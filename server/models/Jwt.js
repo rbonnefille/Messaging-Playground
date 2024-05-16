@@ -20,7 +20,7 @@ export default class Jwt {
       email: this.email,
       email_verified: true,
       iat: this.nowInSeconds,
-      // exp: this.nowInSeconds + this.expiry,
+      exp: this.nowInSeconds + this.expiry,
     });
   }
   signJwt() {
