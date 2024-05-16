@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
 
   // const payload = {
   //   name: 'Romain B',
-  //   email: 'romdb+zendesk@example.com',
+  //   email: 'romdb+zendesk2@example.com',
   //   external_id: uuidv4(),
   // };
 
