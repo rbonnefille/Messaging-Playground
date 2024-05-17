@@ -38,4 +38,15 @@ router.get('/:id/clients', async (req, res) => {
   }
 });
 
+router.get('/:id/devices', async (req, res) => {
+  const { id: userId } = req.params;
+  const sunCo = new SunCoClient();
+  const devicesList = await sunCo.listDevices(userId);
+  if (devicesList.hasOwnProperty('devices')) {
+    res.json(devicesList);
+  } else {
+    res.status(404).json({ error: 'Devices not found' });
+  }
+});
+
 export default router;

@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
+import axios from 'axios';
 import SunshineConversationsClient from 'sunshine-conversations-client';
 
 const timeout = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -72,6 +73,24 @@ class SunCoClient {
     const apiInstance = new SunshineConversationsClient.ClientsApi();
     try {
       return await apiInstance.listClients(this.appId, userIdOrExternalId);
+    } catch (error) {
+      // catch error
+      return error.body?.errors[0]?.title || error.status;
+    }
+  }
+
+  async listDevices(payload) {
+    const userIdOrExternalId = this.getUserIdOrExternalId(payload);
+    const devicesListResponse = await axios.get(
+      `${process.env.POD_BASE_URL}/v2/apps/${process.env.APP_ID}/users/${userIdOrExternalId}/devices`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.SUNCO_JWT}`,
+        },
+      }
+    );
+    try {
+      return await devicesListResponse.data;
     } catch (error) {
       // catch error
       return error.body?.errors[0]?.title || error.status;
