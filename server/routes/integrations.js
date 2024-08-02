@@ -7,8 +7,11 @@ router.use(checkOrigin); // Register the checkOrigin middleware globally
 
 router.get('/', async (_, res) => {
   const sunCo = new SunCoClient();
-  const integrations = await sunCo.listIntegrations();
+  const integrations = await sunCo.listIntegrationsPerChannelResponder();
   res.json(integrations);
+  // const sunCo = new SunCoClient();
+  // const integrations = await sunCo.listIntegrations();
+  // res.json(integrations);
 });
 
 router.get('/sbintegrations', async (_, res) => {
