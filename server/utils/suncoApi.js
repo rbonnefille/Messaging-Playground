@@ -107,6 +107,15 @@ class SunCoClient {
     }
   }
 
+  async listParticipants(conversationId) {
+    const apiInstance = new SunshineConversationsClient.ParticipantsApi();
+    try {
+      return await apiInstance.listParticipants(this.appId, conversationId);
+    } catch (error) {
+      return error.body?.errors[0]?.title || error.status;
+    }
+  }
+
   async updateUser(payload) {
     const userIdOrExternalId = this.getUserIdOrExternalId(payload);
     const apiInstance = new SunshineConversationsClient.UsersApi();
