@@ -30,7 +30,7 @@ export const zdJwt = (req, res) => {
   // }
 
   // res.send("No matching brand URL found");
-  res.redirect(302, 'http://192.168.1.99:5173/zendesk');
+  res.redirect(302, 'https://romain-sunco.eu.ngrok.io/zendesk');
   // res.redirect(302, "http://localhost:5173/zendesk");
 };
 
@@ -48,6 +48,10 @@ export const zdssoLogin = (req, res) => {
     name: name,
     email: email,
     role: role ?? 'end-user',
+    external_id: email,
+    // user_fields: {
+    //   test_multi_select: ['value_2'],
+    // },
   };
   if (req.get('x-forwarded-host')?.includes('romain-sunco.eu.ngrok.io'))
     return res.redirect(
@@ -59,9 +63,12 @@ export const zdssoLogin = (req, res) => {
         }
       )}`
     );
-  if (req.headers.referer?.includes('http://localhost'))
+  if (req.headers.referer?.includes('http://localhost')) {
+    console.log(
+      `Token SSO: ${sign(payload, shared_key, { algorithm: 'HS256' })}`
+    );
     return res.json({
       token: `${sign(payload, shared_key, { algorithm: 'HS256' })}`,
     });
-  else res.send('Referer/forwarded not allowed');
+  } else res.send('Referer/forwarded not allowed');
 };
