@@ -20,7 +20,7 @@ router.get('/:id/conversations', async (req, res) => {
   const { id: userId } = req.params;
   const sunCo = new SunCoClient();
   const conversations = await sunCo.listConversations(userId);
-  if (conversations.hasOwnProperty('conversations')) {
+  if (conversations && conversations.hasOwnProperty('conversations')) {
     res.json(conversations);
   } else {
     res.status(404).json({ error: 'Conversations not found' });
@@ -31,7 +31,7 @@ router.get('/:id/clients', async (req, res) => {
   const { id: userId } = req.params;
   const sunCo = new SunCoClient();
   const clientsList = await sunCo.listClients(userId);
-  if (clientsList.hasOwnProperty('clients')) {
+  if (clientsList && clientsList.hasOwnProperty('clients')) {
     res.json(clientsList);
   } else {
     res.status(404).json({ error: 'Clients not found' });
@@ -42,7 +42,7 @@ router.get('/:id/devices', async (req, res) => {
   const { id: userId } = req.params;
   const sunCo = new SunCoClient();
   const devicesList = await sunCo.listDevices(userId);
-  if (devicesList.hasOwnProperty('devices')) {
+  if (devicesList && devicesList.hasOwnProperty('devices')) {
     res.json(devicesList);
   } else {
     res.status(404).json({ error: 'Devices not found' });
