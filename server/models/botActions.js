@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
-import getCatPicture from "../utils/catApi.js";
-import botMessages from "../constants/botMessages.js";
-import SunCoClient from "../utils/suncoApi.js";
+import getCatPicture from '../utils/catApi.js';
+import botMessages from '../constants/botMessages.js';
+import SunCoClient from '../utils/suncoApi.js';
 
 const sunCo = new SunCoClient();
 
@@ -30,7 +30,7 @@ export const cleanConversations = async (event, replyData) => {
     allConversations.getConversations()
   ).length;
   replyData.message = `You currently have ${userConversations} ${
-    userConversations > 1 ? "conversations" : "conversation"
+    userConversations > 1 ? 'conversations' : 'conversation'
   } opened. I will see if I can close some of them`;
   await sunCo.sendMessage(replyData);
   try {
@@ -60,7 +60,7 @@ export const cleanConversations = async (event, replyData) => {
       : `I didn't find any conversation to delete`;
     return await sunCo.sendMessage(replyData);
   } catch (error) {
-    throw new Error(e.message);
+    throw new Error(error.message);
   }
 };
 
@@ -80,15 +80,15 @@ export const escalateToAgent = async (
   replyData.message = handoverMessage;
   sunCo.sendMessage(replyData);
   replyData.metadata = {
-    "dataCapture.systemField.requester.name": displayName,
-    "dataCapture.systemField.requester.email": email,
-    "dataCapture.ticketField.360023540498": userExternalId,
-    "dataCapture.systemField.tags": `${eventSource}`,
-    "dataCapture.ticketField.360023540658": eventSource,
-    "dataCapture.ticketField.1900005043913": conversation,
-    "dataCapture.ticketField.11280496337553": recentNotifications,
-    "dataCapture.ticketField.13024896437137":
-      "Data captured and passed \n into a multiline field",
+    'dataCapture.systemField.requester.name': displayName,
+    'dataCapture.systemField.requester.email': email,
+    'dataCapture.ticketField.360023540498': userExternalId,
+    'dataCapture.systemField.tags': `${eventSource}`,
+    'dataCapture.ticketField.360023540658': eventSource,
+    'dataCapture.ticketField.1900005043913': conversation,
+    'dataCapture.ticketField.11280496337553': recentNotifications,
+    'dataCapture.ticketField.13024896437137':
+      'Data captured and passed \n into a multiline field',
   };
   return sunCo.passControl(replyData);
 };
@@ -98,10 +98,10 @@ export const escalateToAnswerBot = async (eventMessage) => {
   const payload = {
     conversationId: conversationId,
     metadata: {
-      "zen:answerbot:execute_flow": `channel=${integrationId}`,
+      'zen:answerbot:execute_flow': `channel=${integrationId}`,
     },
   };
-  return sunCo.passControl(payload, "zd-answerBot");
+  return sunCo.passControl(payload, 'zd-answerBot');
 };
 
 export const sendCatPicture = async (eventMessage, replyData, message) => {
