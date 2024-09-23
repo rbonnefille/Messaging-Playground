@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import getChuckNorrisJoke from '../utils/chuckNorrisApi.js';
-import executeQueries from '../controllers/gdf.js';
+// import executeQueries from '../controllers/gdf.js';
 import botMessages from '../constants/botMessages.js';
 import SunCoClient from '../utils/suncoApi.js';
 import {
@@ -108,9 +108,9 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
     case 'webview':
       replyData.message = webview;
       return sunCo.sendMessage(replyData);
-    case 'gdf':
-      replyData.message = await executeQueries('Hey there, how are you?');
-      return sunCo.sendMessage(replyData);
+    // case 'gdf':
+    //   replyData.message = await executeQueries('Hey there, how are you?');
+    //   return sunCo.sendMessage(replyData);
     case 'list':
     case 'clean':
     case 'clean conversations':
