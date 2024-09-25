@@ -21,10 +21,9 @@ class SunCoClient {
   async postActivity(payload) {
     const { conversationId, author } = payload;
     const apiInstance = new SunshineConversationsClient.ActivitiesApi();
-    const activityPost = {
-      author: author,
-      type: 'typing:start',
-    };
+    const activityPost = new SunshineConversationsClient.ActivityPost();
+    activityPost.setAuthor(author);
+    activityPost.setType('typing:start');
     try {
       return await apiInstance.postActivity(
         this.appId,
@@ -332,9 +331,6 @@ class SunCoClient {
       messageHistoryCount:
         messageHistoryCount == 0 ? null : parseInt(messageHistoryCount, 10),
     };
-    console.log(
-      `switchboardIntegrationUpdateBody: ${JSON.stringify(switchboardIntegrationUpdateBody)}`
-    );
     try {
       return await apiInstance.updateSwitchboardIntegration(
         this.appId,
