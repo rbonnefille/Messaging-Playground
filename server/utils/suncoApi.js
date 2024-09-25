@@ -315,16 +315,26 @@ class SunCoClient {
     }
   }
 
-  async updateSwitchboardIntegration(
-    switchboardIntegrationId,
-    nextSwitchboardIntegrationId
-  ) {
+  async updateSwitchboardIntegration(payload) {
+    let {
+      switchboardIntegrationId,
+      nextSwitchboardIntegrationId,
+      deliverStandbyEvents,
+      messageHistoryCount,
+    } = payload;
     const apiInstance =
       new SunshineConversationsClient.SwitchboardIntegrationsApi();
-    const switchboardIntegrationUpdateBody =
-      new SunshineConversationsClient.SwitchboardIntegrationUpdateBody();
-    switchboardIntegrationUpdateBody.nextSwitchboardIntegrationId =
-      nextSwitchboardIntegrationId;
+    let switchboardIntegrationUpdateBody = {
+      ...(nextSwitchboardIntegrationId && { nextSwitchboardIntegrationId }),
+      ...(deliverStandbyEvents !== undefined && {
+        deliverStandbyEvents: Boolean(deliverStandbyEvents),
+      }),
+      messageHistoryCount:
+        messageHistoryCount == 0 ? null : parseInt(messageHistoryCount, 10),
+    };
+    console.log(
+      `switchboardIntegrationUpdateBody: ${JSON.stringify(switchboardIntegrationUpdateBody)}`
+    );
     try {
       return await apiInstance.updateSwitchboardIntegration(
         this.appId,

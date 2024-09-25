@@ -38,10 +38,8 @@ router.patch('/switchboards', async (req, res) => {
 
 router.patch('/switchboardIntegration', async (req, res) => {
   const sunCo = new SunCoClient();
-  const { switchboardIntegrationId, nextSwitchboardIntegrationId } = req.body;
   const switchboardIntegration = await sunCo.updateSwitchboardIntegration(
-    switchboardIntegrationId,
-    nextSwitchboardIntegrationId
+    req.body
   );
   res.json(switchboardIntegration);
 });
