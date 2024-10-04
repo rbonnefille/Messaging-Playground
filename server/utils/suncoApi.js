@@ -13,9 +13,8 @@ class SunCoClient {
   }
   setApiClient() {
     const defaultClient = SunshineConversationsClient.ApiClient.instance;
-    const basicAuth = defaultClient.authentications['basicAuth'];
-    basicAuth.username = process.env.SUNCO_CUSTOM_INTEGRATION_KEY;
-    basicAuth.password = process.env.SUNCO_CUSTOM_INTEGRATION_SECRET;
+    const bearerAuth = defaultClient.authentications['bearerAuth'];
+    bearerAuth.accessToken = process.env.SUNCO_JWT;
     defaultClient.basePath = process.env.POD_BASE_URL || process.env.BASE_URL;
   }
 
@@ -210,6 +209,10 @@ class SunCoClient {
     payload,
     switchboardIntegration = process.env.NEXT_SWITCHBOARD_INTEGRATION
   ) {
+    const defaultClient = SunshineConversationsClient.ApiClient.instance;
+    const basicAuth = defaultClient.authentications['basicAuth'];
+    basicAuth.username = process.env.SUNCO_CUSTOM_INTEGRATION_KEY;
+    basicAuth.password = process.env.SUNCO_CUSTOM_INTEGRATION_SECRET;
     const { conversationId, metadata } = payload;
     const apiInstance = new SunshineConversationsClient.SwitchboardActionsApi();
     const passControlBody = new SunshineConversationsClient.PassControlBody();
