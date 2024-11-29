@@ -80,16 +80,9 @@ class SunCoClient {
 
   async listDevices(payload) {
     const userIdOrExternalId = this.getUserIdOrExternalId(payload);
-    const devicesListResponse = await axios.get(
-      `${process.env.POD_BASE_URL}/v2/apps/${process.env.APP_ID}/users/${userIdOrExternalId}/devices`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.SUNCO_JWT}`,
-        },
-      }
-    );
+    const apiInstance = new SunshineConversationsClient.DevicesApi();
     try {
-      return await devicesListResponse.data;
+      return await apiInstance.listDevices(this.appId, userIdOrExternalId);
     } catch (error) {
       // catch error
       return error.body?.errors[0]?.title || error.status;
