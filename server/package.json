@@ -12,8 +12,8 @@
   "author": "Romain Bonnefille",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/dialogflow": "^6.8.0",
-    "axios": "^1.7.7",
+    "@google-cloud/dialogflow": "^6.12.0",
+    "axios": "^1.7.8",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
@@ -21,18 +21,18 @@
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "node": "^23.1.0",
-    "npm": "^10.9.0",
+    "node": "^23.3.0",
+    "npm": "^10.9.1",
     "path": "^0.12.7",
     "serve-favicon": "^2.5.0",
-    "sunshine-conversations-client": "^13.1.0",
-    "uuid": "^11.0.2",
-    "winston": "^3.15.0"
+    "sunshine-conversations-client": "^14.1.0",
+    "uuid": "^11.0.3",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
-    "eslint": "^9.13.0",
+    "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",
     "nodemon": "^3.1.7",
-    "prettier": "^3.3.3"
+    "prettier": "^3.4.1"
   }
 }
