@@ -27,6 +27,27 @@ router.get('/:id/conversations', async (req, res) => {
   }
 });
 
+router.delete('/:id/conversations', async (req, res) => {
+  const { id: userId } = req.params;
+  const sunCo = new SunCoClient();
+  const allConversations = await sunCo.listConversations(userId);
+  try {
+    let countDeletedConversations = 0;
+    allConversations.conversations.forEach(async (convo) => {
+      if (
+        convo.activeSwitchboardIntegration?.name !== 'zd-agentWorkspace' &&
+        !convo.isDefault
+      ) {
+        countDeletedConversations++;
+        sunCo.deleteConversation(convo.id);
+      }
+    });
+    res.json({ deletedConversations: countDeletedConversations });
+  } catch (error) {
+    res.status(500).json({ error: 'Error deleting conversations' });
+  }
+});
+
 router.get('/:id/clients', async (req, res) => {
   const { id: userId } = req.params;
   const sunCo = new SunCoClient();
