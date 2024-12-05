@@ -321,7 +321,10 @@ class SunCoClient {
     const apiInstance =
       new SunshineConversationsClient.SwitchboardIntegrationsApi();
     let switchboardIntegrationUpdateBody = {
-      ...(nextSwitchboardIntegrationId && { nextSwitchboardIntegrationId }),
+      nextSwitchboardIntegrationId:
+        nextSwitchboardIntegrationId === undefined
+          ? undefined
+          : nextSwitchboardIntegrationId,
       ...(deliverStandbyEvents !== undefined && {
         deliverStandbyEvents: Boolean(deliverStandbyEvents),
       }),
