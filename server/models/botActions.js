@@ -17,7 +17,10 @@ export const welcomeUser = async (event, replyData, defaultMessage) => {
   //   sunCo.updateConversation(event);
   // }
   const userMetadata = await sunCo.getUser(event);
-  if (Object.keys(userMetadata.user?.metadata).length === 0) {
+  if (
+    userMetadata?.user?.metadata &&
+    Object.keys(userMetadata.user.metadata).length === 0
+  ) {
     await sunCo.updateUser(event);
   }
   replyData.message = defaultMessage;

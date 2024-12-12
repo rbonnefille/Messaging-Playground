@@ -1,6 +1,6 @@
-import replyToUser from "../models/Bot.js";
-import ConversationEvent from "../models/Webhook.js";
-import PassControlMetadata from "../models/PassControlMetadata.js";
+import replyToUser from '../models/Bot.js';
+import ConversationEvent from '../models/Webhook.js';
+import PassControlMetadata from '../models/PassControlMetadata.js';
 // import SunCoClient from "../utils/suncoApi.js";
 
 // const sunCo = new SunCoClient();
@@ -71,7 +71,7 @@ const messageEvents = async (req, res, next) => {
         }
       } catch (err) {
         console.log(`Error in message handler ${err}`);
-        res.status(500).send({ error: "Something failed!" });
+        res.status(500).send({ error: 'Something failed!' });
       }
     } else if (
       webhookEvent.isAllowedChannel() &&
@@ -79,12 +79,12 @@ const messageEvents = async (req, res, next) => {
     ) {
       try {
         if (textFallback) {
-          webhookEvent.userMessage = "form response";
+          webhookEvent.userMessage = 'form response';
           replyToUser(webhookEvent, metadata);
         }
       } catch (err) {
         console.log(`Error in message handler ${err}`);
-        res.status(500).send({ error: "Something failed!" });
+        res.status(500).send({ error: 'Something failed!' });
       }
     }
     res.end();
@@ -94,13 +94,20 @@ const messageEvents = async (req, res, next) => {
       webhookEvent.isAllowedChannel()
     ) {
       try {
-        webhookEvent.userMessage = "start";
+        webhookEvent.userMessage = 'start';
         replyToUser(webhookEvent, metadata);
         res.end();
       } catch (error) {
         console.log(error);
-        res.status(500).send({ error: "Something failed!" });
+        res.status(500).send({ error: 'Something failed!' });
       }
+      res.end();
+    } else if (
+      webhookEvent.isConversationCreate() &&
+      webhookEvent.conversationType === 'sdkGroup'
+    ) {
+      webhookEvent.userMessage = 'sdkgroup';
+      replyToUser(webhookEvent, metadata);
       res.end();
     } else {
       res.end();

@@ -18,6 +18,7 @@ const sunCo = new SunCoClient();
 export const replyToUser = async (eventMessage, switchBoardMetadata) => {
   const replyData = new Reply();
   const { userMessage, conversationId } = eventMessage;
+  console.log(`userMessage ${userMessage}`);
   const {
     default: defaultMessage,
     bot,
@@ -121,6 +122,9 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
     case 'norris':
     case 'joke':
       replyData.message = await getChuckNorrisJoke();
+      return sunCo.sendMessage(replyData);
+    case 'sdkgroup':
+      replyData.message = 'Welcome! This is a group conversation';
       return sunCo.sendMessage(replyData);
     default:
       replyData.message = getRandomFallbackMessage();
