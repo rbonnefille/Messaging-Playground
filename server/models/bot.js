@@ -10,7 +10,7 @@ import {
   escalateToAnswerBot,
   welcomeUser,
   sendCatPicture,
-} from './BotActions.js';
+} from './botActions.js';
 import Reply from './Reply.js';
 import axios from 'axios';
 const sunCo = new SunCoClient();
@@ -18,7 +18,6 @@ const sunCo = new SunCoClient();
 export const replyToUser = async (eventMessage, switchBoardMetadata) => {
   const replyData = new Reply();
   const { userMessage, conversationId } = eventMessage;
-  console.log(`userMessage ${userMessage}`);
   const {
     default: defaultMessage,
     bot,
