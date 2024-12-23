@@ -86,7 +86,9 @@ app.get(['/', '/custom-app'], (req, res) => {
 // });
 
 app.all('/webhooks', (req, res) => {
-  console.log(req.body);
+  // if (req.body.app?.id) {
+  //   console.log(JSON.stringify(req.body, null, 4));
+  // }
   res.sendStatus(200);
 });
 
