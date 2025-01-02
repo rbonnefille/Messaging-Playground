@@ -385,6 +385,30 @@ class SunCoClient {
     }
   }
 
+  async updateIntegration(
+    integrationId,
+    canUserCreateMoreConversations,
+    canUserSeeConversationList
+  ) {
+    const apiInstance = new SunshineConversationsClient.IntegrationsApi();
+    const integrationUpdateBody =
+      new SunshineConversationsClient.IntegrationUpdate();
+    integrationUpdateBody.canUserCreateMoreConversations =
+      canUserCreateMoreConversations;
+    integrationUpdateBody.canUserSeeConversationList =
+      canUserSeeConversationList;
+    try {
+      return await apiInstance.updateIntegration(
+        this.appId,
+        integrationId,
+        integrationUpdateBody
+      );
+    } catch (error) {
+      // catch error
+      return error.body?.errors[0]?.title || error;
+    }
+  }
+
   async listIntegrationsPerChannelResponder() {
     const listIntegrations = await axios.get(
       `${process.env.POD_BASE_URL}/v2/apps/${process.env.APP_ID}/integrations`,

@@ -14,6 +14,19 @@ router.get('/', async (_, res) => {
   // res.json(integrations);
 });
 
+router.patch('/:id', async (req, res) => {
+  const { id: integrationId } = req.params;
+  const sunCo = new SunCoClient();
+  const { canUserCreateMoreConversations, canUserSeeConversationList } =
+    req.body;
+  const integrations = await sunCo.updateIntegration(
+    integrationId,
+    canUserCreateMoreConversations,
+    canUserSeeConversationList
+  );
+  res.json(integrations);
+});
+
 router.get('/sbintegrations', async (_, res) => {
   const sunCo = new SunCoClient();
   const switchboardIntegrations = await sunCo.listSwitchboardIntegrations();
