@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import returnToken from './utils/auth.js';
 import conversationRouter from './routes/conversations.js';
+import switchboardsRouter from './routes/switchboards.js';
 import userRouter from './routes/users.js';
 import integrationRouter from './routes/integrations.js';
 import zendeskRouter from './routes/zendesk.js';
@@ -47,6 +48,7 @@ app.use(express.urlencoded({ extended: false }));
 // app.use("/gdf", dialogFlow);
 
 app.use('/conversations', conversationRouter);
+app.use('/switchboards', switchboardsRouter);
 app.use('/integrations', integrationRouter);
 app.use('/users', userRouter);
 app.post('/auth', returnToken);

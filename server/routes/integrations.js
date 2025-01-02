@@ -5,13 +5,14 @@ import checkOrigin from '../middleware/validateOrigin.js';
 
 router.use(checkOrigin); // Register the checkOrigin middleware globally
 
-router.get('/integrations', async (_, res) => {
+router.get('/', async (_, res) => {
   const sunCo = new SunCoClient();
   const integrations = await sunCo.listIntegrationsPerChannelResponder();
   res.json(integrations);
 });
 
-router.patch('/integrations/:id', async (req, res) => {
+router.patch('/:id', async (req, res) => {
+  console.log(req);
   const { id: integrationId } = req.params;
   const sunCo = new SunCoClient();
   const { canUserCreateMoreConversations, canUserSeeConversationList } =
@@ -22,56 +23,6 @@ router.patch('/integrations/:id', async (req, res) => {
     canUserSeeConversationList
   );
   res.json(integrations);
-});
-
-router.get('/sbintegrations', async (_, res) => {
-  const sunCo = new SunCoClient();
-  const switchboardIntegrations = await sunCo.listSwitchboardIntegrations();
-  res.json(switchboardIntegrations);
-});
-
-router.get('/switchboards', async (_, res) => {
-  const sunCo = new SunCoClient();
-  const switchboards = await sunCo.listSwitchboards();
-  res.json(switchboards);
-});
-
-router.patch('/switchboards', async (req, res) => {
-  const sunCo = new SunCoClient();
-  const { enabled, defaultSwitchboardIntegrationId } = req.body;
-  const switchboards = await sunCo.updateSwitchboard(
-    enabled,
-    defaultSwitchboardIntegrationId
-  );
-  console.log(`switchboards: ${switchboards}`);
-  res.json(switchboards);
-});
-
-router.patch('/switchboardIntegration', async (req, res) => {
-  const sunCo = new SunCoClient();
-  const switchboardIntegration = await sunCo.updateSwitchboardIntegration(
-    req.body
-  );
-  res.json(switchboardIntegration);
-});
-
-router.post('/switchboardIntegration', async (req, res) => {
-  const sunCo = new SunCoClient();
-  const {
-    integrationName,
-    integrationId,
-    deliverStandbyEvents,
-    nextSwitchboardIntegrationId,
-    messageHistoryCount,
-  } = req.body;
-  const newSwitchboardIntegration = await sunCo.createSwitchboardIntegration(
-    integrationName,
-    integrationId,
-    deliverStandbyEvents,
-    nextSwitchboardIntegrationId,
-    messageHistoryCount
-  );
-  res.json(newSwitchboardIntegration);
 });
 
 export default router;
