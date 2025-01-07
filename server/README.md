@@ -1,19 +1,41 @@
-# Basic implementation of the SunCo Web Messenger by using NPM and a Bot with Switchboard
+# Basic implementation of a dummy "Bot" by using the SunCo APIs
 
 # Necessary variables for the project
 
 ### Env
-- `BROWSER_SESSION_STORAGE_KEY`=suncoWidgetAuth
-- `USERNAME`=
-- `PASSWORD`=
-- `SUNCO_JWT`=
-- `WEBHOOK_SUNCO`=
-- `BOT_SWITCHBOARD_INTEGRATION_ID`=
-- `NEXT_SWITCHBOARD_INTEGRATION`=
-- `CAT_API_KEY`=
-- `CAT_API_URL`=
-- `BOT_AVATAR_URL`=
-- `BOT_NAME`=
-- `APP_ID`=
-- `BASE_URL`=https://api.smooch.io/v2/apps
-- `POD_BASE_URL`=
+
+- `BROWSER_SESSION_STORAGE_KEY=suncoWidgetAuth`
+- `USERNAME=`
+- `PASSWORD=`
+- `SUNCO_JWT=`
+- `SUNCO_CUSTOM_INTEGRATION_KEY=`
+- `SUNCO_CUSTOM_INTEGRATION_SECRET=`
+- `WEBHOOK_SUNCO=`
+- `BOT_SWITCHBOARD_INTEGRATION_ID=`
+- `AW_SWITCHBOARD_INTEGRATION_ID=`
+- `NEXT_SWITCHBOARD_INTEGRATION=zd-agentWorkspace`
+- `BOT_SWITCHBOARD_INTEGRATION_NAME=NodeJSBot`
+- `SWITCHBOARD_ID=`
+- `CAT_API_KEY=`
+- `CAT_API_URL=https://api.thecatapi.com/v1/images/`
+- `BOT_AVATAR_URL=`
+- `BOT_NAME=Bugs Bunny`
+- `APP_ID=`
+- `BASE_URL=https://api.smooch.io/v2/apps`
+- `POD_BASE_URL=https://<subdomain>.zendesk.com/sc`
+- `AUTHORISED_ORIGIN=`
+- `AUTHORISED_ORIGIN_HC=`
+- `SUNCO_INTEGRATION_ID=`
+- `SUNCO_TWILIO_INTEGRATION_ID=`
+- `SUNCO_WHATSAPP_INTEGRATION_ID=`
+- `MESSAGING_WIDGET_KEY=`
+- `PORT=3000`
+- `ZD_SUBDMAIN=`
+- `ZD_USERAME=`
+- `ZD_PASSORD=`
+- `ZD_SSO_ECRET=`
+- `ZD_APP_UID=`
+- `ZD_SUPPORTSDK_JWT_SECRET=`
+- `OPENAI_AP_KEY=`
+- `ZD_OPENAIURL=` -`CHAT_SHAED_SECRET=`
+- `CHAT_JWK_ID=`
