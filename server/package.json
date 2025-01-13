@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon app.js",
-    "lint": "npx eslint --ext .js . --fix",
+    "lint": "npx eslint .. --fix",
     "prettier": "prettier --write '**/*.{css,js,json}'"
   },
   "author": "Romain Bonnefille",
@@ -14,6 +14,7 @@
   "dependencies": {
     "@google-cloud/dialogflow": "^6.13.0",
     "axios": "^1.7.9",
+    "compression": "^1.7.5",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
@@ -31,8 +32,9 @@
   },
   "devDependencies": {
     "eslint": "^9.18.0",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.1",
     "nodemon": "^3.1.9",
-    "prettier": "^3.4.2"
+    "prettier": "3.4.2"
   }
 }
