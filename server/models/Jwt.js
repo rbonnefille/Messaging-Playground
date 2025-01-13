@@ -1,6 +1,6 @@
-import * as dotenv from 'dotenv';
+import * as dotenv from "dotenv";
 dotenv.config();
-import pkg from 'jsonwebtoken';
+import pkg from "jsonwebtoken";
 const { sign } = pkg;
 
 export default class Jwt {
@@ -14,7 +14,7 @@ export default class Jwt {
     this.expiry =
       parseInt(this.expiry_time_in_seconds, 10) || this.defaultExpiry;
     this.body = Object.assign({
-      scope: 'user',
+      scope: "user",
       external_id: this.external_id,
       name: this.name,
       email: this.email,
@@ -26,8 +26,8 @@ export default class Jwt {
   signJwt() {
     return sign(this.body, process.env.PASSWORD, {
       header: {
-        alg: 'HS256',
-        typ: 'JWT',
+        alg: "HS256",
+        typ: "JWT",
         kid: process.env.USERNAME,
       },
     });

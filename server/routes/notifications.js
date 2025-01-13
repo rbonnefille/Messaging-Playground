@@ -41,7 +41,7 @@ router.post("/sms", async (req, res) => {
     const response = await axios.post(
       `https://api.smooch.io/v1.1/apps/${appId}/notifications`,
       payload,
-      config
+      config,
     );
     const data = response.data;
     console.log(data);

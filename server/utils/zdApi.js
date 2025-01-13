@@ -26,7 +26,7 @@ export const syncUser = async (email, external_id, name) => {
   const foundByEmail = await searchUser({ email: email });
   console.log(
     `----------------------------------------Found by Email---------------------------------------- \n
-    ${foundByEmail} \n`
+    ${foundByEmail} \n`,
   );
 
   if (
@@ -39,7 +39,7 @@ export const syncUser = async (email, external_id, name) => {
 
   console.log(
     `----------------------------------------Found by Ext. ID---------------------------------------- \n
-    ${foundByExternalId} \n}`
+    ${foundByExternalId} \n}`,
   );
 
   // if this is true there is a problem (1 existing user matches email, another matches external ID)
@@ -53,7 +53,7 @@ export const syncUser = async (email, external_id, name) => {
     foundByExternalId - ${JSON.stringify(
       foundByExternalId.users[0],
       null,
-      2
+      2,
     )} \n`);
   }
 
