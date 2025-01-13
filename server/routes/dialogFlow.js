@@ -1,25 +1,25 @@
-import express from 'express';
+import express from "express";
 const router = express.Router();
-import { v4 as uuidv4 } from 'uuid';
-import dialogflow from '@google-cloud/dialogflow';
+import { v4 as uuidv4 } from "uuid";
+import dialogflow from "@google-cloud/dialogflow";
 
 // Instantiates a session client
 const sessionClient = new dialogflow.SessionsClient();
-const projectId = 'sunco-bxgh';
+const projectId = "sunco-bxgh";
 const sessionId = uuidv4();
-const languageCode = 'en-US';
+const languageCode = "en-US";
 
 async function detectIntent(
   projectId,
   sessionId,
   query,
   contexts,
-  languageCode
+  languageCode,
 ) {
   // The path to identify the agent that owns the created intent.
   const sessionPath = sessionClient.projectAgentSessionPath(
     projectId,
-    sessionId
+    sessionId,
   );
 
   // The text query request.
@@ -45,9 +45,9 @@ async function detectIntent(
 // async function executeQueries(projectId, sessionId, query, languageCode) {
 
 async function executeQueries(query) {
-  const projectId = 'sunco-bxgh';
+  const projectId = "sunco-bxgh";
   const sessionId = uuidv4();
-  const languageCode = 'en-US';
+  const languageCode = "en-US";
 
   // Keeping the context across queries let's us simulate an ongoing conversation with the bot
   let context;
@@ -59,11 +59,11 @@ async function executeQueries(query) {
       sessionId,
       query,
       context,
-      languageCode
+      languageCode,
     );
-    console.log('Detected intent');
+    console.log("Detected intent");
     console.log(
-      `Fulfillment Text: ${intentResponse.queryResult.fulfillmentText}`
+      `Fulfillment Text: ${intentResponse.queryResult.fulfillmentText}`,
     );
     // Use the context from this response for next queries
     context = intentResponse.queryResult.outputContexts;
@@ -73,11 +73,11 @@ async function executeQueries(query) {
   }
 }
 
-router.post('/', (req, res) => {
+router.post("/", (req, res) => {
   console.log(req.body);
   jsonResponse = {
-    fulfillmentText: 'This is from the replit webhook',
-    source: 'webhook',
+    fulfillmentText: "This is from the replit webhook",
+    source: "webhook",
   };
   console.log(req.fulfillmentMessages[0].text.text[0]);
   res.send(jsonResponse);
@@ -89,8 +89,8 @@ router.post('/', (req, res) => {
 //     return res.sendStatus(200);
 // });
 
-router.head('/', (req, res) => {
-  if (req.method === 'HEAD') {
+router.head("/", (req, res) => {
+  if (req.method === "HEAD") {
     return res.sendStatus(200);
   }
 });

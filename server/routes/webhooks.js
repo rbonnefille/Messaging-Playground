@@ -1,7 +1,7 @@
-import express from 'express';
+import express from "express";
 const router = express.Router();
 
-router.post('/', (req, res) => {
+router.post("/", (req, res) => {
   // if (req.body.app?.id) {
   //   console.log(JSON.stringify(req.body, null, 4));
   // }
