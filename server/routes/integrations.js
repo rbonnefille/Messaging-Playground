@@ -12,7 +12,6 @@ router.get('/', async (_, res) => {
 });
 
 router.patch('/:id', async (req, res) => {
-  console.log(req);
   const { id: integrationId } = req.params;
   const sunCo = new SunCoClient();
   const { canUserCreateMoreConversations, canUserSeeConversationList } =
