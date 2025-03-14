@@ -385,23 +385,13 @@ class SunCoClient {
     }
   }
 
-  async updateIntegration(
-    integrationId,
-    canUserCreateMoreConversations,
-    canUserSeeConversationList
-  ) {
+  async updateIntegration(integrationId, bodyParams) {
     const apiInstance = new SunshineConversationsClient.IntegrationsApi();
-    const integrationUpdateBody =
-      new SunshineConversationsClient.IntegrationUpdate();
-    integrationUpdateBody.canUserCreateMoreConversations =
-      canUserCreateMoreConversations;
-    integrationUpdateBody.canUserSeeConversationList =
-      canUserSeeConversationList;
     try {
       return await apiInstance.updateIntegration(
         this.appId,
         integrationId,
-        integrationUpdateBody
+        bodyParams
       );
     } catch (error) {
       // catch error
