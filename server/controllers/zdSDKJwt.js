@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 export const zdSDKJwt = (req, res) => {
   const { user_token } = req.body;
   const shared_key = process.env.ZD_SUPPORT_SDK_JWT_SECRET;
-  const name = 'michale scott';
+  const name = 'michael scott';
   const email = 'm-scott@example.com';
   const userIdentifier = 'm-scott';
 
