@@ -13,6 +13,18 @@ router.post('/sdk-jwt', zdSDKJwt);
 
 router.post('/webhooks', zdEvents);
 
+router.post('/webhooks/tickets', (req, res) => {
+  // feature https://developer.zendesk.com/api-reference/webhooks/event-types/ticket-events/
+  console.log(`Received ticket webhook: ${req.body}`);
+  res.sendStatus(200).end();
+});
+
+router.post('/webhooks/messaging', (req, res) => {
+  // feature https://developer.zendesk.com/api-reference/webhooks/event-types/messaging-events/
+  console.log(`Received messaging webhook: ${req.body}`);
+  res.sendStatus(200).end();
+});
+
 // Zendesk SSO Routes
 router.get('/jwt', zdJwt);
 router.get('/login', zdssoLogin);
