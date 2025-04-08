@@ -70,8 +70,16 @@ class SunCoClient {
   async listClients(payload) {
     const userIdOrExternalId = this.getUserIdOrExternalId(payload);
     const apiInstance = new SunshineConversationsClient.ClientsApi();
+    const opts = {
+      page: new SunshineConversationsClient.Page(),
+    };
+    opts.page.setSize(100);
     try {
-      return await apiInstance.listClients(this.appId, userIdOrExternalId);
+      return await apiInstance.listClients(
+        this.appId,
+        userIdOrExternalId,
+        opts
+      );
     } catch (error) {
       // catch error
       return error.body?.errors[0]?.title || error.status;
@@ -174,14 +182,19 @@ class SunCoClient {
   async listConversations(webhookData) {
     const apiInstance = new SunshineConversationsClient.ConversationsApi();
     const filter = new SunshineConversationsClient.ConversationListFilter();
+    const opts = {
+      page: new SunshineConversationsClient.Page(),
+    };
+    opts.page.setSize(100);
     const userIdOrExternalId = this.getUserIdOrExternalId(webhookData);
+
     if (Object.keys(userIdOrExternalId).length === 24) {
       filter.setUserId(userIdOrExternalId);
     } else {
       filter.setUserExternalId(userIdOrExternalId);
     }
     try {
-      return await apiInstance.listConversations(this.appId, filter);
+      return await apiInstance.listConversations(this.appId, filter, opts);
     } catch (error) {
       // catch error
       return error.body?.errors[0]?.title || error.status;
@@ -401,7 +414,7 @@ class SunCoClient {
 
   async listIntegrationsPerChannelResponder() {
     const listIntegrations = await axios.get(
-      `${process.env.POD_BASE_URL}/v2/apps/${process.env.APP_ID}/integrations`,
+      `${process.env.POD_BASE_URL}/v2/apps/${process.env.APP_ID}/integrations?page[size]=100`,
       {
         headers: {
           Authorization: `Bearer ${process.env.SUNCO_JWT}`,
