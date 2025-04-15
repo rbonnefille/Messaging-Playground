@@ -99,11 +99,16 @@ class SunCoClient {
 
   async getUser(payload) {
     const userIdOrExternalId = this.getUserIdOrExternalId(payload);
-    const apiInstance = new SunshineConversationsClient.UsersApi();
+    const url = `${process.env.POD_BASE_URL}/v2/apps/${this.appId}/users/${userIdOrExternalId}`;
     try {
-      return await apiInstance.getUser(this.appId, userIdOrExternalId);
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${process.env.SUNCO_JWT}`,
+        },
+      });
+      return response.data;
     } catch (error) {
-      return error.body?.errors[0]?.title || error.status;
+      return error.response?.data?.errors?.[0]?.title || error.response?.status;
     }
   }
 
@@ -180,24 +185,22 @@ class SunCoClient {
   }
 
   async listConversations(webhookData) {
-    const apiInstance = new SunshineConversationsClient.ConversationsApi();
-    const filter = new SunshineConversationsClient.ConversationListFilter();
-    const opts = {
-      page: new SunshineConversationsClient.Page(),
-    };
-    opts.page.setSize(100);
     const userIdOrExternalId = this.getUserIdOrExternalId(webhookData);
+    const filter =
+      Object.keys(userIdOrExternalId).length === 24
+        ? `userId`
+        : `userExternalId`;
+    const url = `${process.env.POD_BASE_URL}/v2/apps/${this.appId}/conversations?filter[${filter}]=${userIdOrExternalId}&page[size]=100`;
 
-    if (Object.keys(userIdOrExternalId).length === 24) {
-      filter.setUserId(userIdOrExternalId);
-    } else {
-      filter.setUserExternalId(userIdOrExternalId);
-    }
     try {
-      return await apiInstance.listConversations(this.appId, filter, opts);
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${process.env.SUNCO_JWT}`,
+        },
+      });
+      return response.data;
     } catch (error) {
-      // catch error
-      return error.body?.errors[0]?.title || error.status;
+      return error.response?.data?.errors?.[0]?.title || error.response?.status;
     }
   }
 
