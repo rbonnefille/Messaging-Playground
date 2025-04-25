@@ -33,21 +33,3 @@ export default class Jwt {
     });
   }
 }
-
-// WIP // Refactor class
-// import * as dotenv from "dotenv";
-// dotenv.config();
-// import pkg from "jsonwebtoken";
-// const { sign } = pkg;
-
-// export default class Jwt {
-//   constructor(body, header, secretKey) {
-//     this.body = body;
-//     this.header = header;
-//     this.secretKey = secretKey;
-//   }
-
-//   signJwt() {
-//     return sign(this.body, this.secretKey, this.header);
-//   }
-// }
