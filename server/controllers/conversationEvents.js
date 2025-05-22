@@ -1,6 +1,6 @@
-import replyToUser from '../models/Bot.js';
+import replyToUser from '../models/bot.js';
 import ConversationEvent from '../models/webhook.js';
-import PassControlMetadata from '../models/PassControlMetadata.js';
+import PassControlMetadata from '../models/passControlMetadata.js';
 // import SunCoClient from "../utils/suncoApi.js";
 
 // const sunCo = new SunCoClient();
