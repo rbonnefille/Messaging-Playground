@@ -1,9 +1,9 @@
-import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
 export default [
-  // Any other config imports go at the top
-  eslintPluginPrettierRecommended,
-  {
-    files: ["**/*.js"],
-  },
+    // Any other config imports go at the top
+    eslintPluginPrettierRecommended,
+    {
+        files: ['**/*.js'],
+    },
 ];

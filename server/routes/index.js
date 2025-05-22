@@ -36,20 +36,22 @@ router.use('/webhooks', webhooksRouter);
 router.use('/stream', serverSideEventsRouter);
 
 router.get(['/', '/custom-app'], (req, res) => {
-  const { origin, app_guid } = req.query;
-  if (
-    origin !== `https://${zdSubdomain}.zendesk.com` &&
-    app_guid !== zdAppGuid
-  ) {
-    return res
-      .status(401)
-      .send('Unauthorized - Page only visible within Zendesk Iframe app');
-  }
-  if (req.path === '/custom-app') {
-    router.use(express.static(path.join(__dirname, '../../client/assets')));
-    return res.sendFile(path.join(__dirname, '../../client/assets/index.html'));
-  }
-  res.redirect('/custom-app');
+    const { origin, app_guid } = req.query;
+    if (
+        origin !== `https://${zdSubdomain}.zendesk.com` &&
+        app_guid !== zdAppGuid
+    ) {
+        return res
+            .status(401)
+            .send('Unauthorized - Page only visible within Zendesk Iframe app');
+    }
+    if (req.path === '/custom-app') {
+        router.use(express.static(path.join(__dirname, '../../client/assets')));
+        return res.sendFile(
+            path.join(__dirname, '../../client/assets/index.html')
+        );
+    }
+    res.redirect('/custom-app');
 });
 
 export default router;
