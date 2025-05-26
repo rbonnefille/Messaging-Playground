@@ -5,18 +5,43 @@ import SunshineConversationsClient from 'sunshine-conversations-client';
 
 const timeout = (ms) => new Promise((res) => setTimeout(res, ms));
 
+const {
+    POD_BASE_URL: podBaseUrl,
+    APP_ID: appId,
+    SWITCHBOARD_ID: switchboardId,
+    SUNCO_JWT: suncoJwt,
+    suncoCustomIntegrationKey: suncoCustomIntegrationKey,
+    SUNCO_CUSTOM_INTEGRATION_SECRET: suncoCustomIntegrationSecret,
+    BASE_URL: defaultBaseUrl,
+    NEXT_SWITCHBOARD_INTEGRATION: nextSwitchboardIntegration,
+} = process.env;
+
 class SunCoClient {
     constructor() {
         this.setApiClient();
-        this.appId = process.env.APP_ID;
-        this.switchboardId = process.env.SWITCHBOARD_ID;
+        this.appId = appId;
+        this.switchboardId = switchboardId;
     }
     setApiClient() {
         const defaultClient = SunshineConversationsClient.ApiClient.instance;
         const bearerAuth = defaultClient.authentications['bearerAuth'];
-        bearerAuth.accessToken = process.env.SUNCO_JWT;
-        defaultClient.basePath =
-            process.env.POD_BASE_URL || process.env.BASE_URL;
+        bearerAuth.accessToken = suncoJwt;
+        defaultClient.basePath = podBaseUrl || defaultBaseUrl;
+    }
+
+    buildMessageContent(message, image, metadata) {
+        if (image) {
+            return {
+                type: 'image',
+                mediaUrl: image,
+                text: message,
+            };
+        }
+        return {
+            type: 'text',
+            text: message,
+            metadata,
+        };
     }
 
     async postActivity(payload) {
@@ -44,19 +69,9 @@ class SunCoClient {
         const apiInstance = new SunshineConversationsClient.MessagesApi();
         const messagePost = new SunshineConversationsClient.MessagePost();
         messagePost.setAuthor(author);
-        if (image) {
-            messagePost.setContent({
-                type: 'image',
-                mediaUrl: image,
-                text: message,
-            });
-        } else {
-            messagePost.setContent({
-                type: 'text',
-                text: message,
-                metadata: metadata,
-            });
-        }
+        messagePost.setContent(
+            this.buildMessageContent(message, image, metadata)
+        );
         try {
             return await apiInstance.postMessage(
                 this.appId,
@@ -103,11 +118,11 @@ class SunCoClient {
 
     async getUser(payload) {
         const userIdOrExternalId = this.getUserIdOrExternalId(payload);
-        const url = `${process.env.POD_BASE_URL}/v2/apps/${this.appId}/users/${userIdOrExternalId}`;
+        const url = `${podBaseUrl}/v2/apps/${this.appId}/users/${userIdOrExternalId}`;
         try {
             const response = await axios.get(url, {
                 headers: {
-                    Authorization: `Bearer ${process.env.SUNCO_JWT}`,
+                    Authorization: `Bearer ${suncoJwt}`,
                 },
             });
             return response.data;
@@ -206,12 +221,12 @@ class SunCoClient {
             Object.keys(userIdOrExternalId).length === 24
                 ? `userId`
                 : `userExternalId`;
-        const url = `${process.env.POD_BASE_URL}/v2/apps/${this.appId}/conversations?filter[${filter}]=${userIdOrExternalId}&page[size]=100`;
+        const url = `${podBaseUrl}/v2/apps/${this.appId}/conversations?filter[${filter}]=${userIdOrExternalId}&page[size]=100`;
 
         try {
             const response = await axios.get(url, {
                 headers: {
-                    Authorization: `Bearer ${process.env.SUNCO_JWT}`,
+                    Authorization: `Bearer ${suncoJwt}`,
                 },
             });
             return response.data;
@@ -238,12 +253,12 @@ class SunCoClient {
 
     async passControl(
         payload,
-        switchboardIntegration = process.env.NEXT_SWITCHBOARD_INTEGRATION
+        switchboardIntegration = nextSwitchboardIntegration
     ) {
         const defaultClient = SunshineConversationsClient.ApiClient.instance;
         const basicAuth = defaultClient.authentications['basicAuth'];
-        basicAuth.username = process.env.SUNCO_CUSTOM_INTEGRATION_KEY;
-        basicAuth.password = process.env.SUNCO_CUSTOM_INTEGRATION_SECRET;
+        basicAuth.username = suncoCustomIntegrationSecret;
+        basicAuth.password = suncoCustomIntegrationSecret;
         const { conversationId, metadata } = payload;
         const apiInstance =
             new SunshineConversationsClient.SwitchboardActionsApi();
@@ -448,10 +463,10 @@ class SunCoClient {
 
     async listIntegrationsPerChannelResponder() {
         const listIntegrations = await axios.get(
-            `${process.env.POD_BASE_URL}/v2/apps/${process.env.APP_ID}/integrations?page[size]=100`,
+            `${podBaseUrl}/v2/apps/${appId}/integrations?page[size]=100`,
             {
                 headers: {
-                    Authorization: `Bearer ${process.env.SUNCO_JWT}`,
+                    Authorization: `Bearer ${suncoJwt}`,
                 },
             }
         );
