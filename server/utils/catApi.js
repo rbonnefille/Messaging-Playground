@@ -2,17 +2,17 @@ import axios from 'axios';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-const { CAT_API_KEY: cat_key, CAT_API_URL: cat_url } = process.env;
+const { CAT_API_KEY: catApiKey, CAT_API_URL: catApiUrl } = process.env;
 
 export default async () => {
     const config = {
         headers: {
-            'x-api-key': cat_key,
+            'x-api-key': catApiKey,
         },
     };
 
     try {
-        const response = await axios.get(cat_url, config);
+        const response = await axios.get(catApiUrl, config);
         return response?.data[0]?.url
             ? response.data[0].url
             : 'https://cdn2.thecatapi.com/images/agb.jpg';

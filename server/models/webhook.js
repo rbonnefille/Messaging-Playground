@@ -8,6 +8,11 @@ const EVENT_TYPES = {
     CONVERSATION_READ: 'conversation:read',
 };
 
+const {
+    BOT_SWITCHBOARD_INTEGRATION_ID: botSwitchboardIntegrationId,
+    WEBHOOK_SUNCO: webhookSunco,
+} = process.env;
+
 class WebhookEvent {
     constructor(req) {
         this._initializeWebhookEvent(req);
@@ -74,13 +79,10 @@ class WebhookEvent {
         throw new Error(`AppId is read-only. ${value} is ignored.`);
     }
     isAuthenticatedRequest(webhookSecret) {
-        return webhookSecret === process.env.WEBHOOK_SUNCO;
+        return webhookSecret === webhookSunco;
     }
     isCurrentSwitchboardIntegration(activeSwitchboardIntegration) {
-        return (
-            activeSwitchboardIntegration ===
-            process.env.BOT_SWITCHBOARD_INTEGRATION_ID
-        );
+        return activeSwitchboardIntegration === botSwitchboardIntegrationId;
     }
 }
 

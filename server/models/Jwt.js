@@ -3,6 +3,8 @@ dotenv.config();
 import pkg from 'jsonwebtoken';
 const { sign } = pkg;
 
+const { USERNAME: keyUsername, PASSWORD: keyPassword } = process.env;
+
 export default class Jwt {
     constructor(external_id, name, email) {
         this.external_id = external_id;
@@ -24,11 +26,11 @@ export default class Jwt {
         });
     }
     signJwt() {
-        return sign(this.body, process.env.PASSWORD, {
+        return sign(this.body, keyPassword, {
             header: {
                 alg: 'HS256',
                 typ: 'JWT',
-                kid: process.env.USERNAME,
+                kid: keyUsername,
             },
         });
     }

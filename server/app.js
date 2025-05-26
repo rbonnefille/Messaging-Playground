@@ -6,6 +6,9 @@ import cors from 'cors';
 import routes from './routes/index.js';
 import loggerMiddleware from './utils/logger.js';
 
+const { PORT: port } = process.env;
+const defaultPort = 3000;
+
 const app = express();
 app.use(loggerMiddleware);
 app.use(cors());
@@ -16,6 +19,6 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(routes);
 
-app.listen(process.env.PORT ?? 3000, () =>
-    console.log(`Server is running on port ${process.env.PORT ?? 3000}`)
+app.listen(port ?? defaultPort, () =>
+    console.log(`Server is running on port ${port ?? defaultPort}`)
 );

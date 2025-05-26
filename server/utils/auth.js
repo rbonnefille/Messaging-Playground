@@ -1,15 +1,21 @@
 import Jwt from '../models/Jwt.js';
 import { syncUser } from './zdApi.js';
 
+const {
+    AUTHORISED_ORIGIN: authorisedOrigin,
+    AUTHORISED_ORIGIN_HC: authorisedOriginHc,
+} = process.env;
+
+const allowedOrigins = [
+    'localhost:5173',
+    'localhost:3000',
+    '127.0.0.1',
+    authorisedOrigin,
+    authorisedOriginHc,
+];
+
 const returnToken = async (req, res) => {
     const { referer, host } = req.headers || {};
-    const allowedOrigins = [
-        'localhost:5173',
-        'localhost:3000',
-        '127.0.0.1',
-        process.env.AUTHORISED_ORIGIN,
-        process.env.AUTHORISED_ORIGIN_HC,
-    ];
     if (!allowedOrigins.some((origin) => host.startsWith(origin))) {
         console.log(`Request received from ${host}`);
         return res.status(403).json({ error: 'Forbidden' });
