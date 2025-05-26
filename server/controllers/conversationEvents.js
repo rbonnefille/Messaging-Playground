@@ -1,9 +1,6 @@
 import replyToUser from '../models/bot.js';
 import ConversationEvent from '../models/webhook.js';
 import PassControlMetadata from '../models/passControlMetadata.js';
-// import SunCoClient from "../utils/suncoApi.js";
-
-// const sunCo = new SunCoClient();
 
 const messageEvents = async (req, res, next) => {
     const webhookEvent = new ConversationEvent(req);
@@ -39,27 +36,6 @@ const messageEvents = async (req, res, next) => {
             res.sendStatus(200).end();
             return;
         }
-
-        // temporary test
-
-        // if (webhookEvent.isTextMessage(contentType) && webhookEvent.isSocialChannel() && webhookEvent.isCurrentSwitchboardIntegration(activeSwitchboardIntegrationId)) {
-        //   console.log("handling social channel message and handover to Answer Bot")
-        //   const payload = {
-        //     conversationId: webhookEvent.conversationId
-        //   }
-        //   await sunCo.passControl(payload, "635aa5aa8f3bb100ff197efe");
-        //   const messagePayload = {
-        //     conversationId: webhookEvent.conversationId,
-        //     author: {
-        //       type: "user",
-        //       userId: webhookEvent.userId,
-        //       displayName: webhookEvent.displayName
-        //     },
-        //     message: "Answer Bot",
-        //     metadata: metadata
-        //   }
-        //   return await sunCo.sendMessage(messagePayload);
-        // }
 
         if (
             webhookEvent.isTextMessage(contentType) &&
