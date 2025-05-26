@@ -8,15 +8,15 @@ import {
     escalateToAgent,
     escalateToAnswerBot,
     welcomeUser,
-    sendCatPicture,
+    sendCatImage,
 } from './botActions.js';
-import Reply from './Reply.js';
+import BotResponse from './BotResponse.js';
 import axios from 'axios';
 const sunCo = new SunCoClient();
 
 export const replyToUser = async (eventMessage, switchBoardMetadata) => {
-    const replyData = new Reply();
     const { userMessage, conversationId } = eventMessage;
+    const response = new BotResponse(conversationId);
     const {
         default: defaultMessage,
         bot,
@@ -31,7 +31,6 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
         handover,
         webview,
     } = botMessages;
-    replyData.conversationId = conversationId;
     switch (userMessage) {
         case 'hello':
         case 'hi':
@@ -40,7 +39,7 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
         case 'start':
         case 'yo':
         case 'hello i need help':
-            return await welcomeUser(eventMessage, replyData, defaultMessage);
+            return await welcomeUser(eventMessage, response, defaultMessage);
         case 'cat':
         case 'cats':
         case '🐱':
@@ -54,7 +53,7 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
         case '😸':
         case '😽':
         case '🐈':
-            return await sendCatPicture(eventMessage, replyData, cat);
+            return await sendCatImage(eventMessage, response, cat);
         case 'agent':
         case 'speak to an agent':
         case 'speak with an agent':
@@ -64,12 +63,12 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
         case 'human':
             return await escalateToAgent(
                 switchBoardMetadata,
-                replyData,
+                response,
                 handover
             );
         case 'bot':
-            replyData.message = bot;
-            return sunCo.sendMessage(replyData);
+            response.message = bot;
+            return sunCo.sendMessage(response);
         case 'ab':
         case 'Answer Bot':
         case 'answer bot':
@@ -79,60 +78,60 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
         case 'escalate to answer bot':
             return await escalateToAnswerBot(eventMessage);
         case 'carousel':
-            replyData.message = carousel;
-            return sunCo.sendMessage(replyData);
+            response.message = carousel;
+            return sunCo.sendMessage(response);
         case 'tacos':
         case 'taco':
-            replyData.message = tacos;
-            return sunCo.sendMessage(replyData);
+            response.message = tacos;
+            return sunCo.sendMessage(response);
         case 'burritos':
         case 'burrito':
-            replyData.message = burrito;
-            return sunCo.sendMessage(replyData);
+            response.message = burrito;
+            return sunCo.sendMessage(response);
         case 'compound message':
         case 'compound':
-            replyData.message = compound;
-            return sunCo.sendMessage(replyData);
+            response.message = compound;
+            return sunCo.sendMessage(response);
         case 'file message':
         case 'file':
-            replyData.message = file;
-            return sunCo.sendMessage(replyData);
+            response.message = file;
+            return sunCo.sendMessage(response);
         case 'form message':
         case 'form':
-            replyData.message = form;
-            return sunCo.sendMessage(replyData);
+            response.message = form;
+            return sunCo.sendMessage(response);
         case 'form response':
-            replyData.message = `Thank you for providing your details.\n ${eventMessage.textFallback}`;
-            return sunCo.sendMessage(replyData);
+            response.message = `Thank you for providing your details.\n ${eventMessage.textFallback}`;
+            return sunCo.sendMessage(response);
         case 'location request':
         case 'location':
-            replyData.message = location;
-            return sunCo.sendMessage(replyData);
+            response.message = location;
+            return sunCo.sendMessage(response);
         case 'webview':
-            replyData.message = webview;
-            return sunCo.sendMessage(replyData);
+            response.message = webview;
+            return sunCo.sendMessage(response);
         // case 'gdf':
-        //   replyData.message = await executeQueries('Hey there, how are you?');
-        //   return sunCo.sendMessage(replyData);
+        //   response.message = await executeQueries('Hey there, how are you?');
+        //   return sunCo.sendMessage(response);
         case 'list':
         case 'clean':
         case 'clean conversations':
         case 'remove':
-            return await cleanConversations(eventMessage, replyData);
+            return await cleanConversations(eventMessage, response);
         case 'chuck norris':
         case 'chuck':
         case 'norris':
         case 'joke':
-            replyData.message = await getChuckNorrisJoke();
-            return sunCo.sendMessage(replyData);
+            response.message = await getChuckNorrisJoke();
+            return sunCo.sendMessage(response);
         case 'sdkgroup':
-            replyData.message = 'Welcome! This is a group conversation';
-            return sunCo.sendMessage(replyData);
+            response.message = 'Welcome! This is a group conversation';
+            return sunCo.sendMessage(response);
         default:
-            replyData.message = getRandomFallbackMessage();
-            return sunCo.sendMessage(replyData);
+            response.message = getRandomFallbackMessage();
+            return sunCo.sendMessage(response);
         // try {
-        //   await sunCo.postActivity(replyData);
+        //   await sunCo.postActivity(response);
         //   const response = await axios.post(
         //     process.env.ZD_OPENAI_URL,
         //     {
@@ -150,8 +149,8 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
         //   );
 
         //   const replyText = response.data?.choices[0]?.message?.content;
-        //   replyData.message = replyText;
-        //   return sunCo.sendMessage(replyData);
+        //   response.message = replyText;
+        //   return sunCo.sendMessage(response);
         // } catch (error) {
         //   console.error(error);
         // }
