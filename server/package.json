@@ -12,29 +12,29 @@
     "author": "Romain Bonnefille",
     "license": "ISC",
     "dependencies": {
-        "@google-cloud/dialogflow": "^7.0.1",
-        "axios": "^1.9.0",
-        "compression": "^1.8.0",
+        "@google-cloud/dialogflow": "^7.2.1",
+        "axios": "^1.12.2",
+        "compression": "^1.8.1",
         "cors": "^2.8.5",
-        "dotenv": "^16.5.0",
+        "dotenv": "^16.6.1",
         "ejs": "^3.1.10",
         "express": "^5.1.0",
         "helmet": "^8.1.0",
         "jsonwebtoken": "^9.0.2",
-        "morgan": "^1.10.0",
-        "node": "^23.10.0",
-        "npm": "^11.4.1",
+        "morgan": "^1.10.1",
+        "node": "^23.11.1",
+        "npm": "^11.6.2",
         "path": "^0.12.7",
-        "serve-favicon": "^2.5.0",
-        "sunshine-conversations-client": "^15.4.0",
-        "uuid": "^11.1.0",
-        "winston": "^3.17.0"
+        "serve-favicon": "^2.5.1",
+        "sunshine-conversations-client": "^17.0.0",
+        "uuid": "^13.0.0",
+        "winston": "^3.18.3"
     },
     "devDependencies": {
-        "eslint": "^9.27.0",
-        "eslint-config-prettier": "^10.1.5",
-        "eslint-plugin-prettier": "^5.4.0",
+        "eslint": "^9.38.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-prettier": "^5.5.4",
         "nodemon": "^3.1.10",
-        "prettier": "3.5.3"
+        "prettier": "3.6.2"
     }
 }
