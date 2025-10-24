@@ -48,8 +48,8 @@ class SunCoClient {
         const { conversationId, author } = payload;
         const apiInstance = new SunshineConversationsClient.ActivitiesApi();
         const activityPost = new SunshineConversationsClient.ActivityPost();
-        activityPost.setAuthor(author);
-        activityPost.setType('typing:start');
+        activityPost.author = author;
+        activityPost.type = 'typing:start';
         try {
             return await apiInstance.postActivity(
                 this.appId,
@@ -68,9 +68,11 @@ class SunCoClient {
         await timeout(300);
         const apiInstance = new SunshineConversationsClient.MessagesApi();
         const messagePost = new SunshineConversationsClient.MessagePost();
-        messagePost.setAuthor(author);
-        messagePost.setContent(
-            this.buildMessageContent(message, image, metadata)
+        messagePost.author = author;
+        messagePost.content = this.buildMessageContent(
+            message,
+            image,
+            metadata
         );
         try {
             return await apiInstance.postMessage(
