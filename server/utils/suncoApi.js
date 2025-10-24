@@ -91,7 +91,7 @@ class SunCoClient {
         const opts = {
             page: new SunshineConversationsClient.Page(),
         };
-        opts.page.setSize(100);
+        opts.page.size = 100;
         try {
             return await apiInstance.listClients(
                 this.appId,
