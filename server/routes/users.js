@@ -5,6 +5,17 @@ import checkOrigin from '../middleware/validateOrigin.js';
 
 router.use(checkOrigin); // Register the checkOrigin middleware globally
 
+router.post('/listUser', async (req, res) => {
+    const userEmail = req.body;
+    const sunCo = new SunCoClient();
+    const user = await sunCo.getUserByEmailIdentity(userEmail);
+    if (user && user.hasOwnProperty('users') && user.users.length > 0) {
+        res.json(user.users[0]);
+    } else {
+        res.status(404).json({ error: 'User not found' });
+    }
+});
+
 router.get('/:id', async (req, res) => {
     const userId = req.params.id;
     const sunCo = new SunCoClient();

@@ -29,6 +29,15 @@ class SunCoClient {
         defaultClient.basePath = podBaseUrl || defaultBaseUrl;
     }
 
+    getUserIdOrExternalId(payload) {
+        if (payload.hasOwnProperty('userId')) {
+            return payload.userId;
+        } else if (payload.hasOwnProperty('externalId')) {
+            return payload.externalId;
+        }
+        return payload;
+    }
+
     buildMessageContent(message, image, metadata) {
         if (image) {
             return {
@@ -121,6 +130,24 @@ class SunCoClient {
     async getUser(payload) {
         const userIdOrExternalId = this.getUserIdOrExternalId(payload);
         const url = `${podBaseUrl}/v2/apps/${this.appId}/users/${userIdOrExternalId}`;
+        try {
+            const response = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer ${suncoJwt}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            return (
+                error.response?.data?.errors?.[0]?.title ||
+                error.response?.status
+            );
+        }
+    }
+
+    async getUserByEmailIdentity(payload) {
+        const { email: userEmail } = payload;
+        const url = `${podBaseUrl}/v2/apps/${this.appId}/users?filter[identities.email]=${userEmail}`;
         try {
             const response = await axios.get(url, {
                 headers: {
@@ -478,15 +505,6 @@ class SunCoClient {
             // catch error
             return error.body?.errors[0]?.title || error.status;
         }
-    }
-
-    getUserIdOrExternalId(payload) {
-        if (payload.hasOwnProperty('userId')) {
-            return payload.userId;
-        } else if (payload.hasOwnProperty('externalId')) {
-            return payload.externalId;
-        }
-        return payload;
     }
 
     async uploadAttachment(source, conversationId) {
