@@ -1,9 +1,12 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-const { BOT_NAME: botName, BOT_AVATAR_URL: botAvatarUrl } = process.env;
-const defaultAvatarUrl =
-    'https://media.smooch.io/apps/6062e4fb75a38000d2988959/UmpgnbGvXG7vxipmVYt-iZ59/acme.png';
+const {
+    BOT_NAME: botName,
+    BOT_AVATAR_URL: botAvatarUrl,
+    DEFAULT_BOT_AVATAR_URL: defaultAvatarUrl,
+} = process.env;
+
 const defaultBotName = 'Bugs Bunny';
 
 export default class BotResponse {
