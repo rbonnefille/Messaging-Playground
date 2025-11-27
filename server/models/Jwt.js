@@ -6,10 +6,11 @@ const { sign } = pkg;
 const { USERNAME: keyUsername, PASSWORD: keyPassword } = process.env;
 
 export default class Jwt {
-    constructor(external_id, name, email) {
+    constructor(external_id, name, email, email_verified) {
         this.external_id = external_id;
         this.name = name;
         this.email = email;
+        this.email_verified = email_verified;
         this.expiry_time_in_seconds = 604800; // 7 days in seconds
         this.defaultExpiry = 604800; // 7 days in seconds
         this.nowInSeconds = Math.floor(Date.now() / 1000);
@@ -18,9 +19,9 @@ export default class Jwt {
         this.body = Object.assign({
             scope: 'user',
             external_id: this.external_id,
-            name: this.name,
-            email: this.email,
-            email_verified: true,
+            ...(this.name && { name: this.name }),
+            ...(this.email && { email: this.email }),
+            ...(this.email_verified && { email_verified: this.email_verified }),
             iat: this.nowInSeconds,
             exp: this.nowInSeconds + this.expiry,
         });
