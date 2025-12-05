@@ -24,8 +24,9 @@ const returnToken = async (req, res) => {
         res.status(400).send('Bad Request - Body needs to be provided');
         return;
     }
-    const { external_id, name, email, email_verified } = req.body;
-    const jwt = new Jwt(external_id, name, email, email_verified);
+    const { external_id, name, email, emailVerified } = req.body;
+    console.log(req.body);
+    const jwt = new Jwt(external_id, name, email, emailVerified);
     const jwtToken = jwt.signJwt();
     const parts = jwtToken.split('.');
     console.log(
