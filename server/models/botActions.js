@@ -43,7 +43,7 @@ const shouldDeleteConversation = (convo, event) => {
 
 export const cleanConversations = async (event, response) => {
     let allConversations = await sunCo.listConversations(event);
-    const userConversations = allConversations.getConversations().length;
+    const userConversations = allConversations.conversations.length;
 
     response.message = `You currently have ${userConversations} ${
         userConversations > 1 ? 'conversations' : 'conversation'
