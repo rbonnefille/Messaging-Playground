@@ -23,7 +23,7 @@ const botMessages = {
     carousel: '%((template:mexican_carousel))%',
     compound: '%((template: smooch_tmpl_family_basket))%',
     file: '%((template: attachment))%',
-    form: '%((template: smooch_tmpl_lead_capture))%',
+    form: '%((template: form_message))%',
     location: '%((template: smooch_tmpl_request_location))%',
     tacos: '🌮 are so yummy!!!',
     burrito: '🌯 are so yummy too!!!',
