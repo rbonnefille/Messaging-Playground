@@ -114,49 +114,33 @@ class ConversationEvent extends WebhookEvent {
     }
 
     _extractConversationMessageDetails(payload) {
-        const {
-            message: {
-                id: messageId,
-                received,
-                author: {
-                    userId = {},
-                    avatarUrl,
-                    displayName,
-                    type,
-                    user: {
-                        id: userObjectId,
-                        externalId,
-                        profile = {},
-                        signedUpAt,
-                        metadata,
-                    } = {},
-                } = {},
-                content,
-                source,
-            } = {},
-        } = payload;
-
-        this.messageId = messageId;
-        this.receivedAt = received;
-        this.authorId = userId;
-        this.avatarUrl = avatarUrl;
-        this.displayName = displayName;
-        this.authorType = type ?? 'user';
-        this.userId = userObjectId;
-        this.userExternalId = externalId;
-        this.givenName = profile.givenName;
-        this.surname = profile.surname;
-        this.email = profile.email;
-        this.locale = profile.locale;
-        this.signedUpAt = signedUpAt;
-        this.userMetadata = metadata;
-        this.contentType = content?.type ?? 'text';
-        this.textFallback = content?.textFallback;
+        this.message = payload.message || {};
+        this.author = this.message.author || {};
+        this.user = this.author.user || {};
+        this.profile = this.user.profile || {};
+        this.content = this.message.content || {};
+        this.source = this.message.source || {};
+        this.messageId = this.message.id;
+        this.receivedAt = this.message.received;
+        this.authorId = this.user.id;
+        this.avatarUrl = this.profile.avatarUrl;
+        this.displayName = this.profile.displayName;
+        this.authorType = this.user.type ?? 'user';
+        this.userId = this.user.id;
+        this.userExternalId = this.user.externalId;
+        this.givenName = this.profile.givenName;
+        this.surname = this.profile.surname;
+        this.email = this.profile.email;
+        this.locale = this.profile.locale;
+        this.signedUpAt = this.profile.signedUpAt;
+        this.userMetadata = this.profile.metadata;
+        this.contentType = this.content?.type ?? 'text';
+        this.textFallback = this.content?.textFallback;
         this._userMessage =
-            content?.payload ?? content?.text ?? this.textFallback;
-        this.integrationId = source?.integrationId;
-        this.sourceType = source?.type;
-        this.sourceDevice = source?.device;
+            this.content?.payload ?? this.content?.text ?? this.textFallback;
+        this.integrationId = this.source?.integrationId;
+        this.sourceType = this.source?.type;
+        this.sourceDevice = this.source?.device;
         this.recentNotifications = payload.recentNotifications;
     }
 
