@@ -125,7 +125,7 @@ class ConversationEvent extends WebhookEvent {
         this.authorId = this.user.id;
         this.avatarUrl = this.profile.avatarUrl;
         this.displayName = this.profile.displayName;
-        this.authorType = this.user.type ?? 'user';
+        this.authorType = this.author.type;
         this.userId = this.user.id;
         this.userExternalId = this.user.externalId;
         this.givenName = this.profile.givenName;
