@@ -49,6 +49,7 @@ export const zdssoLogin = (req, res) => {
         email: email,
         role: role ?? 'end-user',
         external_id: email,
+        organizations: '12966668977681,360421193257',
         // user_fields: {
         //   test_multi_select: ['value_2'],
         // },
