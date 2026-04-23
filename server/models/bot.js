@@ -127,6 +127,14 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
         case 'sdkgroup':
             response.message = 'Welcome! This is a group conversation';
             return sunCo.sendMessage(response);
+        case 'release control':
+            response.message = `I will release the conversation's control now`;
+            response.metadata = {
+                'dataCapture.systemField.tags': 'releasedByBot',
+                'dataCapture.systemField.priority': 'high',
+            };
+            await sunCo.sendMessage(response);
+            return await sunCo.releaseControl(response);
         default:
             response.message = getRandomFallbackMessage();
             return sunCo.sendMessage(response);
