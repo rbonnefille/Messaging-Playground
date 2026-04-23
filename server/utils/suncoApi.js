@@ -335,20 +335,26 @@ class SunCoClient {
     }
 
     async releaseControl(payload) {
-        const { conversationId } = payload;
-        const apiInstance =
-            new SunshineConversationsClient.SwitchboardActionsApi();
-        const offerControlBody =
-            new SunshineConversationsClient.OfferControlBody();
+        const { conversationId, metadata } = payload;
+        const url = `${podBaseUrl}/v2/apps/${this.appId}/conversations/${conversationId}/releaseControl`;
+        const body = metadata ? { metadata } : {};
+
         if (metadata) {
-            offerControlBody.metadata = metadata;
-            console.log(offerControlBody.metadata);
+            console.log({ metadata });
         }
+
         try {
-            return await apiInstance.releaseControl(this.appId, conversationId);
+            const response = await axios.post(url, body, {
+                headers: {
+                    Authorization: `Bearer ${suncoJwt}`,
+                },
+            });
+            return response.data;
         } catch (error) {
-            // catch error
-            return error.body?.errors[0]?.title || error.status;
+            return (
+                error.response?.data?.errors?.[0]?.title ||
+                error.response?.status
+            );
         }
     }
 
