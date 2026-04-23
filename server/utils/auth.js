@@ -20,7 +20,7 @@ const returnToken = async (req, res) => {
         console.log(`Request received from ${host}`);
         return res.status(403).json({ error: 'Forbidden' });
     }
-    if (Object.keys(req.body).length === 0) {
+    if (!req.body || Object.keys(req.body).length === 0) {
         res.status(400).send('Bad Request - Body needs to be provided');
         return;
     }
