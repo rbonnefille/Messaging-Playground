@@ -38,6 +38,8 @@ const returnToken = async (req, res) => {
     );
     console.log(JSON.parse(`${Buffer.from(parts[1], 'base64').toString()} \n`));
     // await syncUser(email, external_id, name);
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Cache-Control', 'no-store');
     res.json({ token: jwtToken });
 };
 
