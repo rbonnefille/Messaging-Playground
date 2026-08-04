@@ -31,13 +31,16 @@ router.post('/webhooks', zdEvents);
 
 router.post('/webhooks/tickets', (req, res) => {
     // feature https://developer.zendesk.com/api-reference/webhooks/event-types/ticket-events/
-    console.log(`Received ticket webhook: ${req.body}`);
+    console.log('Received ticket webhook:', JSON.stringify(req.body, null, 2));
     res.sendStatus(200).end();
 });
 
 router.post('/webhooks/messaging', (req, res) => {
     // feature https://developer.zendesk.com/api-reference/webhooks/event-types/messaging-events/
-    console.log(`Received messaging webhook: ${req.body}`);
+    console.log(
+        'Received messaging webhook:',
+        JSON.stringify(req.body, null, 2)
+    );
     res.sendStatus(200).end();
 });
 
