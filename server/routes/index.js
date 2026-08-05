@@ -54,4 +54,45 @@ router.get(['/', '/custom-app'], (req, res) => {
     res.redirect('/custom-app');
 });
 
+router.get('/tracking', (req, res) => {
+    const { ticket_id, requester_id, updated_at } = req.query;
+    console.log(
+        `Event Tracked - Ticket ID: ${ticket_id}, Requester ID: ${requester_id}, Updated At: ${updated_at}`
+    );
+    res.status(200).send('Event tracked');
+});
+
+// router.get('/whatsapp', (req, res) => {
+//     res.send({
+//         clients: [
+//             {
+//                 integrationId: '60646995cf2f4600d2bbfead',
+//                 type: 'whatsapp',
+//                 externalId: 'US.abc123...',
+//                 additionalIdentifiers: [
+//                     { key: 'parentUserId', value: 'US.parent456...' },
+//                 ],
+//                 id: '6a183a6941241fbd50f31832',
+//                 displayName: 'john doe',
+//                 status: 'active',
+//                 raw: {
+//                     profile: {
+//                         name: 'john doe',
+//                     },
+//                     from: 'US.abc123...',
+//                 },
+//                 lastSeen: '2026-06-02T12:28:15.114Z',
+//                 linkedAt: '2026-05-28T12:51:53.579Z',
+//             },
+//         ],
+//         meta: {
+//             hasMore: false,
+//         },
+//     });
+// });
+
+// router.get('/web-widget', (req, res) => {
+//     res.sendFile('/Users/rbonnefille/Downloads/page.html');
+// });
+
 export default router;
