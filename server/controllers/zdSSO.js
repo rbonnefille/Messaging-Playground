@@ -28,9 +28,8 @@ export const zdJwt = (req, res) => {
     //     return;
     //   }
     // }
-
     // res.send("No matching brand URL found");
-    res.redirect(302, 'https://romain-sunco.eu.ngrok.io/zendesk');
+    // res.redirect(302, 'https://romain-sunco.eu.ngrok.io/zendesk');
     // res.redirect(302, "http://localhost:5173/zendesk");
 };
 
@@ -49,21 +48,21 @@ export const zdssoLogin = (req, res) => {
         email: email,
         role: role ?? 'end-user',
         external_id: email,
-        organizations: '12966668977681,360421193257',
+        phone: '+15551234567',
+        tags: ['sso-jwt'],
+        // organizations: '12966668977681,360421193257',
         // user_fields: {
-        //   test_multi_select: ['value_2'],
+        //     test_multi_select: ['value_2'],
         // },
     };
-    if (req.get('x-forwarded-host')?.includes('romain-sunco.eu.ngrok.io'))
-        return res.redirect(
-            `https://z3nsuncoswitchboard.zendesk.com/access/jwt?jwt=${sign(
-                payload,
-                shared_key,
-                {
-                    algorithm: 'HS256',
-                }
-            )}`
+    if (req.get('x-forwarded-host')?.includes('romain-sunco.eu.ngrok.io')) {
+        const jwtToken = sign(payload, shared_key, { algorithm: 'HS256' });
+        const accessUrl = new URL(
+            'https://z3nsuncoswitchboard.zendesk.com/access/jwt'
         );
+        accessUrl.searchParams.set('jwt', jwtToken);
+        return res.redirect(accessUrl.toString());
+    }
     if (req.headers.referer?.includes('http://localhost')) {
         console.log(
             `Token SSO: ${sign(payload, shared_key, { algorithm: 'HS256' })}`
