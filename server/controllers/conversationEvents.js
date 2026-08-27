@@ -91,6 +91,8 @@ const messageEvents = async (req, res, next) => {
     } else if (webhookEvent.isConversationRead()) {
         res.sendStatus(200).end();
         return;
+    } else {
+        res.sendStatus(200).end();
     }
 };
 
