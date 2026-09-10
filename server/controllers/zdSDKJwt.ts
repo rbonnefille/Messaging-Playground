@@ -1,8 +1,9 @@
+import type { Request, Response } from 'express';
 import pkg from 'jsonwebtoken';
 const { sign } = pkg;
 import { v4 as uuidv4 } from 'uuid';
 
-export const zdSDKJwt = (req, res) => {
+export const zdSDKJwt = (req: Request, res: Response) => {
     const { user_token } = req.body;
     const shared_key = process.env.ZD_SUPPORT_SDK_JWT_SECRET;
     const name = 'michael scott';

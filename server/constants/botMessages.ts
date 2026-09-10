@@ -1,4 +1,20 @@
-const botMessages = {
+interface BotMessages {
+    default: string;
+    fallback: string[];
+    bot: string;
+    carousel: string;
+    compound: string;
+    file: string;
+    form: string;
+    location: string;
+    tacos: string;
+    burrito: string;
+    cat: string;
+    handover: string;
+    webview: string;
+}
+
+const botMessages: BotMessages = {
     default: '%((template:quick_replies))%',
     fallback: [
         "Sorry I didn't get that. Can you please try to say something else?",

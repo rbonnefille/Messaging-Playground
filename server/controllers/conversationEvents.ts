@@ -1,16 +1,18 @@
+import type { Request, Response, NextFunction } from 'express';
 import replyToUser from '../models/bot.js';
 import ConversationEvent from '../models/webhook.js';
 import PassControlMetadata from '../models/passControlMetadata.js';
 
-const messageEvents = async (req, res, next) => {
+const messageEvents = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     const webhookEvent = new ConversationEvent(req);
     const {
         webhookEventApiKey,
         activeSwitchboardIntegrationId,
-        authorType,
-        contentType,
         textFallback,
-        creationReason,
     } = webhookEvent;
     const metadata = new PassControlMetadata(webhookEvent);
 
@@ -32,13 +34,13 @@ const messageEvents = async (req, res, next) => {
         webhookEvent.isConversationMessage() ||
         webhookEvent.isConversationPostback()
     ) {
-        if (webhookEvent.isBusinessMessage(authorType)) {
+        if (webhookEvent.isBusinessMessage()) {
             res.sendStatus(200).end();
             return;
         }
 
         if (
-            webhookEvent.isTextMessage(contentType) &&
+            webhookEvent.isTextMessage() &&
             webhookEvent.isAllowedChannel()
         ) {
             try {
@@ -51,7 +53,7 @@ const messageEvents = async (req, res, next) => {
             }
         } else if (
             webhookEvent.isAllowedChannel() &&
-            webhookEvent.ifFormMessage(contentType)
+            webhookEvent.ifFormMessage()
         ) {
             try {
                 if (textFallback) {
@@ -66,7 +68,7 @@ const messageEvents = async (req, res, next) => {
         res.end();
     } else if (webhookEvent.isConversationCreate()) {
         if (
-            webhookEvent.isCreationReasonStartConversation(creationReason) &&
+            webhookEvent.isCreationReasonStartConversation() &&
             webhookEvent.isAllowedChannel()
         ) {
             try {

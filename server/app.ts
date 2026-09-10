@@ -19,6 +19,6 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(routes);
 
-app.listen(port ?? defaultPort, () =>
+app.listen(Number(port ?? defaultPort), () =>
     console.log(`Server is running on port ${port ?? defaultPort}`)
 );

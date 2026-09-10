@@ -9,8 +9,29 @@ const {
 
 const defaultBotName = 'Bugs Bunny';
 
+interface BotAuthor {
+    type: 'business';
+    subtypes: string[];
+    displayName: string;
+    avatarUrl: string | undefined;
+}
+
+export interface BotResponsePayload {
+    conversationId: string | undefined;
+    author: BotAuthor;
+    message: string | undefined;
+    image: string | undefined;
+    metadata: Record<string, unknown> | undefined;
+}
+
 export default class BotResponse {
-    constructor(conversationId) {
+    conversationId: string | undefined;
+    author: BotAuthor;
+    message: string | undefined;
+    image: string | undefined;
+    metadata: Record<string, unknown> | undefined;
+
+    constructor(conversationId: string | undefined) {
         this.conversationId = conversationId;
         this.author = {
             type: 'business',
@@ -23,22 +44,22 @@ export default class BotResponse {
         this.metadata = undefined;
     }
 
-    setMessage(message) {
+    setMessage(message: string): this {
         this.message = message;
         return this;
     }
 
-    setImage(imageUrl) {
+    setImage(imageUrl: string): this {
         this.image = imageUrl;
         return this;
     }
 
-    setMetadata(metadata) {
+    setMetadata(metadata: Record<string, unknown>): this {
         this.metadata = metadata;
         return this;
     }
 
-    toPayload() {
+    toPayload(): BotResponsePayload {
         return {
             conversationId: this.conversationId,
             author: this.author,

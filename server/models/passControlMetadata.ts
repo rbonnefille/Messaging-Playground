@@ -1,5 +1,14 @@
+import type ConversationEvent from './webhook.js';
+
 export default class PassControlMetadata {
-    constructor(webhookEvent) {
+    private _displayName!: string | undefined;
+    private _email!: string | undefined;
+    private _userExternalId!: string | undefined;
+    private _eventSource!: string | undefined;
+    private _conversation!: string | undefined;
+    private _recentNotifications!: unknown[] | undefined;
+
+    constructor(webhookEvent: ConversationEvent) {
         this._displayName = webhookEvent.displayName;
         this._email = webhookEvent.email;
         this._userExternalId = webhookEvent.userExternalId;
@@ -7,40 +16,40 @@ export default class PassControlMetadata {
         this._conversation = webhookEvent.conversationId;
         this._recentNotifications = webhookEvent.recentNotifications;
     }
-    get displayName() {
+    get displayName(): string | undefined {
         return this._displayName;
     }
-    get email() {
+    get email(): string | undefined {
         return this._email;
     }
-    get userExternalId() {
+    get userExternalId(): string | undefined {
         return this._userExternalId;
     }
-    get eventSource() {
+    get eventSource(): string | undefined {
         return this._eventSource;
     }
-    get conversation() {
+    get conversation(): string | undefined {
         return this._conversation;
     }
-    set displayName(value) {
+    set displayName(value: string | undefined) {
         throw new Error(`displayName is read-only. ${value} is ignored.`);
     }
-    set email(value) {
+    set email(value: string | undefined) {
         throw new Error(`Email is read-only. ${value} is ignored.`);
     }
-    set userExternalId(value) {
+    set userExternalId(value: string | undefined) {
         throw new Error(`ExternalId is read-only. ${value} is ignored.`);
     }
-    set eventSource(value) {
+    set eventSource(value: string | undefined) {
         throw new Error(`EventSource is read-only. ${value} is ignored.`);
     }
-    set conversation(value) {
+    set conversation(value: string | undefined) {
         throw new Error(`Conversation is read-only. ${value} is ignored.`);
     }
-    get recentNotifications() {
+    get recentNotifications(): boolean {
         return Array.isArray(this._recentNotifications);
     }
-    set recentNotifications(value) {
+    set recentNotifications(value: boolean) {
         throw new Error(
             `RecentNotifications is read-only. ${value} is ignored.`
         );

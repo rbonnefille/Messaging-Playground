@@ -3,9 +3,9 @@ const router = express.Router();
 import SunCoClient from '../utils/suncoApi.js';
 import checkOrigin from '../middleware/validateOrigin.js';
 
-router.use(checkOrigin); // Register the checkOrigin middleware globally
+router.use(checkOrigin);
 
-router.get('/switchboardIntegration', async (_, res) => {
+router.get('/switchboardIntegration', async (_req, res) => {
     try {
         const sunCo = new SunCoClient();
         const switchboardIntegrations =
@@ -19,7 +19,7 @@ router.get('/switchboardIntegration', async (_, res) => {
     }
 });
 
-router.get('/', async (_, res) => {
+router.get('/', async (_req, res) => {
     try {
         const sunCo = new SunCoClient();
         const switchboards = await sunCo.listSwitchboards();

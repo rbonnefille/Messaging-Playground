@@ -12,7 +12,7 @@ const router = express.Router();
 
 const sunCo = new SunCoClient();
 
-router.head('/', (_, res) => {
+router.head('/', (_req, res) => {
     return res.sendStatus(200).end();
 });
 
@@ -63,14 +63,10 @@ router.post('/attachment', async (req, res) => {
             .status(502)
             .json({ error: 'Attachment service unavailable' });
     }
-    // const attachmentUrl =
-    //   'https://media.smooch.io/apps/6062e4fb75a38000d2988959/5xCLAUEWlxN1rjGjyHUD8rbd/dummy.pdf';
 });
 
-// TEST FOR FREE NOW - SEND SDK MESSAGE FOR FORM MESSAGES //
 router.post('/form', async (req, res) => {
     try {
-        // Get user in the conversation
         console.log('Form response: ', req.body);
 
         const conversationId = req.body.conversationId;
@@ -90,7 +86,6 @@ router.post('/form', async (req, res) => {
                 name: 'dataCapture.ticketField.27187091485073',
                 label: 'User plan',
                 type: 'text',
-                type: 'text',
                 text: 'Pro plan',
             },
             {
@@ -106,62 +101,31 @@ router.post('/form', async (req, res) => {
             },
         ];
 
-        // const fields = [
-        //   {
-        //     type: 'email',
-        //     name: 'email',
-        //     label: 'Email',
-        //     email: 'test@test.com',
-        //   },
-        //   {
-        //     type: 'text',
-        //     name: 'company-website',
-        //     label: 'Company website',
-        //     text: 'Teet',
-        //   },
-        //   {
-        //     type: 'select',
-        //     name: 'company-size',
-        //     label: 'Company size',
-        //     select: [
-        //       {
-        //         name: '11-50',
-        //         label: '11-50 employees',
-        //       },
-        //     ],
-        //   },
-        // ];
         const participantsResponse =
             await sunCo.listParticipants(conversationId);
         console.log(participantsResponse);
         const user = participantsResponse?.participants[0];
         console.log('User:', user);
         if (!user) {
-            console.error('No user in the conversation!'); // Should never happen at this point
+            console.error('No user in the conversation!');
             return res
                 .status(404)
                 .json({ error: 'Conversation user not found' });
         }
 
-        // Create JWT to login into the SDK endpoint
-        //
         const token = sign(
             {
                 scope: 'user',
                 external_id: user.userExternalId,
             },
-            process.env.PASSWORD,
-            { header: { kid: process.env.USERNAME } }
+            process.env.PASSWORD as string,
+            { header: { alg: 'HS256', kid: process.env.USERNAME } }
         );
 
         console.log('JWT token: ' + token);
 
         const sessionId = uuidv4();
 
-        // Send message through the SDK endpoint.
-        // At this moment a hard-coded integration ID/client ID is used. The integration ID can be extracted through the message source. Right now the web integration ID is used.
-        // The client ID can be found in the data returned by the list recipient API call
-        //
         try {
             await axios.post(
                 `https://api.smooch.io/sdk/v2/apps/${process.env.APP_ID}/conversations/${conversationId}/messages`,
@@ -173,8 +137,8 @@ router.post('/form', async (req, res) => {
                         sessionId: sessionId,
                         client: {
                             platform: sdkPlatform || 'web',
-                            id: sdkClientguid, // Client ID
-                            integrationId: sdkIntegrationId, // Integration ID
+                            id: sdkClientguid,
+                            integrationId: sdkIntegrationId,
                         },
                     },
                     message: {
@@ -186,20 +150,18 @@ router.post('/form', async (req, res) => {
                 },
                 {
                     headers: {
-                        Authorization: 'Bearer ' + token, // JWT token
+                        Authorization: 'Bearer ' + token,
                         'x-smooch-sdk':
                             sdkPlatform == 'ios' || sdkPlatform == 'android'
                                 ? sdkPlatform + '/1.0.0'
-                                : 'web/smooch/5.6.0', // SDK header to indicate what SDK is using. Is required to be able to use this endpoint
+                                : 'web/smooch/5.6.0',
                     },
                 }
             );
         } catch (error) {
-            console.error('Error sending form response:', error.message);
+            console.error('Error sending form response:', (error as Error).message);
         }
 
-        // Send form response message as current user (through the SDK endpoint)
-        //
         return res.end('{}');
     } catch (error) {
         console.error('Error handling form response:', error);

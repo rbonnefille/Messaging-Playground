@@ -1,29 +1,26 @@
 import express from 'express';
 const router = express.Router();
 import { v4 as uuidv4 } from 'uuid';
-import dialogflow from '@google-cloud/dialogflow';
+import * as dialogflow from '@google-cloud/dialogflow';
 
-// Instantiates a session client
-const sessionClient = new dialogflow.SessionsClient();
+const sessionClient: any = new dialogflow.SessionsClient();
 const projectId = 'sunco-bxgh';
 const sessionId = uuidv4();
 const languageCode = 'en-US';
 
 async function detectIntent(
-    projectId,
-    sessionId,
-    query,
-    contexts,
-    languageCode
-) {
-    // The path to identify the agent that owns the created intent.
+    projectId: string,
+    sessionId: string,
+    query: string,
+    contexts: any[],
+    languageCode: string
+): Promise<any> {
     const sessionPath = sessionClient.projectAgentSessionPath(
         projectId,
         sessionId
     );
 
-    // The text query request.
-    const request = {
+    const request: any = {
         session: sessionPath,
         queryInput: {
             text: {
@@ -42,16 +39,14 @@ async function detectIntent(
     const responses = await sessionClient.detectIntent(request);
     return responses[0];
 }
-// async function executeQueries(projectId, sessionId, query, languageCode) {
 
-async function executeQueries(query) {
+async function executeQueries(query: string): Promise<string | undefined> {
     const projectId = 'sunco-bxgh';
     const sessionId = uuidv4();
     const languageCode = 'en-US';
 
-    // Keeping the context across queries let's us simulate an ongoing conversation with the bot
-    let context;
-    let intentResponse;
+    let context: any;
+    let intentResponse: any;
     try {
         console.log(`Sending Query: ${query}`);
         intentResponse = await detectIntent(
@@ -65,7 +60,6 @@ async function executeQueries(query) {
         console.log(
             `Fulfillment Text: ${intentResponse.queryResult.fulfillmentText}`
         );
-        // Use the context from this response for next queries
         context = intentResponse.queryResult.outputContexts;
         return intentResponse.queryResult.fulfillmentText;
     } catch (error) {
@@ -75,19 +69,13 @@ async function executeQueries(query) {
 
 router.post('/', (req, res) => {
     console.log(req.body);
-    jsonResponse = {
+    const jsonResponse = {
         fulfillmentText: 'This is from the replit webhook',
         source: 'webhook',
     };
-    console.log(req.fulfillmentMessages[0].text.text[0]);
+    console.log((req as any).fulfillmentMessages[0].text.text[0]);
     res.send(jsonResponse);
-    // return res.sendStatus(200);
 });
-
-// router.get("/", (req, res) => {
-//     executeQueries(projectId, sessionId, "Can you please assist me?", languageCode);
-//     return res.sendStatus(200);
-// });
 
 router.head('/', (req, res) => {
     if (req.method === 'HEAD') {

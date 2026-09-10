@@ -1,23 +1,33 @@
 import getCatImage from '../utils/catApi.js';
 import botMessages from '../constants/botMessages.js';
 import SunCoClient from '../utils/suncoApi.js';
+import type ConversationEvent from './webhook.js';
+import type BotResponse from './BotResponse.js';
+import type PassControlMetadata from './passControlMetadata.js';
 
 const { BOT_SWITCHBOARD_INTEGRATION_ID: botSwitboardIntegrationId } =
     process.env;
 
 const sunCo = new SunCoClient();
 
-export const getRandomFallbackMessage = () => {
+interface ConversationListItem {
+    id: string;
+    isDefault?: boolean;
+    lastUpdatedAt?: string;
+    activeSwitchboardIntegration?: { id?: string };
+}
+
+export const getRandomFallbackMessage = (): string => {
     return botMessages.fallback[
         Math.floor(Math.random() * botMessages.fallback.length)
     ];
 };
 
-export const welcomeUser = async (event, response, defaultMessage) => {
-    // const getConvoDisplayName = await sunCo.getConversation(event);
-    // if (!getConvoDisplayName.conversation?.displayName) {
-    //   sunCo.updateConversation(event);
-    // }
+export const welcomeUser = async (
+    event: ConversationEvent,
+    response: BotResponse,
+    defaultMessage: string
+): Promise<unknown> => {
     const userMetadata = await sunCo.getUser(event);
     if (
         userMetadata?.user?.metadata &&
@@ -29,11 +39,14 @@ export const welcomeUser = async (event, response, defaultMessage) => {
     return sunCo.sendMessage(response.toPayload());
 };
 
-const calculateDaysDifference = (date1, date2) => {
-    return Math.ceil((date2 - date1) / (1000 * 3600 * 24));
+const calculateDaysDifference = (date1: Date, date2: Date): number => {
+    return Math.ceil((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
 };
 
-const shouldDeleteConversation = (convo, event) => {
+const shouldDeleteConversation = (
+    convo: ConversationListItem,
+    event: ConversationEvent
+): boolean => {
     return (
         convo.activeSwitchboardIntegration?.id === botSwitboardIntegrationId &&
         !convo.isDefault &&
@@ -41,7 +54,10 @@ const shouldDeleteConversation = (convo, event) => {
     );
 };
 
-export const cleanConversations = async (event, response) => {
+export const cleanConversations = async (
+    event: ConversationEvent,
+    response: BotResponse
+): Promise<unknown> => {
     let allConversations = await sunCo.listConversations(event);
     const userConversations = allConversations.conversations.length;
 
@@ -80,15 +96,15 @@ export const cleanConversations = async (event, response) => {
         return await sunCo.sendMessage(response.toPayload());
     } catch (error) {
         console.error('Error cleaning conversations:', error);
-        throw new Error(error.message);
+        throw new Error((error as Error).message);
     }
 };
 
 export const escalateToAgent = async (
-    switchBoardMetadata,
-    response,
-    handoverMessage
-) => {
+    switchBoardMetadata: PassControlMetadata,
+    response: BotResponse,
+    handoverMessage: string
+): Promise<unknown> => {
     const {
         displayName,
         email,
@@ -114,7 +130,9 @@ export const escalateToAgent = async (
     return sunCo.passControl(handoverPayload);
 };
 
-export const escalateToAnswerBot = async (eventMessage) => {
+export const escalateToAnswerBot = async (
+    eventMessage: ConversationEvent
+): Promise<unknown> => {
     const { integrationId, conversationId } = eventMessage;
     const payload = {
         conversationId: conversationId,
@@ -125,7 +143,11 @@ export const escalateToAnswerBot = async (eventMessage) => {
     return sunCo.passControl(payload, 'zd-answerBot');
 };
 
-export const sendCatImage = async (eventMessage, response, message) => {
+export const sendCatImage = async (
+    eventMessage: ConversationEvent,
+    response: BotResponse,
+    message: string
+): Promise<unknown> => {
     try {
         const catImageUrl = await getCatImage();
         response.conversationId = eventMessage.conversationId;

@@ -1,6 +1,7 @@
 import winston from 'winston';
 import path from 'path';
 import morgan from 'morgan';
+import type { Request, Response } from 'express';
 
 const serverDir = path.join(process.cwd());
 
@@ -19,19 +20,18 @@ const logger = winston.createLogger({
             filename: path.join(serverDir, './logs/events.log'),
             level: 'http',
         }),
-        // new winston.transports.Console({
-        //   level: "http",
-        // }),
     ],
 });
 
-const loggerMiddleware = morgan(
+const loggerMiddleware = morgan<Request, Response>(
     function (tokens, req, res) {
         return JSON.stringify({
             url: tokens.url(req, res),
             method: tokens.method(req, res),
-            status: Number.parseFloat(tokens.status(req, res)),
-            response_time: Number.parseFloat(tokens['response-time'](req, res)),
+            status: Number.parseFloat(tokens.status(req, res) ?? ''),
+            response_time: Number.parseFloat(
+                tokens['response-time'](req, res) ?? ''
+            ),
             body: req.body,
         });
     },

@@ -3,7 +3,7 @@ const router = express.Router();
 import SunCoClient from '../utils/suncoApi.js';
 import checkOrigin from '../middleware/validateOrigin.js';
 
-router.use(checkOrigin); // Register the checkOrigin middleware globally
+router.use(checkOrigin);
 
 router.post('/listUser', async (req, res) => {
     try {
@@ -62,13 +62,13 @@ router.delete('/:id/conversations', async (req, res) => {
         }
 
         const conversationsToDelete = allConversations.conversations.filter(
-            (convo) =>
+            (convo: any) =>
                 convo.activeSwitchboardIntegration?.name !==
                     'zd-agentWorkspace' && !convo.isDefault
         );
 
         await Promise.all(
-            conversationsToDelete.map((convo) =>
+            conversationsToDelete.map((convo: any) =>
                 sunCo.deleteConversation(convo.id)
             )
         );

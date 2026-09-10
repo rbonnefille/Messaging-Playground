@@ -3,33 +3,63 @@ dotenv.config();
 import axios from 'axios';
 import SunshineConversationsClient from 'sunshine-conversations-client';
 
-const timeout = (ms) => new Promise((res) => setTimeout(res, ms));
+const timeout = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 const {
     POD_BASE_URL: podBaseUrl,
     APP_ID: appId,
     SWITCHBOARD_ID: switchboardId,
     SUNCO_JWT: suncoJwt,
-    suncoCustomIntegrationKey: suncoCustomIntegrationKey,
     SUNCO_CUSTOM_INTEGRATION_SECRET: suncoCustomIntegrationSecret,
     BASE_URL: defaultBaseUrl,
     NEXT_SWITCHBOARD_INTEGRATION: nextSwitchboardIntegration,
 } = process.env;
 
+interface UserIdentifierPayload {
+    userId?: string;
+    externalId?: string;
+}
+
+interface MessagePayload {
+    conversationId?: string;
+    author?: unknown;
+    message?: string;
+    image?: string;
+    metadata?: Record<string, unknown>;
+}
+
+interface ConversationPayload {
+    conversationId?: string;
+    metadata?: Record<string, unknown>;
+}
+
+interface SwitchboardIntegrationUpdatePayload {
+    switchboardIntegrationId: string;
+    nextSwitchboardIntegrationId?: string;
+    deliverStandbyEvents?: boolean;
+    messageHistoryCount?: number;
+}
+
 class SunCoClient {
+    appId: string | undefined;
+    switchboardId: string | undefined;
+
     constructor() {
         this.setApiClient();
         this.appId = appId;
         this.switchboardId = switchboardId;
     }
-    setApiClient() {
+    setApiClient(): void {
         const defaultClient = SunshineConversationsClient.ApiClient.instance;
         const bearerAuth = defaultClient.authentications['bearerAuth'];
         bearerAuth.accessToken = suncoJwt;
         defaultClient.basePath = podBaseUrl || defaultBaseUrl;
     }
 
-    getUserIdOrExternalId(payload) {
+    getUserIdOrExternalId(payload: UserIdentifierPayload | string): any {
+        if (typeof payload === 'string') {
+            return payload;
+        }
         if (payload.hasOwnProperty('userId')) {
             return payload.userId;
         } else if (payload.hasOwnProperty('externalId')) {
@@ -38,7 +68,11 @@ class SunCoClient {
         return payload;
     }
 
-    buildMessageContent(message, image, metadata) {
+    buildMessageContent(
+        message: string | undefined,
+        image: string | undefined,
+        metadata: Record<string, unknown> | undefined
+    ): Record<string, unknown> {
         if (image) {
             return {
                 type: 'image',
@@ -53,7 +87,7 @@ class SunCoClient {
         };
     }
 
-    async postActivity(payload) {
+    async postActivity(payload: MessagePayload): Promise<any> {
         const { conversationId, author } = payload;
         const apiInstance = new SunshineConversationsClient.ActivitiesApi();
         const activityPost = new SunshineConversationsClient.ActivityPost();
@@ -66,12 +100,11 @@ class SunCoClient {
                 activityPost
             );
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
-    async sendMessage(payload) {
+    async sendMessage(payload: MessagePayload): Promise<any> {
         const { conversationId, author, message, image, metadata } = payload;
         await this.postActivity(payload);
         await timeout(300);
@@ -94,7 +127,7 @@ class SunCoClient {
         }
     }
 
-    async listClients(payload) {
+    async listClients(payload: UserIdentifierPayload | string): Promise<any> {
         const userIdOrExternalId = this.getUserIdOrExternalId(payload);
         const apiInstance = new SunshineConversationsClient.ClientsApi();
         const opts = {
@@ -108,12 +141,11 @@ class SunCoClient {
                 opts
             );
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
-    async listDevices(payload) {
+    async listDevices(payload: UserIdentifierPayload | string): Promise<any> {
         const userIdOrExternalId = this.getUserIdOrExternalId(payload);
         const apiInstance = new SunshineConversationsClient.DevicesApi();
         try {
@@ -122,12 +154,11 @@ class SunCoClient {
                 userIdOrExternalId
             );
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
-    async getUser(payload) {
+    async getUser(payload: UserIdentifierPayload | string): Promise<any> {
         const userIdOrExternalId = this.getUserIdOrExternalId(payload);
         const url = `${podBaseUrl}/v2/apps/${this.appId}/users/${userIdOrExternalId}`;
         try {
@@ -145,7 +176,7 @@ class SunCoClient {
         }
     }
 
-    async getUserByEmailIdentity(payload) {
+    async getUserByEmailIdentity(payload: { email: string }): Promise<any> {
         const { email: userEmail } = payload;
         const url = `${podBaseUrl}/v2/apps/${this.appId}/users?filter[identities.email]=${userEmail}`;
         try {
@@ -163,7 +194,7 @@ class SunCoClient {
         }
     }
 
-    async listParticipants(conversationId) {
+    async listParticipants(conversationId: string): Promise<any> {
         const apiInstance = new SunshineConversationsClient.ParticipantsApi();
         try {
             return await apiInstance.listParticipants(
@@ -175,7 +206,7 @@ class SunCoClient {
         }
     }
 
-    async updateUser(payload) {
+    async updateUser(payload: UserIdentifierPayload | string): Promise<any> {
         const userIdOrExternalId = this.getUserIdOrExternalId(payload);
         const apiInstance = new SunshineConversationsClient.UsersApi();
         const userUpdateBody = new SunshineConversationsClient.UserUpdateBody();
@@ -189,13 +220,12 @@ class SunCoClient {
                 userUpdateBody
             );
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
-    async getConversation(payload) {
-        const conversationId = payload.conversationId || payload;
+    async getConversation(payload: ConversationPayload | string): Promise<any> {
+        const conversationId = (payload as any).conversationId || payload;
         const apiInstance = new SunshineConversationsClient.ConversationsApi();
         try {
             return await apiInstance.getConversation(
@@ -203,24 +233,26 @@ class SunCoClient {
                 conversationId
             );
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
-    async listMessages(payload) {
-        const { conversationId } = payload;
+    async listMessages(payload: ConversationPayload | string): Promise<any> {
+        const conversationId =
+            typeof payload === 'string' ? undefined : payload.conversationId;
         const apiInstance = new SunshineConversationsClient.MessagesApi();
         try {
             return await apiInstance.listMessages(this.appId, conversationId);
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
-    async updateConversation(payload) {
-        const { conversationId } = payload;
+    async updateConversation(
+        payload: ConversationPayload | string
+    ): Promise<any> {
+        const conversationId =
+            typeof payload === 'string' ? undefined : payload.conversationId;
         const apiInstance = new SunshineConversationsClient.ConversationsApi();
         const conversationUpdateBody =
             new SunshineConversationsClient.ConversationUpdateBody();
@@ -239,15 +271,16 @@ class SunCoClient {
                 conversationUpdateBody
             );
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
-    async listConversations(webhookData) {
+    async listConversations(
+        webhookData: UserIdentifierPayload | string
+    ): Promise<any> {
         const userIdOrExternalId = this.getUserIdOrExternalId(webhookData);
         const filter =
-            Object.keys(userIdOrExternalId).length === 24
+            Object.keys(userIdOrExternalId as any).length === 24
                 ? `userId`
                 : `userExternalId`;
         const url = `${podBaseUrl}/v2/apps/${this.appId}/conversations?filter[${filter}]=${userIdOrExternalId}&page[size]=100`;
@@ -267,7 +300,7 @@ class SunCoClient {
         }
     }
 
-    async deleteConversation(conversationId) {
+    async deleteConversation(conversationId: string): Promise<any> {
         const apiInstance = new SunshineConversationsClient.ConversationsApi();
         try {
             return await apiInstance.deleteConversation(
@@ -275,15 +308,14 @@ class SunCoClient {
                 conversationId
             );
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
     async passControl(
-        payload,
-        switchboardIntegration = nextSwitchboardIntegration
-    ) {
+        payload: ConversationPayload,
+        switchboardIntegration: string | undefined = nextSwitchboardIntegration
+    ): Promise<any> {
         const defaultClient = SunshineConversationsClient.ApiClient.instance;
         const basicAuth = defaultClient.authentications['basicAuth'];
         basicAuth.username = suncoCustomIntegrationSecret;
@@ -307,12 +339,11 @@ class SunCoClient {
                 passControlBody
             );
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
-    async offerControl(payload) {
+    async offerControl(payload: ConversationPayload): Promise<any> {
         const { conversationId, metadata } = payload;
         const apiInstance =
             new SunshineConversationsClient.SwitchboardActionsApi();
@@ -329,12 +360,11 @@ class SunCoClient {
                 offerControlBody
             );
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
-    async releaseControl(payload) {
+    async releaseControl(payload: ConversationPayload): Promise<any> {
         const { conversationId, metadata } = payload;
         const url = `${podBaseUrl}/v2/apps/${this.appId}/conversations/${conversationId}/releaseControl`;
         const body = metadata ? { metadata } : {};
@@ -358,17 +388,16 @@ class SunCoClient {
         }
     }
 
-    async listSwitchboards() {
+    async listSwitchboards(): Promise<any> {
         const apiInstance = new SunshineConversationsClient.SwitchboardsApi();
         try {
             return await apiInstance.listSwitchboards(this.appId);
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
-    async listSwitchboardIntegrations() {
+    async listSwitchboardIntegrations(): Promise<any> {
         const apiInstance =
             new SunshineConversationsClient.SwitchboardIntegrationsApi();
         try {
@@ -377,12 +406,14 @@ class SunCoClient {
                 this.switchboardId
             );
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
-    async updateSwitchboard(enabled = true, defaultSwitchboardIntegrationId) {
+    async updateSwitchboard(
+        enabled = true,
+        defaultSwitchboardIntegrationId?: string
+    ): Promise<any> {
         const apiInstance = new SunshineConversationsClient.SwitchboardsApi();
         let switchboardUpdateBody =
             new SunshineConversationsClient.SwitchboardUpdateBody();
@@ -400,12 +431,13 @@ class SunCoClient {
                 switchboardUpdateBody
             );
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
-    async updateSwitchboardIntegration(payload) {
+    async updateSwitchboardIntegration(
+        payload: SwitchboardIntegrationUpdatePayload
+    ): Promise<any> {
         let {
             switchboardIntegrationId,
             nextSwitchboardIntegrationId,
@@ -425,7 +457,7 @@ class SunCoClient {
             messageHistoryCount:
                 messageHistoryCount == 0
                     ? null
-                    : parseInt(messageHistoryCount, 10),
+                    : parseInt(messageHistoryCount as unknown as string, 10),
         };
         try {
             return await apiInstance.updateSwitchboardIntegration(
@@ -435,18 +467,17 @@ class SunCoClient {
                 switchboardIntegrationUpdateBody
             );
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
     async createSwitchboardIntegration(
-        integrationName,
-        integrationId,
-        deliverStandbyEvents,
-        nextSwitchboardIntegrationId,
+        integrationName: string,
+        integrationId: string,
+        deliverStandbyEvents: boolean,
+        nextSwitchboardIntegrationId: string,
         messageHistoryCount = 10
-    ) {
+    ): Promise<any> {
         const apiInstance =
             new SunshineConversationsClient.SwitchboardIntegrationsApi();
         let switchboardIntegrationCreateBody =
@@ -466,23 +497,24 @@ class SunCoClient {
                 switchboardIntegrationCreateBody
             );
         } catch (error) {
-            // catch error
             console.log(error.body?.errors[0]?.title);
             return { error: error.body?.errors[0]?.title };
         }
     }
 
-    async listIntegrations() {
+    async listIntegrations(): Promise<any> {
         const apiInstance = new SunshineConversationsClient.IntegrationsApi();
         try {
             return await apiInstance.listIntegrations(this.appId);
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
-    async updateIntegration(integrationId, bodyParams) {
+    async updateIntegration(
+        integrationId: string,
+        bodyParams: Record<string, unknown>
+    ): Promise<any> {
         const apiInstance = new SunshineConversationsClient.IntegrationsApi();
         try {
             return await apiInstance.updateIntegration(
@@ -491,12 +523,11 @@ class SunCoClient {
                 bodyParams
             );
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error;
         }
     }
 
-    async listIntegrationsPerChannelResponder() {
+    async listIntegrationsPerChannelResponder(): Promise<any> {
         const listIntegrations = await axios.get(
             `${podBaseUrl}/v2/apps/${appId}/integrations?page[size]=100`,
             {
@@ -508,17 +539,19 @@ class SunCoClient {
         try {
             return await listIntegrations.data;
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }
 
-    async uploadAttachment(source, conversationId) {
+    async uploadAttachment(
+        source: unknown,
+        conversationId: string
+    ): Promise<any> {
         const apiInstance = new SunshineConversationsClient.AttachmentsApi();
-        const access = 'public'; // String | The access level for the attachment. Currently the only available access level is public. Private is not supported.
+        const access = 'public';
         const opts = {
-            _for: 'message', // String | Specifies the intended container for the attachment, to enable automatic attachment deletion (on deletion of associated message, conversation or user). For now, only message is supported. See [Attachments for Messages](#section/Attachments-for-Messages) for details.
-            conversationId: conversationId, // String | Links the attachment getting uploaded to the conversation ID.
+            _for: 'message',
+            conversationId: conversationId,
         };
         try {
             return await apiInstance.uploadAttachment(
@@ -528,7 +561,6 @@ class SunCoClient {
                 opts
             );
         } catch (error) {
-            // catch error
             return error.body?.errors[0]?.title || error.status;
         }
     }

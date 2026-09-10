@@ -1,5 +1,4 @@
 import getChuckNorrisJoke from '../utils/chuckNorrisApi.js';
-// import executeQueries from '../controllers/gdf.js';
 import botMessages from '../constants/botMessages.js';
 import SunCoClient from '../utils/suncoApi.js';
 import {
@@ -11,10 +10,15 @@ import {
     sendCatImage,
 } from './botActions.js';
 import BotResponse from './BotResponse.js';
-import axios from 'axios';
+import type ConversationEvent from './webhook.js';
+import type PassControlMetadata from './passControlMetadata.js';
+
 const sunCo = new SunCoClient();
 
-export const replyToUser = async (eventMessage, switchBoardMetadata) => {
+export const replyToUser = async (
+    eventMessage: ConversationEvent,
+    switchBoardMetadata: PassControlMetadata
+): Promise<unknown> => {
     const { userMessage, conversationId } = eventMessage;
     const response = new BotResponse(conversationId);
     const {
@@ -74,7 +78,6 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
         case 'answer bot':
         case 'zendesk bot':
         case 'zd bot':
-        case 'zd bot':
         case 'escalate to answer bot':
             return await escalateToAnswerBot(eventMessage);
         case 'carousel':
@@ -110,9 +113,6 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
         case 'webview':
             response.message = webview;
             return sunCo.sendMessage(response);
-        // case 'gdf':
-        //   response.message = await executeQueries('Hey there, how are you?');
-        //   return sunCo.sendMessage(response);
         case 'list':
         case 'clean':
         case 'clean conversations':
@@ -138,30 +138,6 @@ export const replyToUser = async (eventMessage, switchBoardMetadata) => {
         default:
             response.message = getRandomFallbackMessage();
             return sunCo.sendMessage(response);
-        // try {
-        //   await sunCo.postActivity(response);
-        //   const response = await axios.post(
-        //     process.env.ZD_OPENAI_URL,
-        //     {
-        //       model: "gpt-4",
-        //       messages: [{ role: "user", content: userMessage }],
-        //       temperature: 0.7,
-        //     },
-        //     {
-        //       headers: {
-        //         "User-Agent": "sunco-bot-chat-robot",
-        //         "Content-Type": "application/json",
-        //         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        //       },
-        //     }
-        //   );
-
-        //   const replyText = response.data?.choices[0]?.message?.content;
-        //   response.message = replyText;
-        //   return sunCo.sendMessage(response);
-        // } catch (error) {
-        //   console.error(error);
-        // }
     }
 };
 

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { type AxiosError } from 'axios';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -8,15 +8,33 @@ const {
     ZD_PASSWORD: password,
 } = process.env;
 
-const auth = {
-    username: username,
-    password: password,
-};
+const auth = { username, password } as { username: string; password: string };
 
 const zendeskBaseUrl = `https://${subdomain}.zendesk.com/api/v2`;
 
-export const syncUser = async (email, external_id, name) => {
-    const user = {
+interface ZdUser {
+    external_id: string;
+    email: string;
+    name: string;
+    skip_verify_email?: boolean;
+    notes?: string;
+}
+
+interface SearchUserQuery {
+    email?: string;
+    external_id?: string;
+}
+
+interface SearchUserResponse {
+    users: Array<{ id: string | number; external_id?: string }>;
+}
+
+export const syncUser = async (
+    email: string,
+    external_id: string,
+    name: string
+): Promise<void> => {
+    const user: ZdUser = {
         external_id: external_id,
         email: email.toLowerCase(),
         name: name,
@@ -42,7 +60,6 @@ export const syncUser = async (email, external_id, name) => {
     ${foundByExternalId} \n}`
     );
 
-    // if this is true there is a problem (1 existing user matches email, another matches external ID)
     if (
         foundByEmail.users.length > 0 &&
         foundByExternalId.users.length > 0 &&
@@ -57,7 +74,6 @@ export const syncUser = async (email, external_id, name) => {
     )} \n`);
     }
 
-    // update external_id on user found by email, or email on user found by external_id , or create new user is none was found
     if (
         foundByEmail.users.length === 0 ||
         (foundByEmail.users.length > 0 && !foundByEmail.users[0].external_id)
@@ -66,8 +82,8 @@ export const syncUser = async (email, external_id, name) => {
     }
 };
 
-const searchUser = async (user) => {
-    let searchUrl = String;
+const searchUser = async (user: SearchUserQuery): Promise<SearchUserResponse> => {
+    let searchUrl: string;
     if (user.email)
         searchUrl = `${zendeskBaseUrl}/users/search?query=email:${user.email}&include=identities`;
     else
@@ -77,12 +93,17 @@ const searchUser = async (user) => {
         const response = await axios.get(searchUrl, { auth: auth });
         return response.data;
     } catch (e) {
-        console.error('Error fetching user:', error);
-        throw new Error(e.response.statusText);
+        console.error('Error fetching user:', e);
+        throw new Error(
+            (e as AxiosError).response?.statusText ?? 'request failed'
+        );
     }
 };
 
-const createOrUpdateUser = async (user, skipVerification = true) => {
+const createOrUpdateUser = async (
+    user: ZdUser,
+    skipVerification = true
+): Promise<void> => {
     user.skip_verify_email = skipVerification;
     user.notes = `Via API on ${new Date().toLocaleString()}`;
     const body = {
@@ -90,7 +111,7 @@ const createOrUpdateUser = async (user, skipVerification = true) => {
     };
     console.log(body);
     const config = {
-        method: 'POST',
+        method: 'POST' as const,
         url: `${zendeskBaseUrl}/users/create_or_update`,
         data: body,
         headers: {
@@ -103,7 +124,8 @@ const createOrUpdateUser = async (user, skipVerification = true) => {
         console.log(`----------------------------------------Create or Update User in Zendesk---------------------------------------- \n
           ${JSON.stringify(response.data, null, 2)} \n`);
     } catch (e) {
-        // catch error
-        throw new Error(e.response.statusText);
+        throw new Error(
+            (e as AxiosError).response?.statusText ?? 'request failed'
+        );
     }
 };
