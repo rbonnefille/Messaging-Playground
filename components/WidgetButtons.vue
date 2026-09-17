@@ -73,6 +73,10 @@
   import ZendeskLauncherButton from '@/components/ZendeskLauncherButton.vue';
   import { reactive, computed } from 'vue';
   import {
+    useWidgetButtons,
+  } from '@/composables/useWidgetButtons';
+
+  const {
     toolsButtons,
     suncoButtons,
     zendeskButtons,
@@ -83,7 +87,7 @@
     conversationTags,
     sidebarRight,
     isSuncoWidgetVisible,
-  } from '@/composables/useWidgetButtons';
+  } = useWidgetButtons();
 
   const suncoButtonsFiltered = computed(() => {
     if (!isSuncoWidgetVisible.value) {

@@ -21,9 +21,10 @@
   import VSidebar from '@/components/VSidebar.vue';
   import TheFooter from '@/components/TheFooter.vue';
   import { useRoute } from 'vue-router';
-  import { sidebarLeft } from '@/composables/useWidgetButtons';
+  import { useWidgetButtons } from '@/composables/useWidgetButtons';
 
   const route = useRoute();
+  const { sidebarLeft } = useWidgetButtons();
 
   const handleClose = () => {
     sidebarLeft.value?.closeSidebar();

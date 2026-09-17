@@ -13,7 +13,15 @@ import {
 } from '@/composables/useZendesk';
 import { setSuncoWidgetVisibility } from '@/composables/useSunco';
 
-const userStore = useUserStore();
+// Singleton cache so the shared refs (sidebarLeft/sidebarRight) stay stable
+// across callers, while the Pinia/DOM/VueUse calls below only run inside a
+// setup context (after plugins are installed).
+let _cache = null;
+
+export function useWidgetButtons() {
+  if (_cache) return _cache;
+
+  const userStore = useUserStore();
 
 const {
   changeAuthenticationStatus,
@@ -586,19 +594,21 @@ const updateCitationSourceFormat = value => {
   });
 };
 
-export {
-  toolsButtons,
-  suncoButtons,
-  zendeskButtons,
-  sidebarLeft,
-  sidebarRight,
-  openSidebar,
-  isWidgetEmbedded,
-  updateWidgetLocale,
-  updateCookieConsent,
-  metadataSet,
-  conversationTags,
-  isSuncoWidgetVisible,
-  toggleSuncoWidget,
-  updateCitationSourceFormat,
-};
+  _cache = {
+    toolsButtons,
+    suncoButtons,
+    zendeskButtons,
+    sidebarLeft,
+    sidebarRight,
+    openSidebar,
+    isWidgetEmbedded,
+    updateWidgetLocale,
+    updateCookieConsent,
+    metadataSet,
+    conversationTags,
+    isSuncoWidgetVisible,
+    toggleSuncoWidget,
+    updateCitationSourceFormat,
+  };
+  return _cache;
+}

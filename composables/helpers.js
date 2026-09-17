@@ -2,7 +2,10 @@ import { useUserStore } from '@/stores/userStore';
 import { useToast } from 'vue-toastification';
 import { useStorage } from '@vueuse/core';
 import { requestAuthToken } from '@/services/authService';
-const toast = useToast();
+
+// `useToast()` is resolved lazily inside each function so it runs after the
+// toast plugin is installed (calling it at module import time triggers
+// "getActivePinia"-style errors under Nuxt).
 
 /**
  * Checks if Zendesk Widget (zE) is loaded on the window object.
@@ -171,6 +174,7 @@ export const useGetRandomImageUrl = () => {
  * @param {number} [timeout=3500] - Optional. Duration in milliseconds before the toast disappears. Defaults to 3500ms.
  */
 export const useShowWarningToast = (error, timeout) => {
+  const toast = useToast();
   toast.warning(error, {
     position: 'bottom-center',
     timeout: timeout || 3500,
@@ -194,6 +198,7 @@ export const useShowWarningToast = (error, timeout) => {
  * @param {number} [timeout=2000] - The duration (in milliseconds) for which the toast is visible. Defaults to 2000ms if not provided.
  */
 export const useShowSuccessToast = (message, timeout) => {
+  const toast = useToast();
   toast.success(message, {
     position: 'bottom-center',
     toastClassName: 'toast-body',

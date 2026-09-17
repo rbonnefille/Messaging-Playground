@@ -25,12 +25,13 @@
 <script setup>
   import { useUserStore } from '@/stores/userStore';
   import { storeToRefs } from 'pinia';
-  import { sidebarLeft } from '@/composables/useWidgetButtons';
+  import { useWidgetButtons } from '@/composables/useWidgetButtons';
   import { Bars3Icon } from '@heroicons/vue/24/outline';
 
   const userStore = useUserStore();
   const { changeWidgetOpenedStatus } = userStore;
   const { widgetOpened } = storeToRefs(userStore);
+  const { sidebarLeft } = useWidgetButtons();
 
   const openLeftSidebar = () => {
     if (widgetOpened.value) {

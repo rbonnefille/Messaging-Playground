@@ -17,9 +17,10 @@
 import { onMounted } from 'vue';
   import { useInitZDWidget } from '@/composables/useZendesk';
   import { checkZendeskLoaded } from '@/composables/helpers';
-  import { zendeskButtons } from '@/composables/useWidgetButtons';
+  import { useWidgetButtons } from '@/composables/useWidgetButtons';
   import VButtonGroup from '@/components/VButtonGroup.vue';
 
+  const { zendeskButtons } = useWidgetButtons();
   const { showHeader, hideHeader } = zendeskButtons;
   const zdButtonsFiltered = { showHeader, hideHeader };
 
