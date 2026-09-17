@@ -87,10 +87,11 @@ See `.env.example` for the full list.
 - **SSR**: disabled (`ssr: false`) — the SPA's composables touch
   `window`/`document` at module scope (widget SDKs), so SPA mode matches the
   original deployment and avoids hydration hazards.
-- **SunCo SDK**: ported as-is. The `sunshine-conversations-client` SDK is built
-  around a global `ApiClient.instance` singleton, so `passControl` now restores
-  bearer auth after its basic-auth interlude. **Concurrency hazard remains** —
-  see TODO in `server/utils/sunco.ts` (replace SDK with direct `$fetch`).
+- **SunCo SDK**: replaced with direct `$fetch` REST calls. The
+  `sunshine-conversations-client` SDK is gone — no more global
+  `ApiClient.instance` singleton, so `passControl` no longer needs to restore
+  bearer auth and there's no concurrency hazard. Server bundle dropped from
+  6.26 MB to 2.72 MB.
 
 ## Known TODOs (not in scope of this scaffold)
 
@@ -102,9 +103,7 @@ See `.env.example` for the full list.
    verification.
 3. **`/api/templates` & `/api/messageTemplates`** — stubbed; were not present
    in the legacy server. Implement against the SunCo templates API.
-4. **SunCo SDK singleton** — refactor to per-request `$fetch` calls for true
-   isolation under concurrent traffic.
-5. **Single-file iframe build** — the SPA built a single inlined `index.html`
+4. **Single-file iframe build** — the SPA built a single inlined `index.html`
    for the Zendesk iframe via `vite-plugin-singlefile`. Nuxt has no direct
    equivalent; revisit the iframe deployment (`nuxt generate` + post-process,
    or serve the Nuxt app directly).

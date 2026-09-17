@@ -79,10 +79,7 @@ export default defineNuxtConfig({
   },
 
   // Bootstrap JS bundle is loaded client-side via a plugin; the CSS is above.
-  // Vite pre-bundling tweaks for the SunCo SDK (Node-oriented CJS).
   vite: {
-    optimizeDeps: {
-      include: ['sunshine-conversations-client'],
-    },
+    optimizeDeps: {},
   },
 })

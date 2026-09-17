@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@heroicons/vue": "^2.2.0",
+    "@pinia/nuxt": "^0.5.5",
     "@vueuse/core": "^11.3.0",
     "@vueuse/nuxt": "^11.3.0",
     "axios": "^1.12.2",
@@ -25,8 +26,6 @@
     "motion-v": "^2.3.0",
     "nuxt": "^3.14.1592",
     "pinia": "^2.2.6",
-    "@pinia/nuxt": "^0.5.5",
-    "sunshine-conversations-client": "^15.5.2",
     "uuid": "^13.0.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
