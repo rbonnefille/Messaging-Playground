@@ -2,8 +2,6 @@ import express from 'express';
 import conversationEvents from '../controllers/conversationEvents.js';
 import SunCoClient from '../utils/suncoApi.js';
 import axios from 'axios';
-import * as dotenv from 'dotenv';
-dotenv.config();
 import pkg from 'jsonwebtoken';
 const { sign } = pkg;
 import { v4 as uuidv4 } from 'uuid';

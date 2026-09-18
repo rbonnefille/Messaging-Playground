@@ -1,6 +1,5 @@
+import './config/env.js';
 import express from 'express';
-import * as dotenv from 'dotenv';
-dotenv.config();
 import * as helmet from 'helmet';
 import cors from 'cors';
 import routes from './routes/index.js';

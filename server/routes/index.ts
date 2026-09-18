@@ -1,13 +1,10 @@
 import express from 'express';
-import * as dotenv from 'dotenv';
-dotenv.config();
 import path from 'path';
 import { fileURLToPath } from 'url';
 import conversationRouter from './conversations.js';
 import switchboardsRouter from './switchboards.js';
 import integrationRouter from './integrations.js';
 import webhooksRouter from './webhooks.js';
-import serverSideEventsRouter from './serverSideEvents.js';
 import userRouter from './users.js';
 import zendeskRouter from './zendesk.js';
 import notificationRouter from './notifications.js';
@@ -30,7 +27,6 @@ router.use('/zendesk', zendeskRouter);
 router.use('/notifications', notificationRouter);
 router.use('/chatToken', chatTokenRouter);
 router.use('/webhooks', webhooksRouter);
-router.use('/stream', serverSideEventsRouter);
 
 router.get(['/', '/custom-app'], (req, res) => {
     const { origin, app_guid } = req.query;

@@ -1,6 +1,3 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
-
 const {
     BOT_NAME: botName,
     BOT_AVATAR_URL: botAvatarUrl,

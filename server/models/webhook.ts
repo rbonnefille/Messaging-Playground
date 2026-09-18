@@ -1,7 +1,4 @@
-import * as dotenv from 'dotenv';
 import type { Request } from 'express';
-
-dotenv.config();
 
 const EVENT_TYPES = {
     CONVERSATION_CREATE: 'conversation:create',

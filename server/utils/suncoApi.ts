@@ -1,5 +1,3 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
 import axios from 'axios';
 import SunshineConversationsClient from 'sunshine-conversations-client';
 
