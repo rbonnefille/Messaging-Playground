@@ -105,29 +105,29 @@ interface ConversationReadPayload {
 
 type WebhookEventEnvelope =
     | {
-          id: string;
-          createdAt: string;
-          type: typeof EVENT_TYPES.CONVERSATION_CREATE;
-          payload: ConversationCreatePayload;
-      }
+        id: string;
+        createdAt: string;
+        type: typeof EVENT_TYPES.CONVERSATION_CREATE;
+        payload: ConversationCreatePayload;
+    }
     | {
-          id: string;
-          createdAt: string;
-          type: typeof EVENT_TYPES.CONVERSATION_MESSAGE;
-          payload: ConversationMessagePayload;
-      }
+        id: string;
+        createdAt: string;
+        type: typeof EVENT_TYPES.CONVERSATION_MESSAGE;
+        payload: ConversationMessagePayload;
+    }
     | {
-          id: string;
-          createdAt: string;
-          type: typeof EVENT_TYPES.CONVERSATION_POSTBACK;
-          payload: ConversationPostbackPayload;
-      }
+        id: string;
+        createdAt: string;
+        type: typeof EVENT_TYPES.CONVERSATION_POSTBACK;
+        payload: ConversationPostbackPayload;
+    }
     | {
-          id: string;
-          createdAt: string;
-          type: typeof EVENT_TYPES.CONVERSATION_READ;
-          payload: ConversationReadPayload;
-      };
+        id: string;
+        createdAt: string;
+        type: typeof EVENT_TYPES.CONVERSATION_READ;
+        payload: ConversationReadPayload;
+    };
 
 interface WebhookEnvelope {
     app: { id: string };
@@ -332,7 +332,7 @@ class ConversationEvent extends WebhookEvent {
         return this.eventType === EVENT_TYPES.CONVERSATION_CREATE;
     }
     isCreationReasonStartConversation(): boolean {
-        return this.creationReason === 'startConversation';
+        return this.creationReason === 'startConversation' || this.creationReason === 'none';
     }
     isConversationRead(): boolean {
         return this.eventType === EVENT_TYPES.CONVERSATION_READ;
@@ -360,7 +360,8 @@ class ConversationEvent extends WebhookEvent {
                 this.sourceType === 'android' ||
                 this.sourceType === 'ios' ||
                 this.sourceType === 'web' ||
-                this.sourceType === 'messenger'
+                this.sourceType === 'messenger' ||
+                this.sourceType === 'api'
             );
         }
     }
