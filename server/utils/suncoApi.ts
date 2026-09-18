@@ -11,6 +11,7 @@ const {
     SUNCO_CUSTOM_INTEGRATION_SECRET: suncoCustomIntegrationSecret,
     BASE_URL: defaultBaseUrl,
     NEXT_SWITCHBOARD_INTEGRATION: nextSwitchboardIntegration,
+    ULTIMATE_SWITCHBOARD_INTEGRATION: ultimateSwitchboardIntegration,
 } = process.env;
 
 interface UserIdentifierPayload {
@@ -558,6 +559,36 @@ class SunCoClient {
                 source,
                 opts
             );
+        } catch (error) {
+            return error.body?.errors[0]?.title || error.status;
+        }
+    }
+
+    async createConversation(bodyParams: Record<string, unknown>): Promise<JSON> {
+        const { userId, displayName, description, iconUrl, metadata } = bodyParams;
+        const url = `${podBaseUrl}/v2/apps/${this.appId}/conversations`;
+        const body = {
+            type: 'personal',
+            participants: [
+                {
+                    userId: userId,
+                    subscribeSDKClient: false,
+                },
+            ],
+            displayName: displayName,
+            description: description,
+            iconUrl: iconUrl,
+            metadata: metadata,
+            activeSwitchboardIntegrationId: "695d16e34e6b695b790a7832",
+        };
+        try {
+            const response = await axios.post(url, body, {
+                headers: {
+                    Authorization: `Bearer ${suncoJwt}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            return response.data.conversation.id;
         } catch (error) {
             return error.body?.errors[0]?.title || error.status;
         }

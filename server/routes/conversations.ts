@@ -14,6 +14,18 @@ router.head('/', (_req, res) => {
     return res.sendStatus(200).end();
 });
 
+router.post('/create', async (req, res) => {
+    try {
+        const response = await sunCo.createConversation(req.body);
+        return res.json(response);
+    } catch (error) {
+        console.error('Error creating conversation:', error);
+        return res
+            .status(502)
+            .json({ error: 'Conversation service unavailable' });
+    }
+});
+
 router.get('/:id', async (req, res) => {
     try {
         const { id: conversationId } = req.params;
