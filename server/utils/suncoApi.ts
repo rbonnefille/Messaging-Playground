@@ -282,19 +282,48 @@ class SunCoClient {
             Object.keys(userIdOrExternalId as any).length === 24
                 ? `userId`
                 : `userExternalId`;
-        const url = `${podBaseUrl}/v2/apps/${this.appId}/conversations?filter[${filter}]=${userIdOrExternalId}&page[size]=100`;
+        const url = `${podBaseUrl}/v2/apps/${this.appId}/conversations`;
 
         try {
-            const response = await axios.get(url, {
-                headers: {
-                    Authorization: `Bearer ${suncoJwt}`,
-                },
-            });
-            return response.data;
+            const conversations: any[] = [];
+            const seenCursors = new Set<string>();
+            let afterCursor: string | undefined;
+            let page: any;
+
+            do {
+                const response = await axios.get(url, {
+                    headers: {
+                        Authorization: `Bearer ${suncoJwt}`,
+                    },
+                    params: {
+                        [`filter[${filter}]`]: userIdOrExternalId,
+                        'page[size]': 100,
+                        ...(afterCursor ? { 'page[after]': afterCursor } : {}),
+                    },
+                });
+                page = response.data;
+                conversations.push(...page.conversations);
+
+                if (page.meta?.hasMore && !page.meta.afterCursor) {
+                    throw new Error('Missing conversation pagination cursor');
+                }
+                afterCursor = page.meta?.hasMore
+                    ? page.meta.afterCursor
+                    : undefined;
+                if (afterCursor) {
+                    if (seenCursors.has(afterCursor)) {
+                        throw new Error('Repeated conversation pagination cursor');
+                    }
+                    seenCursors.add(afterCursor);
+                }
+            } while (afterCursor);
+
+            return { ...page, conversations };
         } catch (error) {
             return (
                 error.response?.data?.errors?.[0]?.title ||
-                error.response?.status
+                error.response?.status ||
+                error.message
             );
         }
     }
