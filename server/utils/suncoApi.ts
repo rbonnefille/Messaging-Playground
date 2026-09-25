@@ -238,7 +238,7 @@ class SunCoClient {
 
     async listMessages(payload: ConversationPayload | string): Promise<any> {
         const conversationId =
-            typeof payload === 'string' ? undefined : payload.conversationId;
+            typeof payload === 'string' ? payload : payload.conversationId;
         const apiInstance = new SunshineConversationsClient.MessagesApi();
         try {
             return await apiInstance.listMessages(this.appId, conversationId);
@@ -251,7 +251,7 @@ class SunCoClient {
         payload: ConversationPayload | string
     ): Promise<any> {
         const conversationId =
-            typeof payload === 'string' ? undefined : payload.conversationId;
+            typeof payload === 'string' ? payload : payload.conversationId;
         const apiInstance = new SunshineConversationsClient.ConversationsApi();
         const conversationUpdateBody =
             new SunshineConversationsClient.ConversationUpdateBody();
