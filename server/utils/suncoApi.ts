@@ -1,5 +1,4 @@
-import axios from 'axios';
-import SunshineConversationsClient from 'sunshine-conversations-client';
+import axios, { type AxiosInstance } from 'axios';
 
 const timeout = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
@@ -42,17 +41,29 @@ interface SwitchboardIntegrationUpdatePayload {
 class SunCoClient {
     appId: string | undefined;
     switchboardId: string | undefined;
+    private readonly appUrl: string;
+    private readonly api: AxiosInstance;
 
     constructor() {
-        this.setApiClient();
         this.appId = appId;
         this.switchboardId = switchboardId;
+        const baseUrl = (podBaseUrl || defaultBaseUrl || '').replace(
+            /\/+$/,
+            ''
+        );
+        this.appUrl = `${baseUrl}/v2/apps/${encodeURIComponent(this.appId ?? '')}`;
+        this.api = axios.create({
+            headers: suncoJwt
+                ? { Authorization: `Bearer ${suncoJwt}` }
+                : undefined,
+        });
     }
-    setApiClient(): void {
-        const defaultClient = SunshineConversationsClient.ApiClient.instance;
-        const bearerAuth = defaultClient.authentications['bearerAuth'];
-        bearerAuth.accessToken = suncoJwt;
-        defaultClient.basePath = podBaseUrl || defaultBaseUrl;
+
+    private apiError(error: unknown): string | number | undefined {
+        if (!axios.isAxiosError(error)) return undefined;
+        const data = error.response?.data as
+            { errors?: Array<{ title?: string }> } | undefined;
+        return data?.errors?.[0]?.title || error.response?.status;
     }
 
     getUserIdOrExternalId(payload: UserIdentifierPayload | string): any {
@@ -88,162 +99,132 @@ class SunCoClient {
 
     async postActivity(payload: MessagePayload): Promise<any> {
         const { conversationId, author } = payload;
-        const apiInstance = new SunshineConversationsClient.ActivitiesApi();
-        const activityPost = new SunshineConversationsClient.ActivityPost();
-        activityPost.author = author;
-        activityPost.type = 'typing:start';
+        const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}/activity`;
         try {
-            return await apiInstance.postActivity(
-                this.appId,
-                conversationId,
-                activityPost
-            );
+            const response = await this.api.post(url, {
+                author,
+                type: 'typing:start',
+            });
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
     async sendMessage(payload: MessagePayload): Promise<any> {
         const { conversationId, author, message, image, metadata } = payload;
+        const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}/messages`;
         await this.postActivity(payload);
         await timeout(300);
-        const apiInstance = new SunshineConversationsClient.MessagesApi();
-        const messagePost = new SunshineConversationsClient.MessagePost();
-        messagePost.author = author;
-        messagePost.content = this.buildMessageContent(
-            message,
-            image,
-            metadata
-        );
         try {
-            return await apiInstance.postMessage(
-                this.appId,
-                conversationId,
-                messagePost
-            );
+            const response = await this.api.post(url, {
+                author,
+                content: this.buildMessageContent(message, image, metadata),
+            });
+            return response.data;
         } catch (error) {
-            return error.response?.text;
+            if (!axios.isAxiosError(error)) return undefined;
+            const data = error.response?.data;
+            return typeof data === 'string'
+                ? data
+                : data === undefined
+                    ? undefined
+                    : JSON.stringify(data);
         }
     }
 
     async listClients(payload: UserIdentifierPayload | string): Promise<any> {
         const userIdOrExternalId = this.getUserIdOrExternalId(payload);
-        const apiInstance = new SunshineConversationsClient.ClientsApi();
-        const opts = {
-            page: new SunshineConversationsClient.Page(),
-        };
-        opts.page.size = 100;
+        const url = `${this.appUrl}/users/${encodeURIComponent(userIdOrExternalId)}/clients`;
         try {
-            return await apiInstance.listClients(
-                this.appId,
-                userIdOrExternalId,
-                opts
-            );
+            const response = await this.api.get(url, {
+                params: { 'page[size]': 100 },
+            });
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
     async listDevices(payload: UserIdentifierPayload | string): Promise<any> {
         const userIdOrExternalId = this.getUserIdOrExternalId(payload);
-        const apiInstance = new SunshineConversationsClient.DevicesApi();
+        const url = `${this.appUrl}/users/${encodeURIComponent(userIdOrExternalId)}/devices`;
         try {
-            return await apiInstance.listDevices(
-                this.appId,
-                userIdOrExternalId
-            );
+            const response = await this.api.get(url);
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
     async getUser(payload: UserIdentifierPayload | string): Promise<any> {
         const userIdOrExternalId = this.getUserIdOrExternalId(payload);
-        const url = `${podBaseUrl}/v2/apps/${this.appId}/users/${userIdOrExternalId}`;
+        const url = `${this.appUrl}/users/${encodeURIComponent(userIdOrExternalId)}`;
         try {
-            const response = await axios.get(url, {
-                headers: {
-                    Authorization: `Bearer ${suncoJwt}`,
-                },
-            });
+            const response = await this.api.get(url);
             return response.data;
         } catch (error) {
-            return (
-                error.response?.data?.errors?.[0]?.title ||
-                error.response?.status
-            );
+            return this.apiError(error);
         }
     }
 
     async getUserByEmailIdentity(payload: { email: string }): Promise<any> {
         const { email: userEmail } = payload;
-        const url = `${podBaseUrl}/v2/apps/${this.appId}/users?filter[identities.email]=${userEmail}`;
+        const url = `${this.appUrl}/users`;
         try {
-            const response = await axios.get(url, {
-                headers: {
-                    Authorization: `Bearer ${suncoJwt}`,
-                },
+            const response = await this.api.get(url, {
+                params: { 'filter[identities.email]': userEmail },
             });
             return response.data;
         } catch (error) {
-            return (
-                error.response?.data?.errors?.[0]?.title ||
-                error.response?.status
-            );
+            return this.apiError(error);
         }
     }
 
     async listParticipants(conversationId: string): Promise<any> {
-        const apiInstance = new SunshineConversationsClient.ParticipantsApi();
+        const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId)}/participants`;
         try {
-            return await apiInstance.listParticipants(
-                this.appId,
-                conversationId
-            );
+            const response = await this.api.get(url);
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
     async updateUser(payload: UserIdentifierPayload | string): Promise<any> {
         const userIdOrExternalId = this.getUserIdOrExternalId(payload);
-        const apiInstance = new SunshineConversationsClient.UsersApi();
-        const userUpdateBody = new SunshineConversationsClient.UserUpdateBody();
-        userUpdateBody.metadata = {
-            botDialog: true,
-        };
+        const url = `${this.appUrl}/users/${encodeURIComponent(userIdOrExternalId)}`;
         try {
-            return await apiInstance.updateUser(
-                this.appId,
-                userIdOrExternalId,
-                userUpdateBody
-            );
+            const response = await this.api.patch(url, {
+                metadata: { botDialog: true },
+            });
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
     async getConversation(payload: ConversationPayload | string): Promise<any> {
-        const conversationId = (payload as any).conversationId || payload;
-        const apiInstance = new SunshineConversationsClient.ConversationsApi();
+        const conversationId =
+            typeof payload === 'string' ? payload : payload.conversationId;
+        const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}`;
         try {
-            return await apiInstance.getConversation(
-                this.appId,
-                conversationId
-            );
+            const response = await this.api.get(url);
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
     async listMessages(payload: ConversationPayload | string): Promise<any> {
         const conversationId =
             typeof payload === 'string' ? payload : payload.conversationId;
-        const apiInstance = new SunshineConversationsClient.MessagesApi();
+        const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}/messages`;
         try {
-            return await apiInstance.listMessages(this.appId, conversationId);
+            const response = await this.api.get(url);
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
@@ -252,25 +233,17 @@ class SunCoClient {
     ): Promise<any> {
         const conversationId =
             typeof payload === 'string' ? payload : payload.conversationId;
-        const apiInstance = new SunshineConversationsClient.ConversationsApi();
-        const conversationUpdateBody =
-            new SunshineConversationsClient.ConversationUpdateBody();
-        conversationUpdateBody.displayName = new Date().toLocaleString(
-            'en-us',
-            {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-            }
-        );
+        const displayName = new Date().toLocaleString('en-us', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+        });
+        const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}`;
         try {
-            return await apiInstance.updateConversation(
-                this.appId,
-                conversationId,
-                conversationUpdateBody
-            );
+            const response = await this.api.patch(url, { displayName });
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
@@ -282,8 +255,7 @@ class SunCoClient {
             Object.keys(userIdOrExternalId as any).length === 24
                 ? `userId`
                 : `userExternalId`;
-        const url = `${podBaseUrl}/v2/apps/${this.appId}/conversations`;
-
+        const url = `${this.appUrl}/conversations`;
         try {
             const conversations: any[] = [];
             const seenCursors = new Set<string>();
@@ -291,10 +263,7 @@ class SunCoClient {
             let page: any;
 
             do {
-                const response = await axios.get(url, {
-                    headers: {
-                        Authorization: `Bearer ${suncoJwt}`,
-                    },
+                const response = await this.api.get(url, {
                     params: {
                         [`filter[${filter}]`]: userIdOrExternalId,
                         'page[size]': 100,
@@ -312,7 +281,9 @@ class SunCoClient {
                     : undefined;
                 if (afterCursor) {
                     if (seenCursors.has(afterCursor)) {
-                        throw new Error('Repeated conversation pagination cursor');
+                        throw new Error(
+                            'Repeated conversation pagination cursor'
+                        );
                     }
                     seenCursors.add(afterCursor);
                 }
@@ -321,22 +292,19 @@ class SunCoClient {
             return { ...page, conversations };
         } catch (error) {
             return (
-                error.response?.data?.errors?.[0]?.title ||
-                error.response?.status ||
-                error.message
+                this.apiError(error) ||
+                (error instanceof Error ? error.message : undefined)
             );
         }
     }
 
     async deleteConversation(conversationId: string): Promise<any> {
-        const apiInstance = new SunshineConversationsClient.ConversationsApi();
+        const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId)}`;
         try {
-            return await apiInstance.deleteConversation(
-                this.appId,
-                conversationId
-            );
+            const response = await this.api.delete(url);
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
@@ -344,97 +312,74 @@ class SunCoClient {
         payload: ConversationPayload,
         switchboardIntegration: string | undefined = nextSwitchboardIntegration
     ): Promise<any> {
-        const defaultClient = SunshineConversationsClient.ApiClient.instance;
-        const basicAuth = defaultClient.authentications['basicAuth'];
-        basicAuth.username = suncoCustomIntegrationSecret;
-        basicAuth.password = suncoCustomIntegrationSecret;
         const { conversationId, metadata } = payload;
-        const apiInstance =
-            new SunshineConversationsClient.SwitchboardActionsApi();
-        const passControlBody =
-            new SunshineConversationsClient.PassControlBody();
-        passControlBody.switchboardIntegration = switchboardIntegration;
+        const passControlBody = { switchboardIntegration, metadata };
+        const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}/passControl`;
         if (metadata) {
-            passControlBody.metadata = metadata;
             console.log(
                 `Switchboard metadata sent ${JSON.stringify(passControlBody, null, 2)}`
             );
         }
         try {
-            return await apiInstance.passControl(
-                this.appId,
-                conversationId,
-                passControlBody
+            const response = await this.api.post(
+                url,
+                passControlBody,
             );
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
     async offerControl(payload: ConversationPayload): Promise<any> {
         const { conversationId, metadata } = payload;
-        const apiInstance =
-            new SunshineConversationsClient.SwitchboardActionsApi();
-        const offerControlBody =
-            new SunshineConversationsClient.OfferControlBody();
+        const offerControlBody = metadata ? { metadata } : {};
+        const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}/offerControl`;
         if (metadata) {
-            offerControlBody.metadata = metadata;
-            console.log(offerControlBody.metadata);
+            console.log(metadata);
         }
         try {
-            return await apiInstance.offerControl(
-                this.appId,
-                conversationId,
-                offerControlBody
-            );
+            const response = await this.api.post(url, offerControlBody);
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
     async releaseControl(payload: ConversationPayload): Promise<any> {
         const { conversationId, metadata } = payload;
-        const url = `${podBaseUrl}/v2/apps/${this.appId}/conversations/${conversationId}/releaseControl`;
         const body = metadata ? { metadata } : {};
+        const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}/releaseControl`;
 
         if (metadata) {
             console.log({ metadata });
         }
 
         try {
-            const response = await axios.post(url, body, {
-                headers: {
-                    Authorization: `Bearer ${suncoJwt}`,
-                },
-            });
+            const response = await this.api.post(url, body);
             return response.data;
         } catch (error) {
-            return (
-                error.response?.data?.errors?.[0]?.title ||
-                error.response?.status
-            );
+            return this.apiError(error);
         }
     }
 
     async listSwitchboards(): Promise<any> {
-        const apiInstance = new SunshineConversationsClient.SwitchboardsApi();
+        const url = `${this.appUrl}/switchboards`;
         try {
-            return await apiInstance.listSwitchboards(this.appId);
+            const response = await this.api.get(url);
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
     async listSwitchboardIntegrations(): Promise<any> {
-        const apiInstance =
-            new SunshineConversationsClient.SwitchboardIntegrationsApi();
+        const url = `${this.appUrl}/switchboards/${encodeURIComponent(this.switchboardId ?? '')}/switchboardIntegrations`;
         try {
-            return await apiInstance.listSwitchboardIntegrations(
-                this.appId,
-                this.switchboardId
-            );
+            const response = await this.api.get(url);
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
@@ -442,24 +387,20 @@ class SunCoClient {
         enabled = true,
         defaultSwitchboardIntegrationId?: string
     ): Promise<any> {
-        const apiInstance = new SunshineConversationsClient.SwitchboardsApi();
-        let switchboardUpdateBody =
-            new SunshineConversationsClient.SwitchboardUpdateBody();
-
-        switchboardUpdateBody.enabled = Boolean(enabled);
-
+        const switchboardUpdateBody: {
+            enabled: boolean;
+            defaultSwitchboardIntegrationId?: string;
+        } = { enabled: Boolean(enabled) };
         if (defaultSwitchboardIntegrationId) {
             switchboardUpdateBody.defaultSwitchboardIntegrationId =
                 defaultSwitchboardIntegrationId;
         }
+        const url = `${this.appUrl}/switchboards/${encodeURIComponent(this.switchboardId ?? '')}`;
         try {
-            return await apiInstance.updateSwitchboard(
-                this.appId,
-                this.switchboardId,
-                switchboardUpdateBody
-            );
+            const response = await this.api.patch(url, switchboardUpdateBody);
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
@@ -472,8 +413,6 @@ class SunCoClient {
             deliverStandbyEvents,
             messageHistoryCount,
         } = payload;
-        const apiInstance =
-            new SunshineConversationsClient.SwitchboardIntegrationsApi();
         let switchboardIntegrationUpdateBody = {
             nextSwitchboardIntegrationId:
                 nextSwitchboardIntegrationId === undefined
@@ -487,15 +426,15 @@ class SunCoClient {
                     ? null
                     : parseInt(messageHistoryCount as unknown as string, 10),
         };
+        const url = `${this.appUrl}/switchboards/${encodeURIComponent(this.switchboardId ?? '')}/switchboardIntegrations/${encodeURIComponent(switchboardIntegrationId)}`;
         try {
-            return await apiInstance.updateSwitchboardIntegration(
-                this.appId,
-                this.switchboardId,
-                switchboardIntegrationId,
+            const response = await this.api.patch(
+                url,
                 switchboardIntegrationUpdateBody
             );
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
@@ -506,36 +445,34 @@ class SunCoClient {
         nextSwitchboardIntegrationId: string,
         messageHistoryCount = 10
     ): Promise<any> {
-        const apiInstance =
-            new SunshineConversationsClient.SwitchboardIntegrationsApi();
-        let switchboardIntegrationCreateBody =
-            new SunshineConversationsClient.SwitchboardIntegrationCreateBody();
-        switchboardIntegrationCreateBody.name = integrationName;
-        switchboardIntegrationCreateBody.integrationId = integrationId;
-        switchboardIntegrationCreateBody.deliverStandbyEvents =
-            deliverStandbyEvents;
-        switchboardIntegrationCreateBody.nextSwitchboardIntegrationId =
-            nextSwitchboardIntegrationId;
-        switchboardIntegrationCreateBody.messageHistoryCount =
-            messageHistoryCount;
+        const switchboardIntegrationCreateBody = {
+            name: integrationName,
+            integrationId,
+            deliverStandbyEvents,
+            nextSwitchboardIntegrationId,
+            messageHistoryCount,
+        };
+        const url = `${this.appUrl}/switchboards/${encodeURIComponent(this.switchboardId ?? '')}/switchboardIntegrations`;
         try {
-            return await apiInstance.createSwitchboardIntegration(
-                this.appId,
-                this.switchboardId,
+            const response = await this.api.post(
+                url,
                 switchboardIntegrationCreateBody
             );
+            return response.data;
         } catch (error) {
-            console.log(error.body?.errors[0]?.title);
-            return { error: error.body?.errors[0]?.title };
+            const title = this.apiError(error);
+            console.log(title);
+            return { error: title };
         }
     }
 
     async listIntegrations(): Promise<any> {
-        const apiInstance = new SunshineConversationsClient.IntegrationsApi();
+        const url = `${this.appUrl}/integrations`;
         try {
-            return await apiInstance.listIntegrations(this.appId);
+            const response = await this.api.get(url);
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
@@ -543,31 +480,24 @@ class SunCoClient {
         integrationId: string,
         bodyParams: Record<string, unknown>
     ): Promise<any> {
-        const apiInstance = new SunshineConversationsClient.IntegrationsApi();
+        const url = `${this.appUrl}/integrations/${encodeURIComponent(integrationId)}`;
         try {
-            return await apiInstance.updateIntegration(
-                this.appId,
-                integrationId,
-                bodyParams
-            );
+            const response = await this.api.patch(url, bodyParams);
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error;
+            return this.apiError(error) || error;
         }
     }
 
     async listIntegrationsPerChannelResponder(): Promise<any> {
-        const listIntegrations = await axios.get(
-            `${podBaseUrl}/v2/apps/${appId}/integrations?page[size]=100`,
-            {
-                headers: {
-                    Authorization: `Bearer ${suncoJwt}`,
-                },
-            }
-        );
+        const url = `${this.appUrl}/integrations`;
         try {
-            return await listIntegrations.data;
+            const response = await this.api.get(url, {
+                params: { 'page[size]': 100 },
+            });
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
@@ -575,27 +505,30 @@ class SunCoClient {
         source: unknown,
         conversationId: string
     ): Promise<any> {
-        const apiInstance = new SunshineConversationsClient.AttachmentsApi();
-        const access = 'public';
-        const opts = {
-            _for: 'message',
-            conversationId: conversationId,
-        };
+        const url = `${this.appUrl}/attachments`;
         try {
-            return await apiInstance.uploadAttachment(
-                this.appId,
-                access,
-                source,
-                opts
+            const response = await this.api.postForm(
+                url,
+                { source },
+                {
+                    params: {
+                        access: 'public',
+                        for: 'message',
+                        conversationId,
+                    },
+                }
             );
+            return response.data;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 
-    async createConversation(bodyParams: Record<string, unknown>): Promise<JSON> {
-        const { userId, displayName, description, iconUrl, metadata } = bodyParams;
-        const url = `${podBaseUrl}/v2/apps/${this.appId}/conversations`;
+    async createConversation(
+        bodyParams: Record<string, unknown>
+    ): Promise<string | number | undefined> {
+        const { userId, displayName, description, iconUrl, metadata } =
+            bodyParams;
         const body = {
             type: 'personal',
             participants: [
@@ -608,18 +541,14 @@ class SunCoClient {
             description: description,
             iconUrl: iconUrl,
             metadata: metadata,
-            activeSwitchboardIntegrationId: "695d16e34e6b695b790a7832",
+            activeSwitchboardIntegrationId: '695d16e34e6b695b790a7832',
         };
+        const url = `${this.appUrl}/conversations`;
         try {
-            const response = await axios.post(url, body, {
-                headers: {
-                    Authorization: `Bearer ${suncoJwt}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await this.api.post(url, body);
             return response.data.conversation.id;
         } catch (error) {
-            return error.body?.errors[0]?.title || error.status;
+            return this.apiError(error);
         }
     }
 }
