@@ -27,6 +27,7 @@ export const replyToUser = async (
         carousel,
         compound,
         file,
+        attachment,
         form,
         location,
         tacos,
@@ -102,6 +103,9 @@ export const replyToUser = async (
         case 'form message':
         case 'form':
             response.message = form;
+            return sunCo.sendMessage(response);
+        case 'attachment':
+            response.message = attachment;
             return sunCo.sendMessage(response);
         case 'form response':
             response.message = `Thank you for providing your details.\n ${eventMessage.textFallback}`;

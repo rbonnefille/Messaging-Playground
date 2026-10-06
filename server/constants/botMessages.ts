@@ -5,6 +5,7 @@ interface BotMessages {
     carousel: string;
     compound: string;
     file: string;
+    attachment: string;
     form: string;
     location: string;
     tacos: string;
@@ -39,6 +40,7 @@ const botMessages: BotMessages = {
     carousel: '%((template:mexican_carousel))%',
     compound: '%((template: smooch_tmpl_family_basket))%',
     file: '%((template: attachment))%',
+    attachment: 'Thank you for sharing the attachment',
     form: '%((template: form_message))%',
     location: '%((template: smooch_tmpl_request_location))%',
     tacos: '🌮 are so yummy!!!',

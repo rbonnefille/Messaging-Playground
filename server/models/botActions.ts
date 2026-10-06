@@ -61,9 +61,8 @@ export const cleanConversations = async (
     let allConversations = await sunCo.listConversations(event);
     const userConversations = allConversations.conversations.length;
 
-    response.message = `You currently have ${userConversations} ${
-        userConversations > 1 ? 'conversations' : 'conversation'
-    } opened. I will see if I can close some of them.`;
+    response.message = `You currently have ${userConversations} ${userConversations > 1 ? 'conversations' : 'conversation'
+        } opened. I will see if I can close some of them.`;
     await sunCo.sendMessage(response);
 
     try {
@@ -87,9 +86,8 @@ export const cleanConversations = async (
         }
 
         const message = countDeletedConversations
-            ? `I've deleted ${countDeletedConversations} conversations as ${
-                  countDeletedConversations > 1 ? "they weren't" : "it wasn't"
-              } linked to any open tickets.`
+            ? `I've deleted ${countDeletedConversations} conversations as ${countDeletedConversations > 1 ? "they weren't" : "it wasn't"
+            } linked to any open tickets.`
             : `I didn't find any conversation to delete.`;
         response.setMessage(message);
 
@@ -120,7 +118,7 @@ export const escalateToAgent = async (
         'dataCapture.ticketField.360023540498': userExternalId,
         'dataCapture.systemField.tags': `${eventSource}`,
         'dataCapture.ticketField.360023540658': eventSource,
-        'dataCapture.ticketField.1900005043913': conversation,
+        // 'dataCapture.ticketField.1900005043913': conversation,
         'dataCapture.ticketField.11280496337553': recentNotifications,
         'dataCapture.ticketField.13024896437137':
             'Data captured and passed \n into a multiline field',

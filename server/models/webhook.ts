@@ -349,6 +349,9 @@ class ConversationEvent extends WebhookEvent {
     isTextMessage(): boolean {
         return this.contentType === 'text';
     }
+    isAttachmentMessage(): boolean {
+        return this.contentType === 'file' || this.contentType === 'image';
+    }
     ifFormMessage(): boolean {
         return this.contentType === 'formResponse';
     }

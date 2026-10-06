@@ -64,6 +64,17 @@ const messageEvents = async (
                 console.log(`Error in message handler ${err}`);
                 res.status(500).send({ error: 'Something failed!' });
             }
+        } else if (
+            webhookEvent.isAllowedChannel() &&
+            webhookEvent.isAttachmentMessage()
+        ) {
+            try {
+                webhookEvent.userMessage = 'attachment';
+                replyToUser(webhookEvent, metadata);
+            } catch (err) {
+                console.log(`Error in message handler ${err}`);
+                res.status(500).send({ error: 'Something failed!' });
+            }
         }
         res.end();
     } else if (webhookEvent.isConversationCreate()) {
