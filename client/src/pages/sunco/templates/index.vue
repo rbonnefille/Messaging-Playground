@@ -4,19 +4,14 @@
       <VError class="mt-2" :errorMessage="errorMessage" />
     </div>
     <div v-else-if="isLoading" class="text-center">
-      <div
-        class="spinner-border text-success text-bold m-5"
-        role="status"
-        style="width: 10rem; height: 10rem">
+      <div class="spinner-border text-success text-bold m-5" role="status" style="width: 10rem; height: 10rem">
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
     <div v-else>
       <h2 class="mt-3">SunCo templates</h2>
       <div class="row row-cols-3">
-        <template
-          v-for="(template, key) in suncoTemplates"
-          :key="suncoTemplates.id">
+        <template v-for="template in suncoTemplates" :key="template._id">
           <div class="col mt-2">
             <div class="card">
               <div class="card-header bg-body-secondary">
@@ -35,42 +30,40 @@
 </template>
 
 <script setup>
-  import { ref, onBeforeMount } from 'vue';
-  import VDataItem from '@/components/VDataItem.vue';
-  import VError from '@/components/VError.vue';
-  import { apiUrl } from '@/services/apiClient';
+import { ref, onBeforeMount } from 'vue';
+import VDataItem from '@/components/VDataItem.vue';
+import VError from '@/components/VError.vue';
+import { apiUrl } from '@/services/apiClient';
 
-  const suncoTemplates = ref([]);
-  const isLoading = ref(false);
-  const errorMessage = ref(null);
+const suncoTemplates = ref([]);
+const isLoading = ref(false);
+const errorMessage = ref(null);
 
-  const fetchTemplates = async () => {
-    try {
-      isLoading.value = true;
-      const response = await fetch(apiUrl('/templates'));
-      const templates = await response.json();
-      if (templates.error) {
-        isLoading.value = false;
-        throw new Error(templates.error);
-      }
-      suncoTemplates.value = templates;
+const fetchTemplates = async () => {
+  try {
+    isLoading.value = true;
+    const response = await fetch(apiUrl('/templates'));
+    const templates = await response.json();
+    if (templates.error) {
       isLoading.value = false;
-    } catch (error) {
-      errorMessage.value = error.message;
-      console.error(error);
+      throw new Error(templates.error);
     }
-  };
+    suncoTemplates.value = templates;
+    isLoading.value = false;
+  } catch (error) {
+    errorMessage.value = error.message;
+    console.error(error);
+  }
+};
 
-  onBeforeMount(async () => {
-    await fetchTemplates();
-  });
+onBeforeMount(async () => {
+  await fetchTemplates();
+});
 </script>
 
-<route lang="json">
-{
+<route lang="json">{
   "name": "SunCo templates",
   "meta": {
     "title": "SunCo templates"
   }
-}
-</route>
+}</route>

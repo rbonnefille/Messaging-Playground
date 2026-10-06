@@ -1,17 +1,8 @@
 <template>
   <div class="mt-4 container-md">
-    <VLabel
-      id="labelSearchUser"
-      name="Search by email identity"
-      className="form-label" />
-    <VInput
-      id="searchUser"
-      ref="userEmail"
-      v-model="searchUser"
-      name="Search User"
-      class="mx-3"
-      placeholder="janedoe@example.com"
-      @keyup.enter="searchUserSunCo">
+    <VLabel id="labelSearchUser" name="Search by email identity" className="form-label" />
+    <VInput id="searchUser" ref="userEmail" v-model="searchUser" name="Search User" class="mx-3"
+      placeholder="janedoe@example.com" @keyup.enter="searchUserSunCo">
       <template #end>
         <VButton text="Search User" type="button" @click="searchUserSunCo" />
       </template>
@@ -24,9 +15,7 @@
               User Details
             </div>
             <ul class="list-group list-group-flush">
-              <template
-                v-for="(identity, identityKey) in userIdentity"
-                :key="identity.value">
+              <template v-for="(identity, identityKey) in userIdentity" :key="identity.value">
                 <VDataItem :label="identityKey" :value="identity" />
               </template>
             </ul>
@@ -38,41 +27,37 @@
 </template>
 
 <script setup>
-  import { useRouter } from 'vue-router';
-  import VInput from '@/components/VInput.vue';
-  import VLabel from '@/components/VLabel.vue';
-  import VButton from '@/components/VButton.vue';
-  import VDataItem from '@/components/VDataItem.vue';
-  import { ref, onMounted } from 'vue';
-  import {
-    useFetchUserIdentity,
-    userIdentity,
-  } from '@/composables/useSunco.js';
+import VInput from '@/components/VInput.vue';
+import VLabel from '@/components/VLabel.vue';
+import VButton from '@/components/VButton.vue';
+import VDataItem from '@/components/VDataItem.vue';
+import { ref, onMounted } from 'vue';
+import {
+  useFetchUserIdentity,
+  userIdentity,
+} from '@/composables/useSunco.js';
 
-  const router = useRouter();
-  const searchUser = ref(null);
-  const userEmail = ref(null);
+const searchUser = ref(null);
+const userEmail = ref(null);
 
-  const focusInput = () => {
-    if (userEmail.value) {
-      userEmail.value.focus();
-    }
-  };
+const focusInput = () => {
+  if (userEmail.value) {
+    userEmail.value.focus();
+  }
+};
 
-  const searchUserSunCo = async (e = undefined) => {
-    const userEmail = searchUser.value || e.target.value;
-    await useFetchUserIdentity(userEmail);
-  };
-  onMounted(() => {
-    focusInput();
-  });
+const searchUserSunCo = async (e = undefined) => {
+  const userEmail = searchUser.value || e.target.value;
+  await useFetchUserIdentity(userEmail);
+};
+onMounted(() => {
+  focusInput();
+});
 </script>
 
-<route lang="json">
-{
+<route lang="json">{
   "name": "Find user by email identity",
   "meta": {
     "title": "Find user by email identity"
   }
-}
-</route>
+}</route>
