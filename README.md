@@ -3,6 +3,9 @@
 This npm-workspaces monorepo contains the Vue messaging dashboard in `client/`
 and the Express/TypeScript bot and API server in `server/`.
 
+<img width="1919" height="943" alt="image" src="https://github.com/user-attachments/assets/5ec28fe8-1892-4ebc-9582-521a2d7f9ba0" />
+
+
 ## Before using this repository
 
 A lot of the logic in this repository was built around my own needs and
