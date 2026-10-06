@@ -14,10 +14,10 @@ router.get('/', (req, res) => {
     const { kind, return_to } = req.query;
 
     if (kind === 'info') {
-        return res.redirect(302, 'https://z3nsuncoswitchboard.zendesk.com/');
+        return res.redirect(302, `https://${process.env.ZENDESK_SUBDOMAIN}.zendesk.com/`);
     }
 
-    const jwtUrl = new URL('https://romain-sunco.eu.ngrok.io/zendesk/jwt');
+    const jwtUrl = new URL(`https://${process.env.NGROK_SUBDOMAIN}.ngrok.io/zendesk/jwt`);
     if (return_to) jwtUrl.searchParams.set('return_to', return_to as string);
     return res.redirect(302, jwtUrl.toString());
 });
@@ -43,7 +43,7 @@ router.get('/jwt', zdJwt);
 router.get('/login', zdssoLogin);
 router.post('/login', zdssoLogin);
 router.get('/logout', (_req, res) => {
-    res.redirect('https://z3nsuncoswitchboard.zendesk.com/');
+    res.redirect(`https://${process.env.ZENDESK_SUBDOMAIN}.zendesk.com/`);
 });
 
 export default router;
