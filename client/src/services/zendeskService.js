@@ -11,5 +11,5 @@ export const requestZendeskLogin = (userData) =>
 
 export const searchHelpCenterArticles = (query) =>
     requestJson(
-        `https://${process.env.ZENDESK_SUBDOMAIN}.zendesk.com/api/v2/help_center/articles/search.json?query=${encodeURIComponent(query)}`
+        `https://${import.meta.env.VITE_ZENDESK_SUBDOMAIN}.zendesk.com/api/v2/help_center/articles/search.json?query=${encodeURIComponent(query)}`
     );
