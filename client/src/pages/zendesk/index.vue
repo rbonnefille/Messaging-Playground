@@ -1,0 +1,199 @@
+<template>
+  <div class="container mt-5">
+    <form id="suncoData" class="row">
+      <div class="row justify-content-center">
+        <div v-for="field in formFields" :key="field.id" class="col-auto">
+          <VLabel :id="field.id" :name="field.name" className="form-label" />
+          <VInput
+            :id="field.id"
+            v-model="form[field.id]"
+            :name="field.name"
+            :type="field.type"
+            :placeholder="field.placeholder" />
+        </div>
+      </div>
+      <div class="row justify-content-center mt-3">
+        <div class="col-auto">
+          <VButton
+            text="Submit"
+            type="submit"
+            :disabled="isFormInvalid"
+            @click.prevent="submitForm" />
+          <VButton
+            text="Log as John End User"
+            type="submit"
+            @click.prevent="endUserJohnJohn" />
+          <VButton text="Cancel" type="cancel" @click="resetForm" />
+        </div>
+      </div>
+    </form>
+    <div class="row justify-content-center mt-5">
+      <div class="col-4">
+        <h4 class="h4">Other Zendesk links</h4>
+        <div id="list-example" class="list-group">
+          <a
+            class="list-group-item list-group-item-action routes"
+            href="https://z3nsuncoswitchboard.zendesk.com/agent"
+            >Agent login portal</a
+          >
+          <a
+            class="list-group-item list-group-item-action routes"
+            href="https://z3nsuncoswitchboard.zendesk.com/hc"
+            >End-user login portal</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-center mt-5">
+    <div class="col-auto">
+      <h4 class="h4">Search Help Center articles</h4>
+      <div class="d-flex mb-4">
+        <VInput
+          id="searchKb"
+          v-model="searchQuery"
+          name="search"
+          type="text"
+          placeholder="Search"
+          @keyup.enter="searchKB" />
+        <VButton class="mx-2" type="submit" text="Search" @click="searchKB" />
+      </div>
+      <div class="text-center">
+        <div
+          class="spinner-border text-success text-bold"
+          role="status"
+          v-if="isLoading">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      <ul>
+        <li class="mt-1" v-for="result in searchResults" :key="result.id">
+          <a :href="result.html_url" target="_blank">{{ result.title }}</a>
+        </li>
+        <p v-if="error">{{ error }}</p>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script setup>
+  import { ref, computed } from 'vue';
+  import VLabel from '@/components/VLabel.vue';
+  import VButton from '@/components/VButton.vue';
+  import VInput from '@/components/VInput.vue';
+  import {
+    requestZendeskLogin,
+    searchHelpCenterArticles,
+  } from '@/services/zendeskService';
+
+  const isLoading = ref(false);
+  const searchQuery = ref('');
+  const searchResults = ref([]);
+  const error = ref('');
+
+  const searchKB = async () => {
+    isLoading.value = true;
+    clearPreviousResults();
+
+    try {
+      const data = await searchHelpCenterArticles(searchQuery.value);
+      showResults(data);
+    } catch (requestError) {
+      showError(requestError);
+    } finally {
+      isLoading.value = false;
+    }
+  };
+
+  const showResults = data => {
+    searchResults.value = data.results;
+    if (data.results.length === 0) {
+      error.value = 'No results';
+    }
+  };
+
+  const showError = requestError => {
+    error.value = requestError.message;
+  };
+
+  const clearPreviousResults = () => {
+    searchResults.value = [];
+    error.value = '';
+  };
+
+  const form = ref({
+    external_id: 'john-john',
+    name: 'john-john',
+    email: 'john-john@test.com',
+    role: 'agent',
+  });
+
+  const endUserJohnJohn = () => {
+    form.value.external_id = 'john-user';
+    form.value.name = 'John User';
+    form.value.email = 'john-user@example.com';
+    form.value.role = 'end_user';
+    submitForm();
+  };
+
+  const formFields = [
+    {
+      id: 'external_id',
+      name: 'User external_id',
+      type: 'text',
+      placeholder: 'jane-doe',
+    },
+    { id: 'name', name: 'User name', type: 'text', placeholder: 'Jane Doe' },
+    {
+      id: 'email',
+      name: 'Email address',
+      type: 'email',
+      placeholder: 'jane-doe@example.com',
+    },
+    { id: 'role', name: 'User role', type: 'text', placeholder: 'admin' },
+  ];
+
+  const isFormInvalid = computed(
+    () =>
+      !form.value.external_id ||
+      !form.value.name ||
+      !form.value.email ||
+      !form.value.role,
+  );
+
+  const submitForm = async () => {
+    const { external_id, name, email, role } = form.value;
+    if (external_id && name && email && role) {
+      try {
+        const data = await requestZendeskLogin({
+          name,
+          email,
+          external_id,
+          role,
+        });
+        resetForm();
+        window.location.href = `https://z3nsuncoswitchboard.zendesk.com/access/jwt?jwt=${data.token}`;
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+  };
+
+  const resetForm = () => {
+    form.value = {
+      external_id: null,
+      name: null,
+      email: null,
+      role: null,
+    };
+  };
+</script>
+
+<route lang="json">
+{
+  "name": "Zendesk Tools",
+  "meta": {
+    "title": "Zendesk Tools"
+  }
+}
+</route>

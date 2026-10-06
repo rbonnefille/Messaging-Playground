@@ -1,0 +1,54 @@
+export const suncoRoutes = [
+  {
+    to: '/',
+    text: 'Go to Home page',
+  },
+  {
+    to: '/dashboard',
+    text: 'Go to the Messaging Dashboard',
+  },
+  {
+    to: '/sunco/integrations',
+    text: 'List Messaging Integrations',
+  },
+  {
+    to: '/sunco/integrations/switchboard',
+    text: 'Switchboard Configuration',
+  },
+  {
+    to: '/zendesk/embedded',
+    text: 'Embedded mode Web Widget',
+  },
+  {
+    to: '/sunco/snippets/web-widget',
+    text: 'Web Widget Snippets',
+  },
+  {
+    to: '/sunco/snippets/api-body',
+    text: 'API Snippets',
+  },
+  {
+    to: '/sunco/users',
+    text: 'Search a Messaging User',
+  },
+  {
+    to: '/zendesk/jwt-generator',
+    text: 'JWT Generator',
+  },
+  {
+    to: '/sunco/users/list-users',
+    text: 'Find user by email identity',
+  },
+  {
+    to: '/sunco/notifications',
+    text: 'Send Notification',
+  },
+  {
+    to: '/zendesk',
+    text: 'Zendesk Tool',
+  },
+  {
+    to: '/testing',
+    text: 'Testing area',
+  },
+];
