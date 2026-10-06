@@ -1,0 +1,31 @@
+{
+    "name": "suncobot-monorepo",
+    "private": true,
+    "type": "module",
+    "workspaces": [
+        "client",
+        "server"
+    ],
+    "scripts": {
+        "dev": "concurrently --kill-others --names client,server \"npm run dev:client\" \"npm run dev:server\"",
+        "dev:client": "npm run dev --workspace=./client",
+        "dev:server": "npm run start --workspace=./server",
+        "build": "npm run build --workspace=./client",
+        "typecheck": "npm run typecheck --workspace=./server",
+        "lint": "npm run lint --workspaces",
+        "lint:fix": "npm run lint:fix --workspaces",
+        "check": "npm run typecheck && npm run lint && npm run build"
+    },
+    "allowScripts": {
+        "esbuild@0.28.2": true,
+        "fsevents@2.3.3": true,
+        "node@26.10.0": true,
+        "protobufjs@7.6.6": true
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "concurrently": "^10.0.5",
+        "globals": "^17.13.0",
+        "typescript-eslint": "^8.71.1"
+    }
+}

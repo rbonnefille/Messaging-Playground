@@ -12,7 +12,7 @@ Simple frontend app developed with Vue.js in order to work with the SunCo and Me
 ## Installation
 
 - clone the repo
-- `npm install`
+- run `npm ci` from the repository root to install both workspaces
 - create an environment file `.env` and add the following variables:
 
 ```
@@ -23,4 +23,8 @@ VITE_SUNCO_APP_ID=
 
 ## Usage
 
-To start the dev server: `npm run dev`
+From the repository root, run `npm run dev` to start the dashboard and API
+server together, or `npm run dev:client` to start only the dashboard.
+
+From this folder, `npm run dev` still starts Vite directly. The development
+proxy forwards `/api` requests to `http://127.0.0.1:3000`.

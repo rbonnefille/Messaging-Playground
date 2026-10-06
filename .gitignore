@@ -5,6 +5,8 @@
 /server/node_modules
 /client/node_modules
 /client/dist
+/client/components.d.ts
+/.workspace-backups/
 # misc
 .DS_Store
 .DS_Store?
@@ -16,11 +18,11 @@ Thumbs.db
 .env
 .env.test
 npm-debug.log*
-package-lock.json
-server/package-lock.json
 .git
 .eslintrc.js
 *.log
 test.js
 testDestructuring.js
 npm-debug.log*
+.vscode
+.claude
