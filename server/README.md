@@ -39,3 +39,7 @@
 - `OPENAI_AP_KEY=`
 - `ZD_OPENAIURL=` -`CHAT_SHAED_SECRET=`
 - `CHAT_JWK_ID=`
+
+## Bot predefined messages
+
+In `server/constants/botMessages.ts` you can define the messages that the bot will use to interact with users. This allows you to centralize and manage all bot messages in one place, making it easier to update and maintain the bot's responses. Some are templates that needs to be created through the SunCo API: https://docs.smooch.io/rest/v1/#create-template

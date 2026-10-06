@@ -64,6 +64,25 @@ The server defaults to port 3000. Vite forwards client `/api` requests to
 The backend loads its environment file relative to `server/config/env.ts`,
 so launching it through a root workspace command preserves that location.
 
+## Receiving webhooks with Ngrok
+
+I recommend leveraging [Ngrok](https://ngrok.com) for the bot part. The bot
+reacts to SunCo events delivered to the server's `POST /webhooks` endpoint,
+which SunCo can only reach over a public HTTPS URL. Expose the local server
+through Ngrok instead of deploying anything:
+
+```sh
+ngrok http 3000
+```
+
+Then configure your SunCo webhook to point at the Ngrok forwarding URL, for
+example `https://<your-id>.ngrok.app/webhooks`. SunCo will deliver the bot's
+conversation events to your locally running server through that tunnel.
+
+Note that the free Ngrok URL changes every time you restart the tunnel, so
+the webhook target in SunCo needs to be updated after each restart. A paid
+Ngrok plan with a reserved domain avoids this.
+
 ## Development
 
 ```sh

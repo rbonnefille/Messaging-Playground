@@ -26,3 +26,4 @@ testDestructuring.js
 npm-debug.log*
 .vscode
 .claude
+/server/logs
