@@ -1,7 +1,7 @@
 import pkg from 'jsonwebtoken';
 const { sign } = pkg;
 
-const { USERNAME: keyUsername, PASSWORD: keyPassword } = process.env;
+const { KEY_ID: keyId, KEY_SECRET: keySecret } = process.env;
 
 interface JwtBody {
     scope: string;
@@ -49,11 +49,11 @@ export default class Jwt {
         };
     }
     signJwt(): string {
-        return sign(this.body, keyPassword as string, {
+        return sign(this.body, keySecret as string, {
             header: {
                 alg: 'HS256',
                 typ: 'JWT',
-                kid: keyUsername,
+                kid: keyId,
             },
         });
     }

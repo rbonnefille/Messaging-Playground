@@ -4,41 +4,51 @@
 
 ### Env
 
-- `BROWSER_SESSION_STORAGE_KEY=suncoWidgetAuth`
-- `USERNAME=`
-- `PASSWORD=`
-- `SUNCO_JWT=`
+> Obtain these values from `https://<subdomain>.zendesk.com/admin/apps-integrations/apis/conversations-api`
+
+- `KEY_ID=`
+- `KEY_SECRET=`
+- `APP_ID=`
+
+> Obtain these values from `https://<subdomain>.zendesk.com/admin/apps-integrations/integrations/conversations-integrations`
+
 - `SUNCO_CUSTOM_INTEGRATION_KEY=`
-- `SUNCO_CUSTOM_INTEGRATION_SECRET=`
-- `WEBHOOK_SUNCO=`
+- `WEBHOOK_X_API_KEY=`
+
+> Obtain these values from `https://<subdomain>.zendesk.com/sc/apps/<app_id>/v2/switchboards`
+
 - `BOT_SWITCHBOARD_INTEGRATION_ID=`
-- `AW_SWITCHBOARD_INTEGRATION_ID=`
 - `NEXT_SWITCHBOARD_INTEGRATION=zd-agentWorkspace`
 - `BOT_SWITCHBOARD_INTEGRATION_NAME=NodeJSBot`
 - `SWITCHBOARD_ID=`
+
+> Obtain these values from `https://thecatapi.com/`
+
 - `CAT_API_KEY=`
 - `CAT_API_URL=https://api.thecatapi.com/v1/images/`
+
+> Provide your own values
+
 - `BOT_AVATAR_URL=`
 - `BOT_NAME=Bugs Bunny`
-- `APP_ID=`
 - `BASE_URL=https://api.smooch.io/v2/apps`
 - `POD_BASE_URL=https://<subdomain>.zendesk.com/sc`
 - `AUTHORISED_ORIGIN=`
 - `AUTHORISED_ORIGIN_HC=`
 - `SUNCO_INTEGRATION_ID=`
+
+> Optional. Only if you want to send proactive SMS or WhatsApp messages through SunCo Notifications API.
+
 - `SUNCO_TWILIO_INTEGRATION_ID=`
 - `SUNCO_WHATSAPP_INTEGRATION_ID=`
-- `MESSAGING_WIDGET_KEY=`
+
+> Follow instructions here: https://developer.zendesk.com/documentation/classic-web-widget-sdks/support-sdk/working-with-the-support-sdk/building-a-dedicated-jwt-endpoint-for-the-support-sdk/
+
+- `ZD_SUPPORT_SDK_JWT_SECRET=`
+
+> App port configuration
+
 - `PORT=3000`
-- `ZD_SUBDMAIN=`
-- `ZD_USERAME=`
-- `ZD_PASSORD=`
-- `ZD_SSO_ECRET=`
-- `ZD_APP_UID=`
-- `ZD_SUPPORTSDK_JWT_SECRET=`
-- `OPENAI_AP_KEY=`
-- `ZD_OPENAIURL=` -`CHAT_SHAED_SECRET=`
-- `CHAT_JWK_ID=`
 
 ## Bot predefined messages
 

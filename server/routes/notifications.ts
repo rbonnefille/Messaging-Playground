@@ -4,7 +4,8 @@ import axios from 'axios';
 const {
     APP_ID: appId,
     SUNCO_TWILIO_INTEGRATION_ID: twilioIntegrationId,
-    SUNCO_JWT: jwt,
+    KEY_ID: keyId,
+    KEY_SECRET: secretKey,
 } = process.env;
 
 const router = express.Router();
@@ -18,7 +19,7 @@ router.post('/sms', async (req, res) => {
     let config = {
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${jwt}`,
+            Authorization: `Basic ${Buffer.from(`${keyId}:${secretKey}`).toString('base64')}`,
         },
     };
 

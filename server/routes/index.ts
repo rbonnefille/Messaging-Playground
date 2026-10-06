@@ -6,7 +6,6 @@ import webhooksRouter from './webhooks.js';
 import userRouter from './users.js';
 import zendeskRouter from './zendesk.js';
 import notificationRouter from './notifications.js';
-import chatTokenRouter from './chat.js';
 import returnToken from '../utils/auth.js';
 
 const router = express.Router();
@@ -18,7 +17,6 @@ router.use('/users', userRouter);
 router.post('/auth', returnToken);
 router.use('/zendesk', zendeskRouter);
 router.use('/notifications', notificationRouter);
-router.use('/chatToken', chatTokenRouter);
 router.use('/webhooks', webhooksRouter);
 
 export default router;

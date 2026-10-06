@@ -30,7 +30,6 @@ const returnToken = async (req: Request, res: Response): Promise<void> => {
         return;
     }
     const { external_id, name, email, emailVerified } = req.body;
-    console.log(req.body);
     const jwt = new Jwt(external_id, name, email, emailVerified);
     const jwtToken = jwt.signJwt();
     const parts = jwtToken.split('.');

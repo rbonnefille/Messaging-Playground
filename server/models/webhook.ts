@@ -9,7 +9,7 @@ const EVENT_TYPES = {
 
 const {
     BOT_SWITCHBOARD_INTEGRATION_ID: botSwitchboardIntegrationId,
-    WEBHOOK_SUNCO: webhookSunco,
+    WEBHOOK_X_API_KEY: webhookXapiKey,
 } = process.env;
 
 interface SwitchboardIntegration {
@@ -219,7 +219,7 @@ class WebhookEvent {
         throw new Error(`AppId is read-only. ${value} is ignored.`);
     }
     isAuthenticatedRequest(webhookSecret: string | undefined): boolean {
-        return webhookSecret === webhookSunco;
+        return webhookSecret === webhookXapiKey;
     }
     isCurrentSwitchboardIntegration(
         activeSwitchboardIntegration: string | undefined

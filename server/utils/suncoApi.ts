@@ -3,14 +3,13 @@ import axios, { type AxiosInstance } from 'axios';
 const timeout = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 const {
-    POD_BASE_URL: podBaseUrl,
+    BASE_URL: baseUrl,
     APP_ID: appId,
     SWITCHBOARD_ID: switchboardId,
-    SUNCO_JWT: suncoJwt,
-    SUNCO_CUSTOM_INTEGRATION_SECRET: suncoCustomIntegrationSecret,
+    KEY_ID: keyId,
+    KEY_SECRET: keySecret,
     BASE_URL: defaultBaseUrl,
     NEXT_SWITCHBOARD_INTEGRATION: nextSwitchboardIntegration,
-    ULTIMATE_SWITCHBOARD_INTEGRATION: ultimateSwitchboardIntegration,
 } = process.env;
 
 interface UserIdentifierPayload {
@@ -47,15 +46,13 @@ class SunCoClient {
     constructor() {
         this.appId = appId;
         this.switchboardId = switchboardId;
-        const baseUrl = (podBaseUrl || defaultBaseUrl || '').replace(
+        const appBaseUrl = (baseUrl || defaultBaseUrl || '').replace(
             /\/+$/,
             ''
         );
-        this.appUrl = `${baseUrl}/v2/apps/${encodeURIComponent(this.appId ?? '')}`;
+        this.appUrl = `${appBaseUrl}/v2/apps/${encodeURIComponent(this.appId ?? '')}`;
         this.api = axios.create({
-            headers: suncoJwt
-                ? { Authorization: `Bearer ${suncoJwt}` }
-                : undefined,
+            headers: { Authorization: `Basic ${Buffer.from(`${keyId}:${keySecret}`).toString('base64')}` },
         });
     }
 
@@ -541,7 +538,7 @@ class SunCoClient {
             description: description,
             iconUrl: iconUrl,
             metadata: metadata,
-            activeSwitchboardIntegrationId: '695d16e34e6b695b790a7832',
+            activeSwitchboardIntegrationId: process.env.BOT_SWITCHBOARD_INTEGRATION_ID,
         };
         const url = `${this.appUrl}/conversations`;
         try {
