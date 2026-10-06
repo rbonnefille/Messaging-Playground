@@ -67,9 +67,9 @@ class SunCoClient {
         if (typeof payload === 'string') {
             return payload;
         }
-        if (payload.hasOwnProperty('userId')) {
+        if (Object.prototype.hasOwnProperty.call(payload, 'userId')) {
             return payload.userId;
-        } else if (payload.hasOwnProperty('externalId')) {
+        } else if (Object.prototype.hasOwnProperty.call(payload, 'externalId')) {
             return payload.externalId;
         }
         return payload;
@@ -404,13 +404,13 @@ class SunCoClient {
     async updateSwitchboardIntegration(
         payload: SwitchboardIntegrationUpdatePayload
     ): Promise<any> {
-        let {
+        const {
             switchboardIntegrationId,
             nextSwitchboardIntegrationId,
             deliverStandbyEvents,
             messageHistoryCount,
         } = payload;
-        let switchboardIntegrationUpdateBody = {
+        const switchboardIntegrationUpdateBody = {
             nextSwitchboardIntegrationId:
                 nextSwitchboardIntegrationId === undefined
                     ? undefined

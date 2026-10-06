@@ -10,7 +10,7 @@ router.post('/listUser', async (req, res) => {
         const userEmail = req.body;
         const sunCo = new SunCoClient();
         const user = await sunCo.getUserByEmailIdentity(userEmail);
-        if (user && user.hasOwnProperty('users') && user.users.length > 0) {
+        if (user && Object.prototype.hasOwnProperty.call(user, 'users') && user.users.length > 0) {
             return res.json(user.users[0]);
         }
         return res.status(404).json({ error: 'User not found' });
@@ -25,7 +25,7 @@ router.get('/:id', async (req, res) => {
         const userId = req.params.id;
         const sunCo = new SunCoClient();
         const user = await sunCo.getUser(userId);
-        if (user?.hasOwnProperty('user')) {
+        if (user && Object.prototype.hasOwnProperty.call(user, 'user')) {
             return res.json(user);
         }
         return res.status(404).json({ error: 'User not found' });
@@ -40,7 +40,7 @@ router.get('/:id/conversations', async (req, res) => {
         const { id: userId } = req.params;
         const sunCo = new SunCoClient();
         const conversations = await sunCo.listConversations(userId);
-        if (conversations && conversations.hasOwnProperty('conversations')) {
+        if (conversations && Object.prototype.hasOwnProperty.call(conversations, 'conversations')) {
             return res.json(conversations);
         }
         return res.status(404).json({ error: 'Conversations not found' });
@@ -64,7 +64,7 @@ router.delete('/:id/conversations', async (req, res) => {
         const conversationsToDelete = allConversations.conversations.filter(
             (convo: any) =>
                 convo.activeSwitchboardIntegration?.name !==
-                    'zd-agentWorkspace' && !convo.isDefault
+                'zd-agentWorkspace' && !convo.isDefault
         );
 
         await Promise.all(
@@ -89,7 +89,7 @@ router.get('/:id/clients', async (req, res) => {
         const { id: userId } = req.params;
         const sunCo = new SunCoClient();
         const clientsList = await sunCo.listClients(userId);
-        if (clientsList && clientsList.hasOwnProperty('clients')) {
+        if (clientsList && Object.prototype.hasOwnProperty.call(clientsList, 'clients')) {
             return res.json(clientsList);
         }
         return res.status(404).json({ error: 'Clients not found' });
@@ -104,7 +104,7 @@ router.get('/:id/devices', async (req, res) => {
         const { id: userId } = req.params;
         const sunCo = new SunCoClient();
         const devicesList = await sunCo.listDevices(userId);
-        if (devicesList && devicesList.hasOwnProperty('devices')) {
+        if (devicesList && Object.prototype.hasOwnProperty.call(devicesList, 'devices')) {
             return res.json(devicesList);
         }
         return res.status(404).json({ error: 'Devices not found' });

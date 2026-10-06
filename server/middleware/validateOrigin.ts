@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 
 const checkOrigin = (req: Request, res: Response, next: NextFunction) => {
-    const { referer, host } = req.headers || {};
+    const { host } = req.headers || {};
     const allowedOrigins = ['localhost:5173', 'localhost:3000', '127.0.0.1'];
     if (
         !allowedOrigins.some(

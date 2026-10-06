@@ -6,7 +6,7 @@ import PassControlMetadata from '../models/passControlMetadata.js';
 const messageEvents = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    _next: NextFunction
 ) => {
     const webhookEvent = new ConversationEvent(req);
     const {

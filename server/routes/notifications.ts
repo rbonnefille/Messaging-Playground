@@ -16,14 +16,14 @@ router.post('/sms', async (req, res) => {
     }
     const { destinationId, message } = req.body;
     console.log(req.body);
-    let config = {
+    const config = {
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Basic ${Buffer.from(`${keyId}:${secretKey}`).toString('base64')}`,
         },
     };
 
-    let payload = {
+    const payload = {
         destination: {
             integrationId: twilioIntegrationId,
             destinationId: destinationId,

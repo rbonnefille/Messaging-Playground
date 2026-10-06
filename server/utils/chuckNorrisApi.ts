@@ -10,7 +10,7 @@ const getChuckNorrisJoke = async (): Promise<string> => {
             "I'm sorry, I couldn't find a joke for you but you can find a new one here: https://api.chucknorris.io/"
         );
     } catch (e) {
-        throw new Error((e as Error).message);
+        throw new Error((e as Error).message, { cause: e });
     }
 };
 

@@ -58,7 +58,7 @@ export const cleanConversations = async (
     event: ConversationEvent,
     response: BotResponse
 ): Promise<unknown> => {
-    let allConversations = await sunCo.listConversations(event);
+    const allConversations = await sunCo.listConversations(event);
     const userConversations = allConversations.conversations.length;
 
     response.message = `You currently have ${userConversations} ${userConversations > 1 ? 'conversations' : 'conversation'
@@ -94,7 +94,7 @@ export const cleanConversations = async (
         return await sunCo.sendMessage(response.toPayload());
     } catch (error) {
         console.error('Error cleaning conversations:', error);
-        throw new Error((error as Error).message);
+        throw new Error((error as Error).message, { cause: error });
     }
 };
 
@@ -108,7 +108,6 @@ export const escalateToAgent = async (
         email,
         userExternalId,
         eventSource,
-        conversation,
         recentNotifications,
     } = switchBoardMetadata;
     response.setMessage(handoverMessage);
@@ -118,7 +117,6 @@ export const escalateToAgent = async (
         'dataCapture.ticketField.360023540498': userExternalId,
         'dataCapture.systemField.tags': `${eventSource}`,
         'dataCapture.ticketField.360023540658': eventSource,
-        // 'dataCapture.ticketField.1900005043913': conversation,
         'dataCapture.ticketField.11280496337553': recentNotifications,
         'dataCapture.ticketField.13024896437137':
             'Data captured and passed \n into a multiline field',

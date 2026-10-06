@@ -15,7 +15,7 @@ const getCatImage = async (): Promise<string> => {
             ? response.data[0].url
             : 'https://cdn2.thecatapi.com/images/agb.jpg';
     } catch (e) {
-        throw new Error((e as Error).message);
+        throw new Error((e as Error).message, { cause: e });
     }
 };
 
