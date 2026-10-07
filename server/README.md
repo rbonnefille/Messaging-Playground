@@ -35,7 +35,6 @@
 - `POD_BASE_URL=https://<subdomain>.zendesk.com/sc`
 - `AUTHORISED_ORIGIN=`
 - `AUTHORISED_ORIGIN_HC=`
-- `SUNCO_INTEGRATION_ID=`
 
 > Optional. Only if you want to send proactive SMS or WhatsApp messages through SunCo Notifications API.
 
