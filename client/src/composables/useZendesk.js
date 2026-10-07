@@ -9,25 +9,6 @@ import { useShowWarningToast } from '@/composables/helpers';
 import { useUserStore } from '@/stores/userStore';
 import { ref } from 'vue';
 
-let unsubscribeOpen = () => {};
-let unsubscribeClose = () => {};
-let unsubscribeBeforeMessageDisplay = () => {};
-let unsubscribePostbackButtonClicked = () => {};
-let unsubscribeNewConversationButtonClicked = () => {};
-let unsubscribeConversationWithAgentRequested = () => {};
-let unsubscribeMessagesShown = () => {};
-let unsubscribeConversationExtensionOpened = () => {};
-let unsubscribeConversationExtensionDisplayed = () => {};
-let unsubscribeArticleClicked = () => {};
-let unsubscribeArticleBrowserClicked = () => {};
-let unsubscribeMessageReceived = () => {};
-let unsubscribeConversationOpened = () => {};
-let unsubscribeConversationAgentAssigned = () => {};
-let unsubscribeProactiveMessageDisplayed = () => {};
-let unsubscribeProactiveMessageClicked = () => {};
-let unsubscribeConversationStarted = () => {};
-let unsubscribeBeforeMessageSent = () => {};
-
 export const currentConversationId = ref(null),
     postbackBtnClickedEventData = ref(null),
     postbackButtonClickedEventData = ref(null),
@@ -147,15 +128,15 @@ export const setupZendeskEventListeners = () => {
     const userStore = useUserStore();
     const { changeWidgetOpenedStatus, changeHasConversationsStatus } =
         userStore;
-    unsubscribeOpen = window.zE('messenger:on', 'open', (event) => {
+    window.zE('messenger:on', 'open', () => {
         changeWidgetOpenedStatus(true);
         changeHasConversationsStatus(true);
     });
-    unsubscribeClose = window.zE('messenger:on', 'close', () => {
+    window.zE('messenger:on', 'close', () => {
         changeWidgetOpenedStatus(false);
     });
 
-    unsubscribeProactiveMessageDisplayed = window.zE(
+    window.zE(
         'messenger:on',
         'proactiveMessageDisplayed',
         function (event) {
@@ -163,7 +144,7 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    unsubscribeProactiveMessageClicked = window.zE(
+    window.zE(
         'messenger:on',
         'proactiveMessageClicked',
         function (event) {
@@ -171,7 +152,7 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    unsubscribeConversationStarted = window.zE(
+    window.zE(
         'messenger:on',
         'conversationStarted',
         function (event) {
@@ -179,7 +160,7 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    unsubscribeConversationOpened = window.zE(
+    window.zE(
         'messenger:on',
         'conversationOpened',
         function (event) {
@@ -188,7 +169,7 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    unsubscribeNewConversationButtonClicked = window.zE(
+    window.zE(
         'messenger:on',
         'newConversationButtonClicked',
         function (event) {
@@ -196,7 +177,7 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    unsubscribeConversationWithAgentRequested = window.zE(
+    window.zE(
         'messenger:on',
         'conversationWithAgentRequested',
         function (event) {
@@ -204,7 +185,7 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    unsubscribeConversationAgentAssigned = window.zE(
+    window.zE(
         'messenger:on',
         'conversationAgentAssigned',
         function (event) {
@@ -212,7 +193,7 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    unsubscribeMessagesShown = window.zE(
+    window.zE(
         'messenger:on',
         'messagesShown',
         function (event) {
@@ -220,7 +201,7 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    unsubscribePostbackButtonClicked = window.zE(
+    window.zE(
         'messenger:on',
         'postbackButtonClicked',
         function (event) {
@@ -228,14 +209,14 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    unsubscribeConversationExtensionOpened = window.zE(
+    window.zE(
         'messenger:on',
         'conversationExtensionOpened',
         function (event) {
             console.log(`Conversation extension opened`, event);
         }
     );
-    unsubscribeConversationExtensionDisplayed = window.zE(
+    window.zE(
         'messenger:on',
         'conversationExtensionDisplayed',
         function (event) {
@@ -243,7 +224,7 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    unsubscribeArticleClicked = window.zE(
+    window.zE(
         'messenger:on',
         'articleClicked',
         function (event) {
@@ -251,7 +232,7 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    unsubscribeArticleBrowserClicked = window.zE(
+    window.zE(
         'messenger:on',
         'articleBrowserClicked',
         function (event) {
@@ -259,7 +240,7 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    unsubscribeMessageReceived = window.zE(
+    window.zE(
         'messenger:on',
         'messageReceived',
         function (event) {
@@ -270,7 +251,7 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    unsubscribePostbackButtonClicked = window.zE(
+    window.zE(
         'messenger:on',
         'postbackButtonClicked',
         function (event) {
@@ -279,7 +260,7 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    unsubscribeBeforeMessageDisplay = window.zE(
+    window.zE(
         'messenger:set',
         'beforeMessageDisplay',
         function (message, _data) {
@@ -295,35 +276,12 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    unsubscribeBeforeMessageSent = window.zE(
+    window.zE(
         'messenger:set',
         'beforeMessageSent',
-        function (message, data) {
+        function () {
             // Add custom metadata to every message
             return null;
         }
     );
 };
-
-// Define a function to unsubscribe from all Zendesk event listeners
-// To be reviewed later on as Zendesk product found some events don't have an unsubscribe function
-// export const unsubscribeZendeskEventListeners = () => {
-// unsubscribeBeforeMessageDisplay();
-// unsubscribeBeforeMessageSent();
-// unsubscribeOpen();
-// unsubscribeClose();
-// unsubscribePostbackButtonClicked();
-// unsubscribeConversationOpened();
-// unsubscribeConversationAgentAssigned();
-// unsubscribeProactiveMessageDisplayed();
-// unsubscribeProactiveMessageClicked();
-// unsubscribeConversationStarted();
-// unsubscribeNewConversationButtonClicked();
-// unsubscribeConversationWithAgentRequested();
-// unsubscribeMessagesShown();
-// unsubscribeConversationExtensionOpened();
-// unsubscribeConversationExtensionDisplayed();
-// unsubscribeArticleClicked();
-// unsubscribeArticleBrowserClicked();
-// unsubscribeMessageReceived();
-// };

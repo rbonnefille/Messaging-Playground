@@ -135,6 +135,8 @@ interface WebhookEnvelope {
     events: WebhookEventEnvelope[];
 }
 
+type WebhookRequest = Request<Request['params'], unknown, WebhookEnvelope>;
+
 interface EventDetailsPayload {
     conversation?: ConversationRef;
     message?: Message;
@@ -158,20 +160,20 @@ class WebhookEvent {
     activeSwitchboardIntegrationIntegrationId!: string | undefined;
     activeSwitchboardIntegrationIntegrationType!: string | undefined;
 
-    constructor(req: Request<any, any, WebhookEnvelope>) {
+    constructor(req: WebhookRequest) {
         this._initializeWebhookEvent(req);
         this._validateSingleEvent(req);
         this._extractEventDetails(req);
     }
 
-    _initializeWebhookEvent(req: Request<any, any, WebhookEnvelope>) {
+    _initializeWebhookEvent(req: WebhookRequest) {
         this._webhookEventApiKey = req.headers['x-api-key'] as string | undefined;
         this._appId = req.body.app.id;
         this.webhookId = req.body.webhook.id;
         this.webhookVersion = req.body.webhook.version;
     }
 
-    _validateSingleEvent(req: Request<any, any, WebhookEnvelope>) {
+    _validateSingleEvent(req: WebhookRequest) {
         if (req.body.events.length > 1) {
             console.log(req.body);
             throw new Error(
@@ -180,7 +182,7 @@ class WebhookEvent {
         }
     }
 
-    _extractEventDetails(req: Request<any, any, WebhookEnvelope>) {
+    _extractEventDetails(req: WebhookRequest) {
         const {
             events: [event],
         } = req.body;
@@ -257,7 +259,7 @@ class ConversationEvent extends WebhookEvent {
     recentNotifications!: RecentNotification[] | undefined;
     protected _userMessage!: string | undefined;
 
-    constructor(req: Request<any, any, WebhookEnvelope>) {
+    constructor(req: WebhookRequest) {
         super(req);
         const event = req.body.events[0];
 

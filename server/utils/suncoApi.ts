@@ -17,6 +17,63 @@ interface UserIdentifierPayload {
     externalId?: string;
 }
 
+type ApiError = string | number | undefined;
+type ApiResult<T> = T | ApiError;
+
+interface SunCoUser {
+    id: string;
+    externalId?: string;
+    metadata?: Record<string, unknown>;
+    [key: string]: unknown;
+}
+
+interface SunCoConversation {
+    id: string;
+    isDefault?: boolean;
+    lastUpdatedAt?: string;
+    activeSwitchboardIntegration?: {
+        id?: string;
+        name?: string;
+        [key: string]: unknown;
+    };
+    [key: string]: unknown;
+}
+
+interface UserResponse {
+    user: SunCoUser;
+}
+
+interface UsersResponse {
+    users: SunCoUser[];
+}
+
+interface ConversationResponse {
+    conversation: SunCoConversation;
+}
+
+interface ConversationsResponse {
+    conversations: SunCoConversation[];
+    meta?: {
+        hasMore?: boolean;
+        afterCursor?: string;
+        [key: string]: unknown;
+    };
+    [key: string]: unknown;
+}
+
+interface ClientsResponse {
+    clients: Record<string, unknown>[];
+}
+
+interface DevicesResponse {
+    devices: Record<string, unknown>[];
+}
+
+// Read methods return response objects on success, error titles/statuses otherwise.
+export const isApiSuccess = <T extends object>(
+    result: ApiResult<T>
+): result is T => typeof result === 'object' && result !== null;
+
 interface MessagePayload {
     conversationId?: string;
     author?: unknown;
@@ -63,16 +120,16 @@ class SunCoClient {
         return data?.errors?.[0]?.title || error.response?.status;
     }
 
-    getUserIdOrExternalId(payload: UserIdentifierPayload | string): any {
+    getUserIdOrExternalId(payload: UserIdentifierPayload | string): string {
         if (typeof payload === 'string') {
             return payload;
         }
         if (Object.prototype.hasOwnProperty.call(payload, 'userId')) {
-            return payload.userId;
+            if (payload.userId !== undefined) return payload.userId;
         } else if (Object.prototype.hasOwnProperty.call(payload, 'externalId')) {
-            return payload.externalId;
+            if (payload.externalId !== undefined) return payload.externalId;
         }
-        return payload;
+        throw new Error('A user ID or external ID is required');
     }
 
     buildMessageContent(
@@ -94,11 +151,11 @@ class SunCoClient {
         };
     }
 
-    async postActivity(payload: MessagePayload): Promise<any> {
+    async postActivity(payload: MessagePayload): Promise<unknown> {
         const { conversationId, author } = payload;
         const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}/activity`;
         try {
-            const response = await this.api.post(url, {
+            const response = await this.api.post<unknown>(url, {
                 author,
                 type: 'typing:start',
             });
@@ -108,13 +165,13 @@ class SunCoClient {
         }
     }
 
-    async sendMessage(payload: MessagePayload): Promise<any> {
+    async sendMessage(payload: MessagePayload): Promise<unknown> {
         const { conversationId, author, message, image, metadata } = payload;
         const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}/messages`;
         await this.postActivity(payload);
         await timeout(300);
         try {
-            const response = await this.api.post(url, {
+            const response = await this.api.post<unknown>(url, {
                 author,
                 content: this.buildMessageContent(message, image, metadata),
             });
@@ -130,11 +187,13 @@ class SunCoClient {
         }
     }
 
-    async listClients(payload: UserIdentifierPayload | string): Promise<any> {
+    async listClients(
+        payload: UserIdentifierPayload | string
+    ): Promise<ApiResult<ClientsResponse>> {
         const userIdOrExternalId = this.getUserIdOrExternalId(payload);
         const url = `${this.appUrl}/users/${encodeURIComponent(userIdOrExternalId)}/clients`;
         try {
-            const response = await this.api.get(url, {
+            const response = await this.api.get<ClientsResponse>(url, {
                 params: { 'page[size]': 100 },
             });
             return response.data;
@@ -143,33 +202,39 @@ class SunCoClient {
         }
     }
 
-    async listDevices(payload: UserIdentifierPayload | string): Promise<any> {
+    async listDevices(
+        payload: UserIdentifierPayload | string
+    ): Promise<ApiResult<DevicesResponse>> {
         const userIdOrExternalId = this.getUserIdOrExternalId(payload);
         const url = `${this.appUrl}/users/${encodeURIComponent(userIdOrExternalId)}/devices`;
         try {
-            const response = await this.api.get(url);
+            const response = await this.api.get<DevicesResponse>(url);
             return response.data;
         } catch (error) {
             return this.apiError(error);
         }
     }
 
-    async getUser(payload: UserIdentifierPayload | string): Promise<any> {
+    async getUser(
+        payload: UserIdentifierPayload | string
+    ): Promise<ApiResult<UserResponse>> {
         const userIdOrExternalId = this.getUserIdOrExternalId(payload);
         const url = `${this.appUrl}/users/${encodeURIComponent(userIdOrExternalId)}`;
         try {
-            const response = await this.api.get(url);
+            const response = await this.api.get<UserResponse>(url);
             return response.data;
         } catch (error) {
             return this.apiError(error);
         }
     }
 
-    async getUserByEmailIdentity(payload: { email: string }): Promise<any> {
+    async getUserByEmailIdentity(payload: {
+        email: string;
+    }): Promise<ApiResult<UsersResponse>> {
         const { email: userEmail } = payload;
         const url = `${this.appUrl}/users`;
         try {
-            const response = await this.api.get(url, {
+            const response = await this.api.get<UsersResponse>(url, {
                 params: { 'filter[identities.email]': userEmail },
             });
             return response.data;
@@ -178,21 +243,21 @@ class SunCoClient {
         }
     }
 
-    async listParticipants(conversationId: string): Promise<any> {
+    async listParticipants(conversationId: string): Promise<unknown> {
         const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId)}/participants`;
         try {
-            const response = await this.api.get(url);
+            const response = await this.api.get<unknown>(url);
             return response.data;
         } catch (error) {
             return this.apiError(error);
         }
     }
 
-    async updateUser(payload: UserIdentifierPayload | string): Promise<any> {
+    async updateUser(payload: UserIdentifierPayload | string): Promise<unknown> {
         const userIdOrExternalId = this.getUserIdOrExternalId(payload);
         const url = `${this.appUrl}/users/${encodeURIComponent(userIdOrExternalId)}`;
         try {
-            const response = await this.api.patch(url, {
+            const response = await this.api.patch<unknown>(url, {
                 metadata: { botDialog: true },
             });
             return response.data;
@@ -201,24 +266,26 @@ class SunCoClient {
         }
     }
 
-    async getConversation(payload: ConversationPayload | string): Promise<any> {
+    async getConversation(
+        payload: ConversationPayload | string
+    ): Promise<ApiResult<ConversationResponse>> {
         const conversationId =
             typeof payload === 'string' ? payload : payload.conversationId;
         const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}`;
         try {
-            const response = await this.api.get(url);
+            const response = await this.api.get<ConversationResponse>(url);
             return response.data;
         } catch (error) {
             return this.apiError(error);
         }
     }
 
-    async listMessages(payload: ConversationPayload | string): Promise<any> {
+    async listMessages(payload: ConversationPayload | string): Promise<unknown> {
         const conversationId =
             typeof payload === 'string' ? payload : payload.conversationId;
         const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}/messages`;
         try {
-            const response = await this.api.get(url);
+            const response = await this.api.get<unknown>(url);
             return response.data;
         } catch (error) {
             return this.apiError(error);
@@ -227,7 +294,7 @@ class SunCoClient {
 
     async updateConversation(
         payload: ConversationPayload | string
-    ): Promise<any> {
+    ): Promise<unknown> {
         const conversationId =
             typeof payload === 'string' ? payload : payload.conversationId;
         const displayName = new Date().toLocaleString('en-us', {
@@ -237,7 +304,7 @@ class SunCoClient {
         });
         const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}`;
         try {
-            const response = await this.api.patch(url, { displayName });
+            const response = await this.api.patch<unknown>(url, { displayName });
             return response.data;
         } catch (error) {
             return this.apiError(error);
@@ -246,21 +313,21 @@ class SunCoClient {
 
     async listConversations(
         webhookData: UserIdentifierPayload | string
-    ): Promise<any> {
+    ): Promise<ApiResult<ConversationsResponse>> {
         const userIdOrExternalId = this.getUserIdOrExternalId(webhookData);
         const filter =
-            Object.keys(userIdOrExternalId as any).length === 24
+            userIdOrExternalId.length === 24
                 ? `userId`
                 : `userExternalId`;
         const url = `${this.appUrl}/conversations`;
         try {
-            const conversations: any[] = [];
+            const conversations: SunCoConversation[] = [];
             const seenCursors = new Set<string>();
             let afterCursor: string | undefined;
-            let page: any;
+            let page: ConversationsResponse;
 
             do {
-                const response = await this.api.get(url, {
+                const response = await this.api.get<ConversationsResponse>(url, {
                     params: {
                         [`filter[${filter}]`]: userIdOrExternalId,
                         'page[size]': 100,
@@ -295,10 +362,10 @@ class SunCoClient {
         }
     }
 
-    async deleteConversation(conversationId: string): Promise<any> {
+    async deleteConversation(conversationId: string): Promise<unknown> {
         const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId)}`;
         try {
-            const response = await this.api.delete(url);
+            const response = await this.api.delete<unknown>(url);
             return response.data;
         } catch (error) {
             return this.apiError(error);
@@ -308,7 +375,7 @@ class SunCoClient {
     async passControl(
         payload: ConversationPayload,
         switchboardIntegration: string | undefined = nextSwitchboardIntegration
-    ): Promise<any> {
+    ): Promise<unknown> {
         const { conversationId, metadata } = payload;
         const passControlBody = { switchboardIntegration, metadata };
         const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}/passControl`;
@@ -318,7 +385,7 @@ class SunCoClient {
             );
         }
         try {
-            const response = await this.api.post(
+            const response = await this.api.post<unknown>(
                 url,
                 passControlBody,
             );
@@ -328,7 +395,7 @@ class SunCoClient {
         }
     }
 
-    async offerControl(payload: ConversationPayload): Promise<any> {
+    async offerControl(payload: ConversationPayload): Promise<unknown> {
         const { conversationId, metadata } = payload;
         const offerControlBody = metadata ? { metadata } : {};
         const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}/offerControl`;
@@ -336,14 +403,14 @@ class SunCoClient {
             console.log(metadata);
         }
         try {
-            const response = await this.api.post(url, offerControlBody);
+            const response = await this.api.post<unknown>(url, offerControlBody);
             return response.data;
         } catch (error) {
             return this.apiError(error);
         }
     }
 
-    async releaseControl(payload: ConversationPayload): Promise<any> {
+    async releaseControl(payload: ConversationPayload): Promise<unknown> {
         const { conversationId, metadata } = payload;
         const body = metadata ? { metadata } : {};
         const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId ?? '')}/releaseControl`;
@@ -353,27 +420,27 @@ class SunCoClient {
         }
 
         try {
-            const response = await this.api.post(url, body);
+            const response = await this.api.post<unknown>(url, body);
             return response.data;
         } catch (error) {
             return this.apiError(error);
         }
     }
 
-    async listSwitchboards(): Promise<any> {
+    async listSwitchboards(): Promise<unknown> {
         const url = `${this.appUrl}/switchboards`;
         try {
-            const response = await this.api.get(url);
+            const response = await this.api.get<unknown>(url);
             return response.data;
         } catch (error) {
             return this.apiError(error);
         }
     }
 
-    async listSwitchboardIntegrations(): Promise<any> {
+    async listSwitchboardIntegrations(): Promise<unknown> {
         const url = `${this.appUrl}/switchboards/${encodeURIComponent(this.switchboardId ?? '')}/switchboardIntegrations`;
         try {
-            const response = await this.api.get(url);
+            const response = await this.api.get<unknown>(url);
             return response.data;
         } catch (error) {
             return this.apiError(error);
@@ -383,7 +450,7 @@ class SunCoClient {
     async updateSwitchboard(
         enabled = true,
         defaultSwitchboardIntegrationId?: string
-    ): Promise<any> {
+    ): Promise<unknown> {
         const switchboardUpdateBody: {
             enabled: boolean;
             defaultSwitchboardIntegrationId?: string;
@@ -394,7 +461,10 @@ class SunCoClient {
         }
         const url = `${this.appUrl}/switchboards/${encodeURIComponent(this.switchboardId ?? '')}`;
         try {
-            const response = await this.api.patch(url, switchboardUpdateBody);
+            const response = await this.api.patch<unknown>(
+                url,
+                switchboardUpdateBody
+            );
             return response.data;
         } catch (error) {
             return this.apiError(error);
@@ -403,7 +473,7 @@ class SunCoClient {
 
     async updateSwitchboardIntegration(
         payload: SwitchboardIntegrationUpdatePayload
-    ): Promise<any> {
+    ): Promise<unknown> {
         const {
             switchboardIntegrationId,
             nextSwitchboardIntegrationId,
@@ -425,7 +495,7 @@ class SunCoClient {
         };
         const url = `${this.appUrl}/switchboards/${encodeURIComponent(this.switchboardId ?? '')}/switchboardIntegrations/${encodeURIComponent(switchboardIntegrationId)}`;
         try {
-            const response = await this.api.patch(
+            const response = await this.api.patch<unknown>(
                 url,
                 switchboardIntegrationUpdateBody
             );
@@ -441,7 +511,7 @@ class SunCoClient {
         deliverStandbyEvents: boolean,
         nextSwitchboardIntegrationId: string,
         messageHistoryCount = 10
-    ): Promise<any> {
+    ): Promise<unknown> {
         const switchboardIntegrationCreateBody = {
             name: integrationName,
             integrationId,
@@ -451,7 +521,7 @@ class SunCoClient {
         };
         const url = `${this.appUrl}/switchboards/${encodeURIComponent(this.switchboardId ?? '')}/switchboardIntegrations`;
         try {
-            const response = await this.api.post(
+            const response = await this.api.post<unknown>(
                 url,
                 switchboardIntegrationCreateBody
             );
@@ -463,10 +533,10 @@ class SunCoClient {
         }
     }
 
-    async listIntegrations(): Promise<any> {
+    async listIntegrations(): Promise<unknown> {
         const url = `${this.appUrl}/integrations`;
         try {
-            const response = await this.api.get(url);
+            const response = await this.api.get<unknown>(url);
             return response.data;
         } catch (error) {
             return this.apiError(error);
@@ -476,20 +546,20 @@ class SunCoClient {
     async updateIntegration(
         integrationId: string,
         bodyParams: Record<string, unknown>
-    ): Promise<any> {
+    ): Promise<unknown> {
         const url = `${this.appUrl}/integrations/${encodeURIComponent(integrationId)}`;
         try {
-            const response = await this.api.patch(url, bodyParams);
+            const response = await this.api.patch<unknown>(url, bodyParams);
             return response.data;
         } catch (error) {
             return this.apiError(error) || error;
         }
     }
 
-    async listIntegrationsPerChannelResponder(): Promise<any> {
+    async listIntegrationsPerChannelResponder(): Promise<unknown> {
         const url = `${this.appUrl}/integrations`;
         try {
-            const response = await this.api.get(url, {
+            const response = await this.api.get<unknown>(url, {
                 params: { 'page[size]': 100 },
             });
             return response.data;
@@ -501,10 +571,10 @@ class SunCoClient {
     async uploadAttachment(
         source: unknown,
         conversationId: string
-    ): Promise<any> {
+    ): Promise<unknown> {
         const url = `${this.appUrl}/attachments`;
         try {
-            const response = await this.api.postForm(
+            const response = await this.api.postForm<unknown>(
                 url,
                 { source },
                 {
@@ -542,7 +612,7 @@ class SunCoClient {
         };
         const url = `${this.appUrl}/conversations`;
         try {
-            const response = await this.api.post(url, body);
+            const response = await this.api.post<ConversationResponse>(url, body);
             return response.data.conversation.id;
         } catch (error) {
             return this.apiError(error);

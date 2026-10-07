@@ -8,7 +8,7 @@
   <RouterView />
   <VSidebar :offcanvasPlacement="'start'" ref="sidebarLeft">
     <template #title>App Routes</template>
-    <template #default="{ close }">
+    <template #default>
       <SuncoRoutes @close="handleClose" />
     </template>
   </VSidebar>

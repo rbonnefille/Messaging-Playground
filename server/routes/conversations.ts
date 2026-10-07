@@ -1,6 +1,6 @@
 import express from 'express';
 import conversationEvents from '../controllers/conversationEvents.js';
-import SunCoClient from '../utils/suncoApi.js';
+import SunCoClient, { isApiSuccess } from '../utils/suncoApi.js';
 
 const router = express.Router();
 
@@ -26,7 +26,7 @@ router.get('/:id', async (req, res) => {
     try {
         const { id: conversationId } = req.params;
         const conversation = await sunCo.getConversation(conversationId);
-        if (!conversation?.conversation) {
+        if (!isApiSuccess(conversation) || !conversation.conversation) {
             return res.status(404).json({ error: 'Conversation not found' });
         }
         return res.json(conversation.conversation);

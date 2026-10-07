@@ -1,6 +1,6 @@
 import getCatImage from '../utils/catApi.js';
 import botMessages from '../constants/botMessages.js';
-import SunCoClient from '../utils/suncoApi.js';
+import SunCoClient, { isApiSuccess } from '../utils/suncoApi.js';
 import type ConversationEvent from './webhook.js';
 import type BotResponse from './BotResponse.js';
 import type PassControlMetadata from './passControlMetadata.js';
@@ -30,7 +30,8 @@ export const welcomeUser = async (
 ): Promise<unknown> => {
     const userMetadata = await sunCo.getUser(event);
     if (
-        userMetadata?.user?.metadata &&
+        isApiSuccess(userMetadata) &&
+        userMetadata.user?.metadata &&
         Object.keys(userMetadata.user.metadata).length === 0
     ) {
         await sunCo.updateUser(event);
@@ -59,6 +60,9 @@ export const cleanConversations = async (
     response: BotResponse
 ): Promise<unknown> => {
     const allConversations = await sunCo.listConversations(event);
+    if (!isApiSuccess(allConversations) || !allConversations.conversations) {
+        throw new Error('Unable to list user conversations');
+    }
     const userConversations = allConversations.conversations.length;
 
     response.message = `You currently have ${userConversations} ${userConversations > 1 ? 'conversations' : 'conversation'
@@ -69,7 +73,7 @@ export const cleanConversations = async (
         let countDeletedConversations = 0;
 
         for (const convo of allConversations.conversations) {
-            const lastUpdatedAt = new Date(convo.lastUpdatedAt);
+            const lastUpdatedAt = new Date(convo.lastUpdatedAt ?? '');
             const today = new Date();
             const differenceInDays = calculateDaysDifference(
                 lastUpdatedAt,
