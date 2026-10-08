@@ -2,16 +2,15 @@ import type { Request, Response } from 'express';
 import Jwt from '../models/Jwt.js';
 
 const {
-    AUTHORISED_ORIGIN: authorisedOrigin,
-    AUTHORISED_ORIGIN_HC: authorisedOriginHc,
+    ZENDESK_SUBDOMAIN: zendeskSubdomain,
 } = process.env;
 
 const allowedOrigins: (string | undefined)[] = [
     'localhost:5173',
     'localhost:3000',
     '127.0.0.1',
-    authorisedOrigin,
-    authorisedOriginHc,
+    `${zendeskSubdomain}.zendesk.com`,
+    `${zendeskSubdomain}.zendesk.com/hc`,
 ];
 
 const returnToken = async (req: Request, res: Response): Promise<void> => {

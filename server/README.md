@@ -14,13 +14,12 @@
 
 > Obtain these values from `https://<subdomain>.zendesk.com/admin/apps-integrations/integrations/conversations-integrations`
 
-- `CONVERSATION_INTEGRATION_ID=`
 - `CONVERSATION_INTEGRATION_SHARED_SECRET=`
 
 <img width="767" height="639" alt="image" src="https://github.com/user-attachments/assets/1114317e-ece6-4778-b9a5-cf3c19d1542b" />
 
 > Obtain these values from the API via `https://<subdomain>.zendesk.com/sc/apps/<app_id>/v2/switchboards`
-> Then [create a Switchboard integration](https://developer.zendesk.com/api-reference/conversations/#tag/Switchboard-Integrations/operation/CreateSwitchboardIntegration) pointing to the webhook created above
+> Then [create a Switchboard integration](https://developer.zendesk.com/api-reference/conversations/#tag/Switchboard-Integrations/operation/CreateSwitchboardIntegration) pointing to the webhook created above. Once created, you will be able to populate the value `BOT_SWITCHBOARD_INTEGRATION_ID` below.
 
 ```JSON
 {
@@ -44,19 +43,21 @@
 
 - `BOT_AVATAR_URL=`
 - `BOT_NAME=Bugs Bunny`
-- `BASE_URL=https://api.smooch.io/v2/apps`
-- `POD_BASE_URL=https://<subdomain>.zendesk.com/sc`
-- `AUTHORISED_ORIGIN=`
-- `AUTHORISED_ORIGIN_HC=`
+- `ZENDESK_SUBDOMAIN=`
 
 > _Optional_. Only if you want to send proactive SMS or WhatsApp messages through SunCo Notifications API.
 
-- `SUNCO_TWILIO_INTEGRATION_ID=`
-- `SUNCO_WHATSAPP_INTEGRATION_ID=`
+- `SUNCO_WEB_WIDGET_INTEGRATION_ID=` // Create a SunCo Web Widget integration to get it: https://developer.zendesk.com/api-reference/conversations/#tag/Integrations/operation/CreateIntegration
+- `SUNCO_TWILIO_INTEGRATION_ID=` // Create a SunCo Twilio integration to get it: https://developer.zendesk.com/api-reference/conversations/#tag/Integrations/operation/CreateIntegration
+- `SUNCO_WHATSAPP_INTEGRATION_ID=` // Add Whatsapp as a channel via the Admin center and retrieve it's integration id via: https://developer.zendesk.com/api-reference/conversations/#tag/Integrations/operation/ListIntegrations
 
 > _Optional_. Follow instructions here: https://developer.zendesk.com/documentation/classic-web-widget-sdks/support-sdk/working-with-the-support-sdk/building-a-dedicated-jwt-endpoint-for-the-support-sdk/
 
 - `ZD_SUPPORT_SDK_JWT_SECRET=`
+
+> Optional. Only if you want to sign JWTs for the Zendesk SSO: https://support.zendesk.com/hc/en-us/articles/4408845838874-Enabling-JWT-single-sign-on
+
+- `ZD_SSO_SECRET=`
 
 > App port configuration
 

@@ -3,12 +3,11 @@ import axios, { type AxiosInstance } from 'axios';
 const timeout = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 const {
-    BASE_URL: baseUrl,
+    ZENDESK_SUBDOMAIN: zendeskSubdomain,
     APP_ID: appId,
     SWITCHBOARD_ID: switchboardId,
     KEY_ID: keyId,
     KEY_SECRET: keySecret,
-    BASE_URL: defaultBaseUrl,
     NEXT_SWITCHBOARD_INTEGRATION: nextSwitchboardIntegration,
 } = process.env;
 
@@ -103,11 +102,10 @@ class SunCoClient {
     constructor() {
         this.appId = appId;
         this.switchboardId = switchboardId;
-        const appBaseUrl = (baseUrl || defaultBaseUrl || '').replace(
-            /\/+$/,
-            ''
-        );
-        this.appUrl = `${appBaseUrl}/v2/apps/${encodeURIComponent(this.appId ?? '')}`;
+        const baseUrl = zendeskSubdomain
+            ? `https://${zendeskSubdomain}.zendesk.com/sc`
+            : 'https://api.smooch.io';
+        this.appUrl = `${baseUrl}/v2/apps/${encodeURIComponent(this.appId ?? '')}`;
         this.api = axios.create({
             headers: { Authorization: `Basic ${Buffer.from(`${keyId}:${keySecret}`).toString('base64')}` },
         });

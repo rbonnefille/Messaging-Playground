@@ -9,7 +9,7 @@ const EVENT_TYPES = {
 
 const {
     BOT_SWITCHBOARD_INTEGRATION_ID: botSwitchboardIntegrationId,
-    WEBHOOK_X_API_KEY: webhookXapiKey,
+    CONVERSATION_INTEGRATION_SHARED_SECRET: webhookXapiKey,
 } = process.env;
 
 interface SwitchboardIntegration {
