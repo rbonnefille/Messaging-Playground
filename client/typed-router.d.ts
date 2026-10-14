@@ -87,20 +87,6 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    'SunCo templates': RouteRecordInfo<
-      'SunCo templates',
-      '/sunco/templates',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    'Whatsapp templates': RouteRecordInfo<
-      'Whatsapp templates',
-      '/sunco/templates/whatsapp',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
     'Users': RouteRecordInfo<
       'Users',
       '/sunco/users',
@@ -222,22 +208,6 @@ declare module 'vue-router/auto-routes' {
     'src/pages/sunco/snippets/web-widget/index.vue': {
       routes:
         | 'Widget Snippets'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
-    'src/pages/sunco/templates/index.vue': {
-      routes:
-        | 'SunCo templates'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
-    'src/pages/sunco/templates/whatsapp.vue': {
-      routes:
-        | 'Whatsapp templates'
       views:
         | never
       pathParamNames:
