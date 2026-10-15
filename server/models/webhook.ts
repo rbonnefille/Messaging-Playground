@@ -221,7 +221,7 @@ class WebhookEvent {
         throw new Error(`AppId is read-only. ${value} is ignored.`);
     }
     isAuthenticatedRequest(webhookSecret: string | undefined): boolean {
-        return webhookSecret === webhookXapiKey;
+        return Boolean(webhookXapiKey) && webhookSecret === webhookXapiKey;
     }
     isCurrentSwitchboardIntegration(
         activeSwitchboardIntegration: string | undefined

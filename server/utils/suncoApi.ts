@@ -28,6 +28,7 @@ interface SunCoUser {
 
 interface SunCoConversation {
     id: string;
+    metadata?: Record<string, unknown> | null;
     isDefault?: boolean;
     lastUpdatedAt?: string;
     activeSwitchboardIntegration?: {
@@ -44,6 +45,18 @@ interface UserResponse {
 
 interface UsersResponse {
     users: SunCoUser[];
+}
+
+interface ConversationResponse {
+    conversation: SunCoConversation;
+}
+
+interface ParticipantResponse {
+    participants: Record<string, unknown>[];
+    meta?: {
+        hasMore?: boolean;
+        [key: string]: unknown;
+    };
 }
 
 interface ConversationResponse {
@@ -241,10 +254,10 @@ class SunCoClient {
         }
     }
 
-    async listParticipants(conversationId: string): Promise<unknown> {
+    async listParticipants(conversationId: string): Promise<ApiResult<ParticipantResponse>> {
         const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId)}/participants`;
         try {
-            const response = await this.api.get<unknown>(url);
+            const response = await this.api.get<ParticipantResponse>(url);
             return response.data;
         } catch (error) {
             return this.apiError(error);
@@ -276,6 +289,30 @@ class SunCoClient {
         } catch (error) {
             return this.apiError(error);
         }
+    }
+
+    async setConversationUserId(
+        conversationId: string,
+        userId: string
+    ): Promise<void> {
+        if (!conversationId || !userId) {
+            throw new Error('A conversation ID and user ID are required');
+        }
+
+        const url = `${this.appUrl}/conversations/${encodeURIComponent(conversationId)}`;
+        // Keep both requests within the webhook delivery timeout.
+        const options = { timeout: 5000 };
+        const { data } = await this.api.get<ConversationResponse>(url, options);
+        const metadata = data.conversation.metadata;
+
+        if (metadata?.userId === userId) return;
+
+        // Preserve existing fields and make duplicate create deliveries harmless.
+        await this.api.patch<ConversationResponse>(
+            url,
+            { metadata: { ...metadata, userId } },
+            options
+        );
     }
 
     async listMessages(payload: ConversationPayload | string): Promise<unknown> {

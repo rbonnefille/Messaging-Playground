@@ -162,6 +162,108 @@ test('reports a missing pagination cursor without requesting another page', asyn
     assert.equal(requests, 1);
 });
 
+test('sets conversation user metadata while preserving existing metadata', async () => {
+    const requests: string[] = [];
+    const metadata = { ticketStatus: 'open', priority: 'high', userId: 'old-user' };
+    const client = createClient(async (config) => {
+        requests.push(config.method ?? '');
+        assert.ok(config.url?.endsWith('/conversations/conversation%2F1'));
+        assert.equal(config.timeout, 5000);
+
+        if (config.method === 'get') {
+            return apiResponse(config, {
+                conversation: { id: 'conversation/1', displayName: 'Keep this name', metadata },
+            });
+        }
+
+        assert.deepEqual(JSON.parse(String(config.data)), {
+            metadata: { ...metadata, userId: 'user-1' },
+        });
+        return apiResponse(config, {});
+    });
+
+    await client.setConversationUserId('conversation/1', 'user-1');
+    assert.deepEqual(requests, ['get', 'patch']);
+    assert.equal(metadata.userId, 'old-user');
+});
+
+test('does not patch again when conversation metadata already has the user ID', async () => {
+    let patches = 0;
+    let metadata: Record<string, unknown> = { ticketStatus: 'open' };
+    const client = createClient(async (config) => {
+        if (config.method === 'patch') {
+            patches++;
+            metadata = JSON.parse(String(config.data)).metadata;
+        }
+        return apiResponse(config, {
+            conversation: { id: 'conversation-1', metadata },
+        });
+    });
+
+    await client.setConversationUserId('conversation-1', 'user-1');
+    await client.setConversationUserId('conversation-1', 'user-1');
+    assert.equal(patches, 1);
+    assert.deepEqual(metadata, { ticketStatus: 'open', userId: 'user-1' });
+});
+
+test('sets user metadata when existing metadata is absent or null', async () => {
+    for (const metadata of [undefined, null]) {
+        let patches = 0;
+        const client = createClient(async (config) => {
+            if (config.method === 'patch') {
+                patches++;
+                assert.deepEqual(JSON.parse(String(config.data)), {
+                    metadata: { userId: 'user-1' },
+                });
+            }
+            return apiResponse(config, {
+                conversation: { id: 'conversation-1', metadata },
+            });
+        });
+
+        await client.setConversationUserId('conversation-1', 'user-1');
+        assert.equal(patches, 1);
+    }
+});
+
+test('propagates metadata read failures without patching the conversation', async () => {
+    let requests = 0;
+    const client = createClient(async () => {
+        requests++;
+        throw new Error('Metadata read failed');
+    });
+
+    await assert.rejects(
+        client.setConversationUserId('conversation-1', 'user-1'),
+        /Metadata read failed/
+    );
+    assert.equal(requests, 1);
+});
+
+test('propagates conversation metadata patch failures', async () => {
+    const client = createClient(async (config) => {
+        if (config.method === 'patch') throw new Error('Metadata patch failed');
+        return apiResponse(config, { conversation: { id: 'conversation-1' } });
+    });
+
+    await assert.rejects(
+        client.setConversationUserId('conversation-1', 'user-1'),
+        /Metadata patch failed/
+    );
+});
+
+test('rejects missing conversation or user IDs before reading metadata', async () => {
+    let requests = 0;
+    const client = createClient(async (config) => {
+        requests++;
+        return apiResponse(config, {});
+    });
+
+    await assert.rejects(client.setConversationUserId('', 'user-1'), /required/);
+    await assert.rejects(client.setConversationUserId('conversation-1', ''), /required/);
+    assert.equal(requests, 0);
+});
+
 test('stops repeated pagination cursors instead of looping', async () => {
     let requests = 0;
     const client = createClient(async (config) => {

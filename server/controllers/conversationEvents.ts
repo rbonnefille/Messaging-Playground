@@ -2,6 +2,9 @@ import type { Request, Response, NextFunction } from 'express';
 import replyToUser from '../models/bot.js';
 import ConversationEvent from '../models/webhook.js';
 import PassControlMetadata from '../models/passControlMetadata.js';
+import SunCoClient from '../utils/suncoApi.js';
+
+const sunCo = new SunCoClient();
 
 const messageEvents = async (
     req: Request,
@@ -19,6 +22,31 @@ const messageEvents = async (
     if (!webhookEvent.isAuthenticatedRequest(webhookEventApiKey)) {
         res.sendStatus(401).end();
         return;
+    }
+
+    if (webhookEvent.isConversationCreate()) {
+        const { conversationId, userId, eventId } = webhookEvent;
+
+        if (conversationId && userId) {
+            try {
+                await sunCo.setConversationUserId(conversationId, userId);
+            } catch (error) {
+                console.error('Error setting conversation user metadata:', {
+                    conversationId,
+                    message:
+                        error instanceof Error ? error.message : 'Unknown error',
+                });
+                res.status(502).json({
+                    error: 'Unable to set conversation user metadata',
+                });
+                return;
+            }
+        } else {
+            console.warn('Skipping conversation user metadata: missing IDs', {
+                eventId,
+                conversationId,
+            });
+        }
     }
 
     if (
