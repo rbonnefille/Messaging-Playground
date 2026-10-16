@@ -171,12 +171,13 @@ watch(
 
 watch(
   () => conversation.value?.metadata?.userId,
-  (userId) => {
-    if (typeof userId === 'string' && userId) {
-      void loadUser(userId);
-    }
+  userId => {
+    const id =
+      typeof userId === 'string' && userId ? userId : null;
+
+    void loadUser(id);
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 onBeforeUnmount(() => {
