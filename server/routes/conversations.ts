@@ -51,6 +51,20 @@ router.get('/:id/messages', async (req, res) => {
     }
 });
 
+router.post('/:id/passControl', async (req, res) => {
+    try {
+        const result = await sunCo.passControl({
+            conversationId: req.params.id,
+            metadata: req.body.metadata,
+        }, req.body.switchboardIntegration);
+
+        return res.json(result);
+    } catch (error) {
+        console.error('Error passing conversation control:', error);
+        return res.status(502).json({ error: 'Conversation service unavailable' });
+    }
+});
+
 router.post('/', conversationEvents);
 
 export default router;

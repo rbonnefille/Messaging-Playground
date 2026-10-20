@@ -15,8 +15,7 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-.env
-.env.test
+.env*
 npm-debug.log*
 .git
 .eslintrc.js
