@@ -219,6 +219,47 @@ const toolsButtons = {
     },
 };
 const suncoButtons = {
+    createConvoPassControl: {
+        text: 'Test Create Convo with message and metadata',
+        type: 'button',
+        click() {
+            const metadata = {
+                'dataCapture.systemField.requester.name': 'Michael Scott',
+                'dataCapture.systemField.requester.email':
+                    'michael-scott@example.com',
+                'dataCapture.systemField.tags':
+                    'authenticated, internal_chat_child_ticket',
+                'dataCapture.systemField.priority': 'high',
+            };
+            window.Smooch.createConversation({
+                messages: [
+                    {
+                        type: 'text',
+                        text: 'This a L2 support request for ticket 1231234\n\nHi, please can you help with this legal request?',
+                    },
+                ],
+                metadata,
+            })
+                .then((conversation) => {
+                    window.Smooch.loadConversation(conversation.id);
+                    // Return convo for passcontrol
+                    return conversation;
+                })
+                .then(async (conversation) => {
+                    await fetch(
+                        `/api/conversations/${conversation.id}/passControl`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                switchboardIntegration: 'zd-agentWorkspace',
+                                metadata,
+                            }),
+                        }
+                    );
+                });
+        },
+    },
     toggleWidget: {
         text: 'Show Widget',
         type: 'button',
