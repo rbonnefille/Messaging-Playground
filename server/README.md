@@ -45,11 +45,9 @@
 - `BOT_NAME=Bugs Bunny`
 - `ZENDESK_SUBDOMAIN=`
 
-> _Optional_. Only if you want to send proactive SMS or WhatsApp messages through SunCo Notifications API.
+> _Optional_. Only if you want to send proactive SMS messages through SunCo Notifications API.
 
-- `SUNCO_WEB_WIDGET_INTEGRATION_ID=` // Create a SunCo Web Widget integration to get it: https://developer.zendesk.com/api-reference/conversations/#tag/Integrations/operation/CreateIntegration
 - `SUNCO_TWILIO_INTEGRATION_ID=` // Create a SunCo Twilio integration to get it: https://developer.zendesk.com/api-reference/conversations/#tag/Integrations/operation/CreateIntegration
-- `SUNCO_WHATSAPP_INTEGRATION_ID=` // Add Whatsapp as a channel via the Admin center and retrieve it's integration id via: https://developer.zendesk.com/api-reference/conversations/#tag/Integrations/operation/ListIntegrations
 
 > _Optional_. Follow instructions here: https://developer.zendesk.com/documentation/classic-web-widget-sdks/support-sdk/working-with-the-support-sdk/building-a-dedicated-jwt-endpoint-for-the-support-sdk/
 
