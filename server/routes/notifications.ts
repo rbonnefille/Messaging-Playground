@@ -1,6 +1,6 @@
 import express from 'express';
 import axios from 'axios';
-
+import { features } from '../config/features.js';
 const {
     APP_ID: appId,
     SUNCO_TWILIO_INTEGRATION_ID: twilioIntegrationId,
@@ -11,6 +11,9 @@ const {
 const router = express.Router();
 
 router.post('/sms', async (req, res) => {
+    if (!features.sms) {
+        return res.status(503).send('SMS feature not enabled. Check .env in server').end();
+    }
     if (!req.body || Object.keys(req.body).length === 0) {
         return res.status(404).send('No body found').end();
     }

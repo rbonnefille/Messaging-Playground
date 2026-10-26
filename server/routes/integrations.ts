@@ -2,37 +2,44 @@ import express from 'express';
 const router = express.Router();
 import SunCoClient from '../utils/suncoApi.js';
 import checkOrigin from '../middleware/validateOrigin.js';
-
+import { hasSuncoCredentials } from '../config/features.js';
 router.use(checkOrigin);
 
-router.get('/', async (_req, res) => {
-    try {
-        const sunCo = new SunCoClient();
-        const integrations = await sunCo.listIntegrationsPerChannelResponder();
-        return res.json(integrations);
-    } catch (error) {
-        console.error('Error listing integrations:', error);
-        return res
-            .status(502)
-            .json({ error: 'Integration service unavailable' });
-    }
-});
+if (hasSuncoCredentials) {
+    router.get('/', async (_req, res) => {
+        try {
+            const sunCo = new SunCoClient();
+            const integrations = await sunCo.listIntegrationsPerChannelResponder();
+            return res.json(integrations);
+        } catch (error) {
+            console.error('Error listing integrations:', error);
+            return res
+                .status(502)
+                .json({ error: 'Integration service unavailable' });
+        }
+    });
 
-router.patch('/:id', async (req, res) => {
-    try {
-        const { id: integrationId } = req.params;
-        const sunCo = new SunCoClient();
-        const integrations = await sunCo.updateIntegration(
-            integrationId,
-            req.body
-        );
-        return res.json(integrations);
-    } catch (error) {
-        console.error('Error updating integration:', error);
-        return res
-            .status(502)
-            .json({ error: 'Integration service unavailable' });
-    }
-});
+    router.patch('/:id', async (req, res) => {
+        try {
+            const { id: integrationId } = req.params;
+            const sunCo = new SunCoClient();
+            const integrations = await sunCo.updateIntegration(
+                integrationId,
+                req.body
+            );
+            return res.json(integrations);
+        } catch (error) {
+            console.error('Error updating integration:', error);
+            return res
+                .status(502)
+                .json({ error: 'Integration service unavailable' });
+        }
+    });
+}
+else {
+    router.use((req, res) => {
+        res.status(403).json({ error: 'Sunco credentials not configured. Check .env in server Check .env in server' });
+    });
+}
 
 export default router;

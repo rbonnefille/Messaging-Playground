@@ -1,6 +1,7 @@
 import express from 'express';
 import conversationEvents from '../controllers/conversationEvents.js';
 import SunCoClient, { isApiSuccess } from '../utils/suncoApi.js';
+import { features, hasSuncoCredentials } from '../config/features.js';
 
 const router = express.Router();
 
@@ -10,61 +11,73 @@ router.head('/', (_req, res) => {
     return res.sendStatus(200).end();
 });
 
-router.post('/create', async (req, res) => {
-    try {
-        const response = await sunCo.createConversation(req.body);
-        return res.json(response);
-    } catch (error) {
-        console.error('Error creating conversation:', error);
-        return res
-            .status(502)
-            .json({ error: 'Conversation service unavailable' });
-    }
-});
-
-router.get('/:id', async (req, res) => {
-    try {
-        const { id: conversationId } = req.params;
-        const conversation = await sunCo.getConversation(conversationId);
-        if (!isApiSuccess(conversation) || !conversation.conversation) {
-            return res.status(404).json({ error: 'Conversation not found' });
+if (hasSuncoCredentials) {
+    router.post('/create', async (req, res) => {
+        try {
+            const response = await sunCo.createConversation(req.body);
+            return res.json(response);
+        } catch (error) {
+            console.error('Error creating conversation:', error);
+            return res
+                .status(502)
+                .json({ error: 'Conversation service unavailable' });
         }
-        return res.json(conversation.conversation);
-    } catch (error) {
-        console.error('Error getting conversation:', error);
-        return res
-            .status(502)
-            .json({ error: 'Conversation service unavailable' });
-    }
-});
+    });
 
-router.get('/:id/messages', async (req, res) => {
-    try {
-        const { id: conversationId } = req.params;
-        const conversationMessages = await sunCo.listMessages(conversationId);
-        return res.json(conversationMessages);
-    } catch (error) {
-        console.error('Error listing conversation messages:', error);
-        return res
-            .status(502)
-            .json({ error: 'Conversation service unavailable' });
-    }
-});
+    router.get('/:id', async (req, res) => {
+        try {
+            const { id: conversationId } = req.params;
+            const conversation = await sunCo.getConversation(conversationId);
+            if (!isApiSuccess(conversation) || !conversation.conversation) {
+                return res.status(404).json({ error: 'Conversation not found' });
+            }
+            return res.json(conversation.conversation);
+        } catch (error) {
+            console.error('Error getting conversation:', error);
+            return res
+                .status(502)
+                .json({ error: 'Conversation service unavailable' });
+        }
+    });
 
-router.post('/:id/passControl', async (req, res) => {
-    try {
-        const result = await sunCo.passControl({
-            conversationId: req.params.id,
-            metadata: req.body.metadata,
-        }, req.body.switchboardIntegration);
+    router.get('/:id/messages', async (req, res) => {
+        try {
+            const { id: conversationId } = req.params;
+            const conversationMessages = await sunCo.listMessages(conversationId);
+            return res.json(conversationMessages);
+        } catch (error) {
+            console.error('Error listing conversation messages:', error);
+            return res
+                .status(502)
+                .json({ error: 'Conversation service unavailable' });
+        }
+    });
 
-        return res.json(result);
-    } catch (error) {
-        console.error('Error passing conversation control:', error);
-        return res.status(502).json({ error: 'Conversation service unavailable' });
-    }
-});
+    router.post('/:id/passControl', async (req, res) => {
+        try {
+            const result = await sunCo.passControl({
+                conversationId: req.params.id,
+                metadata: req.body.metadata,
+            }, req.body.switchboardIntegration);
 
-router.post('/', conversationEvents);
+            return res.json(result);
+        } catch (error) {
+            console.error('Error passing conversation control:', error);
+            return res.status(502).json({ error: 'Conversation service unavailable' });
+        }
+    });
+} else {
+    router.post('/', (_req, res) => {
+        return res.status(503).send('Missing environment variables, check .env in server').end();
+    });
+}
+
+if (features.suncoBot) {
+    router.post('/', conversationEvents);
+} else {
+    router.post('/', (_req, res) => {
+        return res.status(503).send('Missing environment variables, check .env in server').end();
+    });
+}
 
 export default router;
