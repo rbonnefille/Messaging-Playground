@@ -21,7 +21,7 @@ VITE_MESSAGING_KEY=
 VITE_MESSAGING_EMEA_KEY=
 VITE_MESSAGING_APAC_KEY=
 
-# (legacy) SunCo widget integration id, you would need to create a SunCo widget integration from SunCo's API
+# (legacy) SunCo widget integration id, you would need to create a SunCo widget integration from SunCo's API. Create a SunCo Web Widget integration to get it: https://developer.zendesk.com/api-reference/conversations/#tag/Integrations/operation/CreateIntegration
 VITE_SUNCO_INTEGRATION_ID=
 
 # Zendesk voice line ID, required for the client to interact with the Zendesk Voice API
