@@ -13,3 +13,12 @@ export const searchHelpCenterArticles = (query) =>
     requestJson(
         `https://${import.meta.env.VITE_ZENDESK_SUBDOMAIN}.zendesk.com/api/v2/help_center/articles/search.json?query=${encodeURIComponent(query)}`
     );
+
+export const searchZendeskUser = (externalId) =>
+    requestJson('/zendesk/users/search', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ externalId }),
+    });
