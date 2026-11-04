@@ -12,30 +12,33 @@ const {
     ZENDESK_OAUTH_CLIENT_SCOPE: clientScope,
 } = process.env;
 
-if (!subdomain || !clientId || !clientSecret) {
-    throw new Error("Missing Zendesk OAuth configuration");
+let oauth: ClientCredentials | undefined;
+
+if (subdomain && clientId && clientSecret) {
+    const oauthConfig: ModuleOptions = {
+        client: {
+            id: clientId,
+            secret: clientSecret,
+        },
+        auth: {
+            tokenHost: `https://${subdomain}.zendesk.com`,
+            tokenPath: "/oauth/tokens",
+        },
+        options: {
+            authorizationMethod: "body",
+            bodyFormat: "json",
+        },
+        http: {
+            timeout: 10_000,
+        },
+    };
+
+    oauth = new ClientCredentials(oauthConfig);
+} else {
+    console.warn(
+        "Zendesk OAuth is not configured. Set ZENDESK_SUBDOMAIN, ZENDESK_OAUTH_CLIENT_ID and ZENDESK_OAUTH_CLIENT_SECRET; Zendesk API calls will fail until then."
+    );
 }
-
-const oauthConfig: ModuleOptions = {
-    client: {
-        id: clientId,
-        secret: clientSecret,
-
-    },
-    auth: {
-        tokenHost: `https://${subdomain}.zendesk.com`,
-        tokenPath: "/oauth/tokens",
-    },
-    options: {
-        authorizationMethod: "body",
-        bodyFormat: "json",
-    },
-    http: {
-        timeout: 10_000,
-    },
-};
-
-const oauth: ClientCredentials = new ClientCredentials(oauthConfig);
 
 const tokenParams: ClientCredentialTokenConfig = {
     scope: clientScope,
@@ -56,6 +59,10 @@ function getTokenValue(token: AccessToken): string {
 }
 
 export async function getAccessToken(): Promise<string> {
+    if (!oauth) {
+        throw new Error("Missing Zendesk OAuth configuration");
+    }
+
     if (accessToken && !accessToken.expired(60)) {
         return getTokenValue(accessToken);
     }

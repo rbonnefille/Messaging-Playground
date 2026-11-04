@@ -45,6 +45,12 @@
 - `BOT_NAME=Bugs Bunny`
 - `ZENDESK_SUBDOMAIN=`
 
+> _Optional_. Only if you want the Zendesk API routes (`/zendesk/tickets/:id`, `/zendesk/users/search`). Create an OAuth client under Admin Center > Apps and integrations > APIs > OAuth clients (see https://support.zendesk.com/hc/en-us/articles/4408845965210). If you set Allowed scopes on it, include the scope below. If any of these values are missing, the server still starts and those routes stay disabled.
+
+- `ZENDESK_OAUTH_CLIENT_ID=`
+- `ZENDESK_OAUTH_CLIENT_SECRET=`
+- `ZENDESK_OAUTH_CLIENT_SCOPE=` // Space-separated, e.g. `tickets:read users:read`
+
 > _Optional_. Only if you want to send proactive SMS messages through SunCo Notifications API.
 
 - `SUNCO_TWILIO_INTEGRATION_ID=` // Create a SunCo Twilio integration to get it: https://developer.zendesk.com/api-reference/conversations/#tag/Integrations/operation/CreateIntegration
