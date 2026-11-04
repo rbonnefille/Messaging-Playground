@@ -384,8 +384,12 @@ const technicalFields = computed(() => {
   const integration = selectedIntegration.value;
   if (!integration) return [];
 
+  const webhook = integration.webhooks?.[0];
   const fields = [
     { label: 'Integration ID', value: integration.id },
+    ...(integration.type === 'custom'
+      ? [{ label: 'Webhook ID', value: webhook?.id }]
+      : []),
     { label: 'Type', value: integration.type },
     { label: 'Status', value: integration.status },
     { label: 'Brand ID', value: integration.brandId },
@@ -425,7 +429,6 @@ const technicalFields = computed(() => {
   }
 
   if (integration.type === 'custom') {
-    const webhook = integration.webhooks?.[0];
     fields.push(
       { label: 'Webhook target', value: webhook?.target },
       { label: 'Webhook triggers', value: webhook?.triggers },
