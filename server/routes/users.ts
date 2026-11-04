@@ -1,10 +1,32 @@
-import express from 'express';
+import express, { type Response } from 'express';
 const router = express.Router();
 import SunCoClient, { isApiSuccess } from '../utils/suncoApi.js';
 import checkOrigin from '../middleware/validateOrigin.js';
 import { hasSuncoCredentials } from '../config/features.js';
 
 router.use(checkOrigin);
+
+// SunCo read methods return upstream error titles or HTTP statuses on failure.
+const sendApiError = (
+    res: Response,
+    result: unknown,
+    notFoundMessage: string
+) => {
+    if (typeof result === 'string' && result) {
+        return res.status(502).json({ error: result });
+    }
+    if (typeof result === 'number' && result >= 400 && result <= 599) {
+        return res.status(result).json({
+            error: result === 404
+                ? notFoundMessage
+                : `Sunco request failed with status ${result}`,
+        });
+    }
+    if (result === undefined || result === null) {
+        return res.status(502).json({ error: 'Sunco service unavailable' });
+    }
+    return res.status(404).json({ error: notFoundMessage });
+};
 
 if (hasSuncoCredentials) {
     router.post('/listUser', async (req, res) => {
@@ -19,7 +41,7 @@ if (hasSuncoCredentials) {
             ) {
                 return res.json(user.users[0]);
             }
-            return res.status(404).json({ error: 'User not found' });
+            return sendApiError(res, user, 'User not found');
         } catch (error) {
             console.error('Error finding user by email:', error);
             return res.status(502).json({ error: 'User service unavailable' });
@@ -37,7 +59,7 @@ if (hasSuncoCredentials) {
             ) {
                 return res.json(user);
             }
-            return res.status(404).json({ error: 'User not found' });
+            return sendApiError(res, user, 'User not found');
         } catch (error) {
             console.error('Error getting user:', error);
             return res.status(502).json({ error: 'User service unavailable' });
@@ -55,7 +77,7 @@ if (hasSuncoCredentials) {
             ) {
                 return res.json(conversations);
             }
-            return res.status(404).json({ error: 'Conversations not found' });
+            return sendApiError(res, conversations, 'Conversations not found');
         } catch (error) {
             console.error('Error listing conversations:', error);
             return res
@@ -70,7 +92,7 @@ if (hasSuncoCredentials) {
             const sunCo = new SunCoClient();
             const allConversations = await sunCo.listConversations(userId);
             if (!isApiSuccess(allConversations) || !allConversations.conversations) {
-                return res.status(404).json({ error: 'Conversations not found' });
+                return sendApiError(res, allConversations, 'Conversations not found');
             }
 
             const conversationsToDelete = allConversations.conversations.filter(
@@ -107,7 +129,7 @@ if (hasSuncoCredentials) {
             ) {
                 return res.json(clientsList);
             }
-            return res.status(404).json({ error: 'Clients not found' });
+            return sendApiError(res, clientsList, 'Clients not found');
         } catch (error) {
             console.error('Error listing clients:', error);
             return res.status(502).json({ error: 'Client service unavailable' });
@@ -125,7 +147,7 @@ if (hasSuncoCredentials) {
             ) {
                 return res.json(devicesList);
             }
-            return res.status(404).json({ error: 'Devices not found' });
+            return sendApiError(res, devicesList, 'Devices not found');
         } catch (error) {
             console.error('Error listing devices:', error);
             return res.status(502).json({ error: 'Device service unavailable' });
