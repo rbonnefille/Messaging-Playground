@@ -29,6 +29,8 @@ export const useInitZDWidget = (snippetId, key) => {
 };
 
 export const useLoginUserZDWidget = async (userAuthJWT) => {
+    const userStore = useUserStore();
+    const { isWidgetOpened } = userStore;
     try {
         await checkZendeskLoaded();
     } catch (error) {
@@ -64,12 +66,13 @@ export const useLoginUserZDWidget = async (userAuthJWT) => {
                         !useIsTokenExpired(sessionToken)
                     ) {
                         callback(sessionToken);
-                        window.zE('messenger', 'open');
+                        if (isWidgetOpened) window.zE('messenger', 'open');
                         return;
                     }
                     const { token } = await useGetToken(userAuthJWT);
                     callback(token); // Call the callback with the new JWT token
-                    window.zE('messenger', 'open');
+                    if (isWidgetOpened) window.zE('messenger', 'open');
+                    return;
                 } catch (error) {
                     console.error('Failed to fetch new JWT:', error);
                     const { type, reason, message } = error || {};
@@ -136,46 +139,26 @@ export const setupZendeskEventListeners = () => {
         changeWidgetOpenedStatus(false);
     });
 
-    window.zE(
-        'messenger:on',
-        'proactiveMessageDisplayed',
-        function (event) {
-            console.log(`Proactive message displayed`, event);
-        }
-    );
+    window.zE('messenger:on', 'proactiveMessageDisplayed', function (event) {
+        console.log(`Proactive message displayed`, event);
+    });
 
-    window.zE(
-        'messenger:on',
-        'proactiveMessageClicked',
-        function (event) {
-            console.log(`Proactive message clicked`, event);
-        }
-    );
+    window.zE('messenger:on', 'proactiveMessageClicked', function (event) {
+        console.log(`Proactive message clicked`, event);
+    });
 
-    window.zE(
-        'messenger:on',
-        'conversationStarted',
-        function (event) {
-            console.log(`Conversation started`, event);
-        }
-    );
+    window.zE('messenger:on', 'conversationStarted', function (event) {
+        console.log(`Conversation started`, event);
+    });
 
-    window.zE(
-        'messenger:on',
-        'conversationOpened',
-        function (event) {
-            const { id: converstionIdOpened } = event.payload.conversation;
-            currentConversationId.value = converstionIdOpened;
-        }
-    );
+    window.zE('messenger:on', 'conversationOpened', function (event) {
+        const { id: converstionIdOpened } = event.payload.conversation;
+        currentConversationId.value = converstionIdOpened;
+    });
 
-    window.zE(
-        'messenger:on',
-        'newConversationButtonClicked',
-        function (event) {
-            console.log(`New conversation button clicked`, event);
-        }
-    );
+    window.zE('messenger:on', 'newConversationButtonClicked', function (event) {
+        console.log(`New conversation button clicked`, event);
+    });
 
     window.zE(
         'messenger:on',
@@ -185,37 +168,21 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    window.zE(
-        'messenger:on',
-        'conversationAgentAssigned',
-        function (event) {
-            conversationAgentAssignedData.value = event;
-        }
-    );
+    window.zE('messenger:on', 'conversationAgentAssigned', function (event) {
+        conversationAgentAssignedData.value = event;
+    });
 
-    window.zE(
-        'messenger:on',
-        'messagesShown',
-        function (event) {
-            console.log(`Messages shown`, event);
-        }
-    );
+    window.zE('messenger:on', 'messagesShown', function (event) {
+        console.log(`Messages shown`, event);
+    });
 
-    window.zE(
-        'messenger:on',
-        'postbackButtonClicked',
-        function (event) {
-            console.log(`Postback button clicked`, event);
-        }
-    );
+    window.zE('messenger:on', 'postbackButtonClicked', function (event) {
+        console.log(`Postback button clicked`, event);
+    });
 
-    window.zE(
-        'messenger:on',
-        'conversationExtensionOpened',
-        function (event) {
-            console.log(`Conversation extension opened`, event);
-        }
-    );
+    window.zE('messenger:on', 'conversationExtensionOpened', function (event) {
+        console.log(`Conversation extension opened`, event);
+    });
     window.zE(
         'messenger:on',
         'conversationExtensionDisplayed',
@@ -224,41 +191,25 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    window.zE(
-        'messenger:on',
-        'articleClicked',
-        function (event) {
-            console.log(`Article clicked`, event);
-        }
-    );
+    window.zE('messenger:on', 'articleClicked', function (event) {
+        console.log(`Article clicked`, event);
+    });
 
-    window.zE(
-        'messenger:on',
-        'articleBrowserClicked',
-        function (event) {
-            console.log(`Article opened in browser`, event);
-        }
-    );
+    window.zE('messenger:on', 'articleBrowserClicked', function (event) {
+        console.log(`Article opened in browser`, event);
+    });
 
-    window.zE(
-        'messenger:on',
-        'messageReceived',
-        function (event) {
-            console.log(
-                `Message received in conversation ${event.payload.conversation.id}`,
-                event
-            );
-        }
-    );
+    window.zE('messenger:on', 'messageReceived', function (event) {
+        console.log(
+            `Message received in conversation ${event.payload.conversation.id}`,
+            event
+        );
+    });
 
-    window.zE(
-        'messenger:on',
-        'postbackButtonClicked',
-        function (event) {
-            console.log(`Postback button clicked`, event);
-            postbackButtonClickedEventData.value = event;
-        }
-    );
+    window.zE('messenger:on', 'postbackButtonClicked', function (event) {
+        console.log(`Postback button clicked`, event);
+        postbackButtonClickedEventData.value = event;
+    });
 
     window.zE(
         'messenger:set',
@@ -276,12 +227,8 @@ export const setupZendeskEventListeners = () => {
         }
     );
 
-    window.zE(
-        'messenger:set',
-        'beforeMessageSent',
-        function () {
-            // Add custom metadata to every message
-            return null;
-        }
-    );
+    window.zE('messenger:set', 'beforeMessageSent', function () {
+        // Add custom metadata to every message
+        return null;
+    });
 };
