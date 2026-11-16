@@ -334,7 +334,7 @@ class ConversationEvent extends WebhookEvent {
         return this.eventType === EVENT_TYPES.CONVERSATION_CREATE;
     }
     isCreationReasonStartConversation(): boolean {
-        return this.creationReason === 'startConversation' || this.creationReason === 'none';
+        return this.creationReason === 'startConversation' || this.creationReason === 'message' || this.creationReason === 'none';
     }
     isConversationRead(): boolean {
         return this.eventType === EVENT_TYPES.CONVERSATION_READ;
