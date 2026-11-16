@@ -680,6 +680,103 @@ const zendeskButtons = {
             });
         },
     },
+    endConversationOptionHeaderRight: {
+        text: 'End Conversation headerRight',
+        type: 'button',
+        click() {
+            window.zE('messenger:set', 'customization', {
+                messageLog: {
+                    endConversationOption: {
+                        position: 'headerRight',
+                    },
+                },
+            });
+        },
+    },
+    endConversationOptionOverflowMenu: {
+        text: 'End Conversation overflowMenu',
+        type: 'button',
+        click() {
+            window.zE('messenger:set', 'customization', {
+                messageLog: {
+                    endConversationOption: {
+                        position: 'overflowMenu',
+                    },
+                },
+            });
+        },
+    },
+    aiDisclaimerPositionAuthor: {
+        text: 'AI Disclaimer Position Author',
+        type: 'button',
+        click() {
+            window.zE('messenger:set', 'customization', {
+                messageLog: {
+                    aiDisclaimerPosition: 'author',
+                },
+            });
+        },
+    },
+    aiDisclaimerPositionFooter: {
+        text: 'AI Disclaimer Position Footer',
+        type: 'button',
+        click() {
+            window.zE('messenger:set', 'customization', {
+                messageLog: {
+                    aiDisclaimerPosition: 'footer',
+                },
+            });
+        },
+    },
+    privacyNoticePositionTop: {
+        text: 'Privacy Notice Position Top',
+        type: 'button',
+        click() {
+            window.zE('messenger:set', 'customization', {
+                messageLog: {
+                    privacyNotice: 'top',
+                },
+            });
+        },
+    },
+    privacyNoticePositionBottom: {
+        text: 'Privacy Notice Position Bottom',
+        type: 'button',
+        click() {
+            window.zE('messenger:set', 'customization', {
+                messageLog: {
+                    privacyNotice: 'bottom',
+                },
+            });
+        },
+    },
+    preConversationUI: {
+        text: 'Pre-Conversation UI',
+        type: 'button',
+        click() {
+            window.zE('messenger:set', 'behavior', {
+                messageLog: {
+                    preConversation: {
+                        enabled: true,
+                        settings: {
+                            title: 'Technical Support',
+                            subtitle: 'Ask us about your order',
+                            icon: 'https://seeklogo.com/images/B/bugs-bunny-logo-707C5BAE2F-seeklogo.com.png',
+                            prompts: [
+                                'Where is my order?',
+                                'I need help with my order [order number]',
+                                'I want to change my order',
+                                'I want to cancel my order',
+                                'I have a question about my order',
+                                'I need technical support',
+                                'Other',
+                            ],
+                        },
+                    },
+                },
+            });
+        },
+    },
     resetWidget: {
         text: 'Reset Widget',
         type: 'button',
